@@ -1,0 +1,13 @@
+Package: fastDiversity
+Type: Package
+Title: Simple and quick diversity calculations for biallelic data 
+Version: 0.1.0
+Author: Eilish S. McMaster
+Maintainer: emcm4052@uni.sydney.edu.au
+Description: 
+License: 
+Imports:
+  dplyr,
+  data.table
+Encoding: UTF-8
+RoxygenNote: 7.3.1

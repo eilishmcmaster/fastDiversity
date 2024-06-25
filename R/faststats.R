@@ -1,3 +1,27 @@
+#' Calculate basic diversity statistics
+#' 
+#' This function calculates allelic richness, heterozygosity, and inbreeding coefficients 
+#' for genetic groups within specified sites. Data is filtered based on genetic group and 
+#' site IDs, and parameters such as minimum number of individuals per site, minimum number 
+#' of loci, minimum minor allele frequency, and maximum missingness per locus.
+#' 
+#' @param gt Genotype matrix where individuals are rows and loci are columns, coded as 
+#'           0=aa, 1=aA, 2=AA.
+#' @param site_variable Vector of group IDs (sites) for each individual (same length as 
+#'                      number of rows in gt).
+#' @param genetic_group_variable Vector of genetic group IDs for each individual (same 
+#'                               length as number of rows in gt). Can represent species, 
+#'                               subspecies, or other biologically relevant structure groups.
+#' @param minimum_n Minimum number of individuals required per site (sites with fewer 
+#'                  individuals will be filtered out).
+#' @param minimum_loci Minimum number of loci required to proceed with analysis for each 
+#'                    genetic group (genetic groups with fewer loci will be skipped).
+#' @param maf Minimum minor allele frequency filter.
+#' @param max_missingness Maximum proportion of missing data allowed per locus (loci with 
+#'                        higher missingness will be filtered out).
+#' @return A data frame containing diversity statistics (allelic richness, heterozygosity, 
+#'         inbreeding coefficients) per site per genetic group.
+#' @export
 faststats <- function(gt, genetic_group_variable, site_variable, minimum_n=3, minimum_loci=50, maf=0.05, max_missingness=0.3){
   
   out_matrix <- matrix(NA, 0, 12)
