@@ -21,6 +21,13 @@
 #'                        higher missingness will be filtered out).
 #' @return A data frame containing diversity statistics (allelic richness, heterozygosity, 
 #'         inbreeding coefficients) per site per genetic group.
+#' @examples
+#' # Calculate observed heterozygosity (Ho), expected heterozygosity (He), unbiased 
+#' # expected heterozygosity (uHe), inbreeding coefficient (Fis), mean allelic richness (Ar),
+#' # and rarefied allelic richness (rAr):
+#' basicstats <- faststats(example_gt, example_meta$population,
+#'                         example_meta$site, minimum_n=3, 
+#'                         minimum_loci=50, maf=0.05, max_missingness=0.3)
 #' @export
 faststats <- function(gt, genetic_group_variable, site_variable, minimum_n=3, minimum_loci=50, maf=0.05, max_missingness=0.3){
   

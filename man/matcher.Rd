@@ -4,12 +4,12 @@
 \alias{matcher}
 \title{Identify Alleles Matching Genotype}
 \usage{
-matcher(gt, loci)
+matcher(df2, loci)
 }
 \arguments{
-\item{gt}{Genotype matrix where the first row represents loci and subsequent rows are genotype data (0, 1, 2).}
-
 \item{loci}{Data frame containing locus information with columns 'loci', 'allele1', and 'allele2'.}
+
+\item{gt}{Genotype matrix where the first row represents loci and subsequent rows are genotype data (0, 1, 2).}
 }
 \value{
 Vector of alleles matching the genotype at each locus in `gt`.

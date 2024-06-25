@@ -46,3 +46,11 @@ for genetic groups within specified sites. Data is filtered based on genetic gro
 site IDs, and parameters such as minimum number of individuals per site, minimum number 
 of loci, minimum minor allele frequency, and maximum missingness per locus.
 }
+\examples{
+# Calculate observed heterozygosity (Ho), expected heterozygosity (He), unbiased 
+# expected heterozygosity (uHe), inbreeding coefficient (Fis), mean allelic richness (Ar),
+# and rarefied allelic richness (rAr):
+basicstats <- faststats(example_gt, example_meta$population,
+                        example_meta$site, minimum_n=3, 
+                        minimum_loci=50, maf=0.05, max_missingness=0.3)
+}

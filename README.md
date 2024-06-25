@@ -3,7 +3,7 @@ fastDiversity: A simple and efficient population genetics analysis package.
 
 This is the repository for the latest version of the ```fastDiversity``` package. It contains the latest bug fixes, as well as the newest functionality.
 
-This package was created to address shortcomings in existing methods, which often necessitate specific data structures and file types, and are occasionally no longer maintained. It offers essential functions for basic population genomic analysis in a format compatible with any SNP data in biallelic 0,1,2 (aa, aA, AA) format (e.g., DArTseq), thereby saving time compared to alternative approaches.
+This package was created to address shortcomings in existing methods, which often necessitate specific data structures and file types, and are occasionally no longer maintained. It offers essential functions for basic population genomic analysis in a format compatible with any SNP data in biallelic 0 (aa), 1 (aA), 2 (AA) format (e.g., DArTseq), thereby saving time compared to alternative approaches.
 
 Installing fastDiversity
 =======================
@@ -38,13 +38,18 @@ private_total_alleles_population  <- calculate_private_alleles(allele_list_popul
 
 Calculate observed heterozygosity (Ho), expected heterozygosity (He), unbiased expected heterozygosity (uHe), inbreeding coefficient (Fis), mean allelic richness (Ar), and rarefied allelic richness (rAr):
 ```
-basicstats <- faststats(example_gt, example_meta$population, example_meta$site, minimum_n=3, minimum_loci=50, maf=0.05, max_missingness=0.3)
+basicstats <- faststats(example_gt, example_meta$population,
+                          example_meta$site, minimum_n=3, 
+                          minimum_loci=50, maf=0.05, max_missingness=0.3)
 ```
 
 
 References
 =======================
 
+Frankham, R., Ballou, J. D., & Briscoe, D. A. (2010). Introduction to Conservation Genetics (2nd ed.). Cambridge University Press. https://doi.org/10.1017/CBO9780511809002
+
 Kalinowski, S. T. (2004). hp‐rare 1.0: a computer program for performing rarefaction on measures of allelic richness. Molecular Ecology Notes, 5(1), 187-189. https://doi.org/10.1111/j.1471-8286.2004.00845.x
 
 Keenan, K. G., McGinnity, P., Cross, T. F., Crozier, W. W., & Prodöhl, P. A. (2013). Diversity: an r package for the estimation and exploration of population genetics parameters and their associated errors. Methods in Ecology and Evolution, 4(8), 782-788. https://doi.org/10.1111/2041-210x.12067
+

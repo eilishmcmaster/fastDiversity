@@ -4,7 +4,7 @@
 \alias{calculate_private_alleles}
 \title{Calculate Private Alleles}
 \usage{
-calculate_private_alleles(allele_list)
+calculate_private_alleles(populations)
 }
 \arguments{
 \item{allele_list}{List where each element contains a vector of alleles for a group.}
