@@ -8,17 +8,6 @@ This package was developed because although other packages exist for these metho
 
 Installing fastDiversity
 =======================
-
-
-# Stable version
-# ---------------
-# 
-# A stable version of the package can be installed from ```CRAN``` as follows:
-# 
-# ```s
-# install.packages("fastDiversity")
-# ```
-
 Development version
 -------------------
 
