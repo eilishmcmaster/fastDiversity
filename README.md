@@ -22,6 +22,13 @@ devtools::install("https://github.com/eilishmcmaster/fastDiversity")
 
 Example use
 =======================
+Load package and data:
+```
+library(fastDiversity)
+data(example_gt)
+data(example_meta)
+```
+
 Calculate private and total alleles by specified group (in this case, population):
 ```
 allele_list_population <- make_allele_list(example_gt, example_meta$population)
@@ -29,7 +36,7 @@ ggvenn::ggvenn(allele_list_population)
 private_total_alleles_population  <- calculate_private_alleles(allele_list_population)
 ```
 
-Calculate heterozygosity, inbreeding coefficient (Fis), mean allelic richness (Ar), and rarefied allelic richness (rAr):
+Calculate observed heterozygosity (Ho), expected heterozygosity (He), unbiased expected heterozygosity (uHe), inbreeding coefficient (Fis), mean allelic richness (Ar), and rarefied allelic richness (rAr):
 ```
 basicstats <- faststats(example_gt, example_meta$population, example_meta$site, minimum_n=3, minimum_loci=50, maf=0.05, max_missingness=0.3)
 ```
