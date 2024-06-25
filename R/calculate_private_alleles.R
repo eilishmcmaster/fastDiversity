@@ -6,6 +6,11 @@
 #' 
 #' @param allele_list List where each element contains a vector of alleles for a group.
 #' @return Data table summarizing private alleles and total alleles for each group and a total count.
+#' @examples 
+#' # Calculate private and total alleles by specified group (in this case, population):
+#' allele_list_population <- make_allele_list(example_gt, example_meta$population)
+#' ggvenn::ggvenn(allele_list_population)
+#' private_total_alleles_population  <- calculate_private_alleles(allele_list_population)
 #' @export
 calculate_private_alleles <- function(populations) {
   # Combine all alleles into a single vector
