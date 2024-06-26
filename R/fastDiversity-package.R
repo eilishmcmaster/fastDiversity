@@ -16,7 +16,7 @@
 #'
 #' For more details on each function, use `?function_name`.
 #' 
-#' @docType _PACKAGE
+#' @docType package
 #' @name fastDiversity
 #' @seealso \code{\link{faststats}}, \code{\link{calculate_private_alleles}}
 #' @references
@@ -29,4 +29,4 @@
 #' @author
 #' Eilish S. McMaster <emcm4052@uni.sydney.edu.au> <eilish.mcmaster@botanicgardens.nsw.gov.au>
 #' @keywords population-genetics package
-#' @export
+NULL
