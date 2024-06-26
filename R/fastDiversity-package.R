@@ -26,22 +26,6 @@
 #' 
 #' Keenan K, McGinnity P, Cross TF, et al. (2013). "diveRsity: An R package for the estimation of population genetics parameters and their associated errors." Methods in Ecology and Evolution. URL: https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210x.12067
 #'
-#' @examples
-#' # Load package and data:
-#' #library(fastDiversity)
-#' 
-#' # Calculate private and total alleles by specified group (in this case, population):
-#' # allele_list_population <- make_allele_list(example_gt, example_meta$population)
-#' # ggvenn::ggvenn(allele_list_population)
-#' # private_total_alleles_population  <- calculate_private_alleles(allele_list_population)
-#' 
-#' # Calculate observed heterozygosity (Ho), expected heterozygosity (He), unbiased 
-#' # expected heterozygosity (uHe), inbreeding coefficient (Fis), mean allelic richness (Ar),
-#' # and rarefied allelic richness (rAr):
-#' #basicstats <- faststats(example_gt, example_meta$population,
-#' #                       example_meta$site, minimum_n=3, 
-#' #                        minimum_loci=50, maf=0.05, max_missingness=0.3)
-#'
 #' @author
 #' Eilish S. McMaster <emcm4052@uni.sydney.edu.au> <eilish.mcmaster@botanicgardens.nsw.gov.au>
 #' @keywords population-genetics package
