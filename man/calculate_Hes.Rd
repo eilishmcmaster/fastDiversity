@@ -15,5 +15,5 @@ Vector of observed heterozygosity values (Hes) for each locus.
 }
 \description{
 This function calculates observed heterozygosity (Hes) for each locus based on genotype data.
-Hes is defined as the proportion of heterozygous individuals at each locus.
+Hes is the expected proportion of heterozygotes at each locus assuming HW equilibrium.
 }

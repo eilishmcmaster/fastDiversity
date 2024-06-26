@@ -1,4 +1,3 @@
-#'
 #' This package provides functions for basic population genetics analysis using SNP data
 #' in biallelic format (0, 1, 2). It includes methods for calculating diversity statistics,
 #' allelic richness, heterozygosity, and more.
@@ -16,7 +15,8 @@
 #' - Identifying private alleles across populations.
 #'
 #' For more details on each function, use `?function_name`.
-#'
+#' 
+#' @docType _PACKAGE
 #' @name fastDiversity
 #' @seealso \code{\link{faststats}}, \code{\link{calculate_private_alleles}}
 #' @references
@@ -28,25 +28,21 @@
 #'
 #' @examples
 #' # Load package and data:
-#' library(fastDiversity)
-#' data(example_gt)
-#' data(example_meta)
+#' #library(fastDiversity)
 #' 
 #' # Calculate private and total alleles by specified group (in this case, population):
-#' allele_list_population <- make_allele_list(example_gt, example_meta$population)
-#' ggvenn::ggvenn(allele_list_population)
-#' private_total_alleles_population  <- calculate_private_alleles(allele_list_population)
+#' # allele_list_population <- make_allele_list(example_gt, example_meta$population)
+#' # ggvenn::ggvenn(allele_list_population)
+#' # private_total_alleles_population  <- calculate_private_alleles(allele_list_population)
 #' 
 #' # Calculate observed heterozygosity (Ho), expected heterozygosity (He), unbiased 
 #' # expected heterozygosity (uHe), inbreeding coefficient (Fis), mean allelic richness (Ar),
 #' # and rarefied allelic richness (rAr):
-#' basicstats <- faststats(example_gt, example_meta$population,
-#'                         example_meta$site, minimum_n=3, 
-#'                         minimum_loci=50, maf=0.05, max_missingness=0.3)
-#' 
+#' #basicstats <- faststats(example_gt, example_meta$population,
+#' #                       example_meta$site, minimum_n=3, 
+#' #                        minimum_loci=50, maf=0.05, max_missingness=0.3)
 #'
 #' @author
 #' Eilish S. McMaster <emcm4052@uni.sydney.edu.au> <eilish.mcmaster@botanicgardens.nsw.gov.au>
 #' @keywords population-genetics package
 #' @export
-NULL

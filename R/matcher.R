@@ -8,14 +8,14 @@
 #' @param loci Data frame containing locus information with columns 'loci', 'allele1', and 'allele2'.
 #' @return Vector of alleles matching the genotype at each locus in `gt`.
 #' @export
-matcher <- function(df2, loci){
-  df <- df2[-1]
+matcher <- function(gt, loci){
+  df <- gt[-1]
   out <- vector()
   if(0 %in% df | 2 %in% df){
-    out <- append(out, loci[loci==df2[1],2])
+    out <- append(out, loci[loci==gt[1],2])
   }
   if(1 %in% df | 2 %in% df){
-    out <- append(out,loci[loci==df2[1],3])
+    out <- append(out,loci[loci==gt[1],3])
   }
   return(out)
 }

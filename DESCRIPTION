@@ -5,8 +5,10 @@ Version: 0.1.0
 Author: Eilish S. McMaster
 Maintainer: Eilish S. McMaster <emcm4052@uni.sydney.edu.au> <eilish.mcmaster@botanicgardens.nsw.gov.au>
 Description: This package was created to address shortcomings in existing methods, which often necessitate specific data structures and file types, and are occasionally no longer maintained. It offers essential functions for basic population genomic analysis in a format compatible with any SNP data in biallelic 0,1,2 (aa, aA, AA) format (e.g., DArTseq), thereby saving time compared to alternative approaches.
+License: Candy Kingdom 2024
 Imports:
   dplyr,
   data.table
+LazyData: true
 Encoding: UTF-8
 RoxygenNote: 7.3.1

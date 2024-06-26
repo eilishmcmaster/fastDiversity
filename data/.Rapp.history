@@ -1,0 +1,8 @@
+load("/Users/eilishmcmaster/Documents/fastDiversity/data/example_data.Rdata")
+ls
+example_gt
+load("/Users/eilishmcmaster/Documents/fastDiversity/data/example_data.rda")
+example_gt
+load("/Users/eilishmcmaster/Documents/fastDiversity/data/example_data.rda")
+head(example_meta)
+load("/Users/eilishmcmaster/Documents/fastDiversity/data/example_data.rda")

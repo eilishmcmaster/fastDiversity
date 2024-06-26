@@ -4,7 +4,7 @@
 \alias{calculate_private_alleles}
 \title{Calculate Private Alleles}
 \usage{
-calculate_private_alleles(populations)
+calculate_private_alleles(allele_list)
 }
 \arguments{
 \item{allele_list}{List where each element contains a vector of alleles for a group.}
@@ -16,4 +16,10 @@ Data table summarizing private alleles and total alleles for each group and a to
 This function calculates the number of private alleles unique to each group based on 
 allele lists (`allele_list`). It computes the count of private alleles and total alleles 
 for each group and aggregates results into a data table.
+}
+\examples{
+# Calculate private and total alleles by specified group (in this case, population):
+allele_list_population <- make_allele_list(example_gt, example_meta$population)
+ggvenn::ggvenn(allele_list_population)
+private_total_alleles_population  <- calculate_private_alleles(allele_list_population)
 }
