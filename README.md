@@ -1,3 +1,6 @@
+
+[![DOI](https://zenodo.org/badge/797486652.svg)](https://zenodo.org/doi/10.5281/zenodo.12741582)
+
 fastDiversity: A simple and efficient population genetics analysis package.
 =================================================================================
 
