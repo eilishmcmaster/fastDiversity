@@ -51,10 +51,11 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
     loci_mafs <- get_minor_allele_frequencies(gt_group_missing)
     passing_maf_loci <- which(loci_mafs >= maf)
     gt_group_missing_maf <- gt_group_missing[, passing_maf_loci]
-    if (ncol(gt_group_missing_maf) < minimum_loci) {
-      print(paste(group), "does not have enough loci (", 
-            ncol(gt_group_missing_maf), "loci: minimum is,", 
-            minimum_loci, ")")
+    
+    if (length(passing_maf_loci) < minimum_loci) {
+      print(paste(group, "does not have enough loci (",
+                  length(passing_maf_loci), "loci: minimum is,",
+                  minimum_loci, ")"))
       print("Proceeding to next genetic group")
       (next)()
     }
