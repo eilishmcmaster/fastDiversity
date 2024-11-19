@@ -24,6 +24,7 @@
 #' @export
 individual_F <- function(gt, genetic_group_variable=NULL, minimum_loci=50, maf=0.05, max_missingness=0.3){
   if(is.null(genetic_group_variable)){
+    gt_group <- gt
     not_missing_loci <- which(colMeans(is.na(gt_group))<=max_missingness)
     gt_group_missing <- gt_group[,not_missing_loci]
     
