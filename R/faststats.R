@@ -32,10 +32,14 @@
 faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3, 
                        minimum_loci = 50, maf = 0.05, max_missingness = 0.3) 
 {
-  out_matrix <- matrix(NA, 0, 12)
+  # out_matrix <- matrix(NA, 0, 12)
+  # colnames(out_matrix) <- c("genetic_group", "site", "Ar", 
+  #                           "Ho", "He", "uHe", "Fis", "uFis", "loci", "n", "rAr", 
+  #                           "sd_rAr")
+  
+  out_matrix <- matrix(NA, 0, 10)
   colnames(out_matrix) <- c("genetic_group", "site", "Ar", 
-                            "Ho", "He", "uHe", "Fis", "uFis", "loci", "n", "rAr", 
-                            "sd_rAr")
+                            "Ho", "He", "uHe", "Fis", "uFis", "loci", "n")
   
   genetic_group_freq <- table(genetic_group_variable)
   genetic_groups <- names(which(genetic_group_freq >= minimum_n))
@@ -82,31 +86,31 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
                                                     3), round(Ho, 3), round(He, 3), round(uHe, 3), 
                                  round(Fis, 3), round(uFis, 3), loci, n)
     }
-    count_matrix <- t(sapply(split(seq_along(site_variable_group), 
-                                   site_variable_group), function(idx) colSums(gt_group_missing_maf[idx, 
-                                   ], na.rm = TRUE))) %>% as.matrix()
-    n_matrix <- t(sapply(split(seq_along(site_variable_group), 
-                               site_variable_group), function(idx) colSums(!is.na(gt_group_missing_maf[idx, 
-                               ])))) %>% as.matrix()
-    a_matrix <- 2 * n_matrix
-    min_n_per_locus <- apply(n_matrix, 2, min)
-    n <- min_n_per_locus * 2
-    count_matrix2 <- a_matrix - count_matrix
-    all_ar <- matrix(NA, nrow(n_matrix), ncol(n_matrix))
-    for (i in 1:ncol(n_matrix)) {
-      for (j in 1:nrow(n_matrix)) {
-        samp <- choose(a_matrix[j, i] - c(count_matrix[j, 
-                                                       i], count_matrix2[j, i]), n[i])/choose(a_matrix[j, 
-                                                                                                       i], n[i])
-        samp[is.na(samp)] <- 0
-        all_ar[j, i] <- sum(1 - samp)
-      }
-    }
-    mn_ar <- rowMeans(all_ar, na.rm = TRUE) %>% round(., 
-                                                      3)
-    sd_ar <- apply(all_ar, 1, sd, na.rm = TRUE) %>% round(., 
-                                                          3)
-    group_out_matrix <- cbind(group_out_matrix, mn_ar, sd_ar)
+    # count_matrix <- t(sapply(split(seq_along(site_variable_group), 
+    #                                site_variable_group), function(idx) colSums(gt_group_missing_maf[idx, 
+    #                                ], na.rm = TRUE))) %>% as.matrix()
+    # n_matrix <- t(sapply(split(seq_along(site_variable_group), 
+    #                            site_variable_group), function(idx) colSums(!is.na(gt_group_missing_maf[idx, 
+    #                            ])))) %>% as.matrix()
+    # a_matrix <- 2 * n_matrix
+    # min_n_per_locus <- apply(n_matrix, 2, min)
+    # n <- min_n_per_locus * 2
+    # count_matrix2 <- a_matrix - count_matrix
+    # all_ar <- matrix(NA, nrow(n_matrix), ncol(n_matrix))
+    # for (i in 1:ncol(n_matrix)) {
+    #   for (j in 1:nrow(n_matrix)) {
+    #     samp <- choose(a_matrix[j, i] - c(count_matrix[j, 
+    #                                                    i], count_matrix2[j, i]), n[i])/choose(a_matrix[j, 
+    #                                                                                                    i], n[i])
+    #     samp[is.na(samp)] <- 0
+    #     all_ar[j, i] <- sum(1 - samp)
+    #   }
+    # }
+    # mn_ar <- rowMeans(all_ar, na.rm = TRUE) %>% round(., 
+    #                                                   3)
+    # sd_ar <- apply(all_ar, 1, sd, na.rm = TRUE) %>% round(., 
+    #                                                       3)
+    # group_out_matrix <- cbind(group_out_matrix, mn_ar, sd_ar)
     out_matrix <- rbind(out_matrix, group_out_matrix)
     print(paste(group, "complete"))
   }
