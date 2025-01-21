@@ -16,7 +16,7 @@
 #'
 #' For more details on each function, use `?function_name`.
 #' 
-#' @docType package
+#' @docType _PACKAGE
 #' @name fastDiversity
 #' @seealso \code{\link{faststats}}, \code{\link{calculate_private_alleles}}
 #' @references

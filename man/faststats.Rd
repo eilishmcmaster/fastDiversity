@@ -47,6 +47,7 @@ site IDs, and parameters such as minimum number of individuals per site, minimum
 of loci, minimum minor allele frequency, and maximum missingness per locus.
 }
 \examples{
+data(example_data)
 # Calculate observed heterozygosity (Ho), expected heterozygosity (He), unbiased 
 # expected heterozygosity (uHe), inbreeding coefficient (Fis), mean allelic richness (Ar),
 # and rarefied allelic richness (rAr):

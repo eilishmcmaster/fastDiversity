@@ -13,8 +13,9 @@
 #'                        higher missingness will be filtered out).
 #' @return A named vector containing F for each individual in gt.
 #' @examples
+#' data(example_data)
 #' # get inbreeding coefficients for individuals by genetic group
-#' Hos <- individual_Ho(gt, genetic_group_variable, maf=0.05)
+#' Hos <- individual_Ho(example_gt, example_meta$population, maf=0.05)
 #' @references 
 #' Frankham, R., Ballou, J. D., & Briscoe, D. A. (2010). Introduction to Conservation Genetics (2nd ed.). Cambridge University Press. https://doi.org/10.1017/CBO9780511809002
 #' @export

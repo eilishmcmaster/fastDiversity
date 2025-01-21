@@ -22,6 +22,7 @@
 #' @return A data frame containing diversity statistics (allelic richness, heterozygosity, 
 #'         inbreeding coefficients) per site per genetic group.
 #' @examples
+#' data(example_data)
 #' # Calculate observed heterozygosity (Ho), expected heterozygosity (He), unbiased 
 #' # expected heterozygosity (uHe), inbreeding coefficient (Fis), mean allelic richness (Ar),
 #' # and rarefied allelic richness (rAr):
