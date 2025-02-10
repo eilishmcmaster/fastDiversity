@@ -66,8 +66,6 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
     }
     site_freq <- table(site_variable_group)
     sites <- names(which(site_freq >= minimum_n))
-    site_variable_group <- site_variable_group[which(site_variable_group %in% 
-                                                       sites)]
     group_out_matrix <- matrix(NA, length(sites), 10)
     for (s in 1:length(sites)) {
       site <- sites[s]
