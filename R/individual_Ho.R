@@ -40,6 +40,7 @@ individual_Ho <- function(gt, genetic_group_variable=NULL, minimum_loci=50, maf=
     
   }
   else{
+    individual_heterozygosity <- c()
     for(group in unique(genetic_group_variable)){
       gt_group <- gt[which(genetic_group_variable==group),]
       
@@ -55,7 +56,8 @@ individual_Ho <- function(gt, genetic_group_variable=NULL, minimum_loci=50, maf=
         print('Proceeding to next genetic group')
         next()
       }
-      individual_heterozygosity <- rowSums((gt_group_missing_maf==1), na.rm=TRUE) / rowSums(!is.na(gt_group_missing_maf)) # number of hets per individual
+      individual_heterozygosity_group <- rowSums((gt_group_missing_maf==1), na.rm=TRUE) / rowSums(!is.na(gt_group_missing_maf)) # number of hets per individual
+      individual_heterozygosity <- c(individual_heterozygosity, individual_heterozygosity_group)
     }
   }
   return(individual_heterozygosity)
