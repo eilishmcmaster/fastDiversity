@@ -6,7 +6,7 @@
 #' @param resample_n Number of individuals to resample from the site -- defaults to site n
 #' @return Vector of observed heterozygosity values (Hes) for each locus.
 #' @export
-calculate_boot_stats <- function(gt, fis_boots, resample_n){
+calculate_boot_stats <- function(gt, boots, resample_n){
   if(is.null(resample_n)){ # if no resample_n is supplied, use the number of samples in the site
     resample_n <- nrow(gt) 
   }

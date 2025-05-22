@@ -32,18 +32,9 @@
 #' @export
 faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3, 
                        minimum_loci = 50, maf = 0.05, max_missingness = 0.3, 
-                       fis_ci = FALSE, fis_boots = NULL, resample_n = NULL) 
+                       fis_ci = FALSE, boots = NULL, resample_n = NULL) 
 {
   gt <- data.table::as.data.table(gt, keep.rownames = FALSE)
-  # out_matrix <- matrix(NA, 0, 12)
-  # colnames(out_matrix) <- c("genetic_group", "site", "Ar", 
-  #                           "Ho", "He", "uHe", "Fis", "uFis", "loci", "n", "rAr", 
-  #                           "sd_rAr")
-  
-  # out_matrix <- matrix(NA, 0, 10)
-  # colnames(out_matrix) <- c("genetic_group", "site", "Ar", 
-  #                           "Ho", "He", "uHe", "Fis", "uFis", "loci", "n")
-  
   out_list <- list()
   
   genetic_group_freq <- table(genetic_group_variable)
@@ -80,8 +71,8 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       He <- mean(Hes, na.rm = TRUE) %>% round(.,3)
       ns <- colSums(!is.na(gt_site))
       uHe <- calculate_uHe(ns, Hes) %>% round(.,3)
-      Fis <- 1 - (Ho/He) %>% round(.,3)
-      uFis <- 1 - (Ho/uHe) %>% round(.,3)
+      Fis <- (1 - (Ho/He) ) %>% round(.,3)
+      uFis <- (1 - (Ho/uHe)) %>% round(.,3)
       loci <- ncol(gt_site) 
       Ar <- calculate_Ar(gt_site) %>% round(.,3)
       n <- nrow(gt_site)
@@ -100,8 +91,8 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       )
       
       #### bootstrapped Ho, He, Fis ####
-      if(isTRUE(fis_ci) || !is.null(fis_boots)){ # run if fis_ci is TRUE or value is supplied for fis_boots
-        boot_stats <- calculate_boot_stats(gt_site, fis_boots, resample_n)
+      if(isTRUE(fis_ci) || !is.null(boots)){ # run if fis_ci is TRUE or value is supplied for boots
+        boot_stats <- calculate_boot_stats(gt_site, boots, resample_n)
         
         site_results <- c(site_results, boot_stats)
       }
@@ -139,7 +130,7 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
     out_list[[group]] <- group_out_list
     print(paste(group, "complete"))
   }
+  out_matrix <- bind_rows(out_list)
   print("Process complete!")
-  return(out_list)
-  # return(out_matrix %>% as.data.frame())
+  return(out_matrix)
 }
