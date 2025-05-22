@@ -63,11 +63,11 @@ calculate_boot_stats <- function(gt, boots = 100, resample_n = NULL, fis_alpha =
   # Define lower and upper quantile bounds for confidence intervals
   ci_probs <- c(fis_alpha / 2, 1 - fis_alpha / 2)
   
-  ### Locus-level confidence intervals:
-  # For each locus, calculate the bootstrap confidence interval for Ho, He, and FIS
-  ho_ci  <- apply(ho_mat,  2, quantile, probs = ci_probs, na.rm = TRUE)
-  he_ci  <- apply(he_mat,  2, quantile, probs = ci_probs, na.rm = TRUE)
-  fis_ci <- apply(fis_mat, 2, quantile, probs = ci_probs, na.rm = TRUE)
+  # ### Locus-level confidence intervals:
+  # # For each locus, calculate the bootstrap confidence interval for Ho, He, and FIS
+  # ho_ci  <- apply(ho_mat,  2, quantile, probs = ci_probs, na.rm = TRUE)
+  # he_ci  <- apply(he_mat,  2, quantile, probs = ci_probs, na.rm = TRUE)
+  # fis_ci <- apply(fis_mat, 2, quantile, probs = ci_probs, na.rm = TRUE)
   
   ### Global (mean across loci) confidence intervals:
   # 1. Take the mean across loci for each bootstrap replicate

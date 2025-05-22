@@ -62,6 +62,7 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
     sites <- names(which(site_freq >= minimum_n))
     # group_out_matrix <- matrix(NA, length(sites), 10)
     group_out_list <- list()
+    
     for (s in 1:length(sites)) {
       site <- sites[s]
       gt_site <- gt_group_missing_maf[which(site_variable_group == 
@@ -93,13 +94,13 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       #### bootstrapped Ho, He, Fis ####
       if(isTRUE(fis_ci) || !is.null(boots)){ # run if fis_ci is TRUE or value is supplied for boots
         boot_stats <- calculate_boot_stats(gt_site, boots, resample_n, fis_alpha=0.05)
-        
+
         site_results <- c(site_results, boot_stats)
       }
       
       group_out_list[[s]] <- site_results
-      
     }
+    
     # # rarefied AR
     # count_matrix <- t(sapply(split(seq_along(site_variable_group), 
     #                                site_variable_group), function(idx) colSums(gt_group_missing_maf[idx, 
