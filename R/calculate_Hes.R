@@ -17,4 +17,9 @@ calculate_Hes <- function(gt){
     Hes[i] <- 1-sum(ref_freq[i]^2+alt_freq[i]^2)
   }
   return(Hes)
+  # same as
+  # loci_He <- function(x) {
+  #   p <- mean(x, na.rm = TRUE) / 2
+  #   2 * p * (1 - p)
+  # }
 }
