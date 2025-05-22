@@ -32,7 +32,7 @@
 #' @export
 faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3, 
                        minimum_loci = 50, maf = 0.05, max_missingness = 0.3, 
-                       fis_ci = FALSE, boots = NULL, resample_n = NULL) 
+                       fis_ci = FALSE, boots = NULL, resample_n = NULL, fis_alpha=0.05) 
 {
   gt <- data.table::as.data.table(gt, keep.rownames = FALSE)
   out_list <- list()
@@ -92,7 +92,7 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       
       #### bootstrapped Ho, He, Fis ####
       if(isTRUE(fis_ci) || !is.null(boots)){ # run if fis_ci is TRUE or value is supplied for boots
-        boot_stats <- calculate_boot_stats(gt_site, boots, resample_n)
+        boot_stats <- calculate_boot_stats(gt_site, boots, resample_n, fis_alpha=0.05)
         
         site_results <- c(site_results, boot_stats)
       }

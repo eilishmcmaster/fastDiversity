@@ -8,6 +8,7 @@ Description: This package was created to address shortcomings in existing method
 License: Candy Kingdom
 Imports:
   dplyr,
-  data.table
+  data.table,
+  future.apply
 Encoding: UTF-8
 RoxygenNote: 7.3.1
