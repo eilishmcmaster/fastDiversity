@@ -8,10 +8,11 @@
 #' @return Named vector of confidence intervals for global FIS, HE, HO
 #' @import data.table dplyr future.apply
 #' @export
-calculate_boot_stats <- function(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05) {
+calculate_boot_stats <- function(gt, boots, resample_n = NULL, CI_alpha = 0.05) {
   
   # If no resample_n is supplied, use the number of samples in the site
   if (is.null(resample_n)) resample_n <- nrow(gt)
+  if (is.null(boots)) boots <- 100
   
   # Function to compute observed heterozygosity at each locus:
   # Ho = proportion of heterozygotes (coded as 1)

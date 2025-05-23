@@ -4,7 +4,7 @@
 \alias{calculate_boot_stats}
 \title{Calculate global bootstrapped He, Ho, and FIS (parallelized)}
 \usage{
-calculate_boot_stats(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05)
+calculate_boot_stats(gt, boots, resample_n = NULL, CI_alpha = 0.05)
 }
 \arguments{
 \item{gt}{Genotype matrix where individuals are rows and loci are columns, coded as 

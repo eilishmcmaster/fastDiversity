@@ -34,6 +34,9 @@ HWEtest_of_loci <- function(gt) {
   # Apply Hardy-Weinberg test to each locus
   hwx_results <- lapply(seq_len(ncol(gt)), function(index) {
     geno_counts <- get_allele_freq_matrix(gt[[index]])
+    if(isTRUE(sum(geno_counts, na.rm=TRUE)==0)){
+      return(NULL)
+    }
     result <- tryCatch({
       HWxtest::hwx.test(geno_counts)
     }, error = function(e) {
@@ -48,9 +51,8 @@ HWEtest_of_loci <- function(gt) {
   
   # Extract LLR p-values from results
   LLR_p <- lapply(hwx_results, function(x) x[["Pvalues"]][["LLR"]]) %>% unlist
-  
   # Extract U-scores (heterozygote or homozygote excess)
-  U_score <- lapply(hwx_results, function(x) x[["observed"]][["U"]]) %>% unlist
+  U_score <- lapply(hwx_results, function(x) x[["observed"]][["U"]]) %>% unlist %>% unname
   
   # Fisher's method to combine p-values from the LLR tests
   LLR_X <- -2 * sum(log(LLR_p))
@@ -58,10 +60,10 @@ HWEtest_of_loci <- function(gt) {
   fisher_combined_p <- pchisq(LLR_X, LLR_df, lower.tail = FALSE)
   
   # Create summary data table for each locus
-  loci_results_dt <- data.table(LLR_p, U_score, locus = names(gt))
+  loci_results_dt <- data.table(LLR_p, U_score, locus = names(LLR_p))
   
   # Return summary statistics and results
-  return(c('LLR_fisher_p' = fisher_combined_p,
-           'mean_U_score' = mean(U_score),
+  return(c('LLR_fisher_p' = round(fisher_combined_p, 6),
+           'mean_U_score' = round(mean(U_score), 3),
            'loci_HWX_results' = list(loci_results_dt)))
 }

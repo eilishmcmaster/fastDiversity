@@ -13,7 +13,7 @@ Installing fastDiversity
 Development version
 -------------------
 
-```s
+```
 # Install devtools if not already installed
 if (!requireNamespace("devtools", quietly = TRUE)) {
   install.packages("devtools")

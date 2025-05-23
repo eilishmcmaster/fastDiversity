@@ -20,7 +20,7 @@
 #' @param max_missingness Maximum proportion of missing data allowed per locus (loci with 
 #'                        higher missingness will be filtered out).
 #' @param get_CI Get confidence intervals for Ho, He, F, using bootstrapping
-#' @param boots Number of bootstraps to get confidence intervals, defaults to 100
+#' @param boots Number of bootstraps to get confidence intervals
 #' @param resample_n Number of samples to resample per site if bootstrapping, defaults to site n
 #' @param CI_alpha Alpha value for confidence intervals, defaults to 0.05 (2.5%, 97.5% CIs)
 #' @param run_HWE_test Specify whether to statistically test if allele frequencies differ from Hardy Weinberg equilibrium 
@@ -113,7 +113,7 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       )
       
       #### bootstrapped Ho, He, Fis ####
-      if(isTRUE(get_CI) || !is.null(boots)){ # run if get_CI is TRUE or value is supplied for boots
+      if(isTRUE(get_CI)){ # run if get_CI is TRUE
         boot_stats <- calculate_boot_stats(gt_site, boots, resample_n, CI_alpha=CI_alpha)
         site_results <- c(site_results, boot_stats)
       }
