@@ -32,24 +32,33 @@
 #' @export
 faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3, 
                        minimum_loci = 50, maf = 0.05, max_missingness = 0.3, 
-                       fis_ci = FALSE, boots = NULL, resample_n = NULL, fis_alpha=0.05) 
+                       fis_ci = FALSE, boots = NULL, resample_n = NULL, fis_alpha=0.05,
+                       HWE_test = FALSE, return_locus_stats = FALSE) 
 {
-  gt <- data.table::as.data.table(gt, keep.rownames = FALSE)
-  out_list <- list()
+  locus_names <- colnames(gt)
+  gt <- data.table::as.data.table(gt, keep.rownames = FALSE) # make genotype data into data.table
+  setnames(gt, locus_names)
   
-  genetic_group_freq <- table(genetic_group_variable)
-  genetic_groups <- names(which(genetic_group_freq >= minimum_n))
   
-  for (group in genetic_groups) {
-    gt_group <- gt[which(genetic_group_variable == group), ]
-    site_variable_group <- site_variable[which(genetic_group_variable ==  group)]
-    not_missing_loci <- which(colMeans(is.na(gt_group)) <=  max_missingness) 
+  out_list <- list() # make empty list to put data in 
+  
+  if(isTRUE(return_locus_stats)){ # if locus stats should be returned
+    locus_out_list <- list()
+  }
+  
+  genetic_group_freq <- table(genetic_group_variable) # get number of samples per genetic group
+  genetic_groups <- names(which(genetic_group_freq >= minimum_n)) # get the genetic groups with n>=minimum
+  
+  for (group in genetic_groups) { # for each genetic group
+    gt_group <- gt[which(genetic_group_variable == group), ] # filter samples
+    site_variable_group <- site_variable[which(genetic_group_variable ==  group)] # get vector of sites for samples in the group
+    not_missing_loci <- which(colMeans(is.na(gt_group)) <=  max_missingness)  # determine which loci pass missingness threshold
     
-    gt_group_missing <- gt_group[, ..not_missing_loci]
+    gt_group_missing <- gt_group[, ..not_missing_loci] # filter to remove high missing loci
     
-    loci_mafs <- get_minor_allele_frequencies(gt_group_missing)
-    passing_maf_loci <- which(loci_mafs >= maf)
-    gt_group_missing_maf <- gt_group_missing[, ..passing_maf_loci]
+    loci_mafs <- get_minor_allele_frequencies(gt_group_missing) # get minor allele frequencies of each locus
+    passing_maf_loci <- which(loci_mafs >= maf) # get indices 
+    gt_group_missing_maf <- gt_group_missing[, ..passing_maf_loci] # remove low MAF loci
     
     if (length(passing_maf_loci) < minimum_loci) {
       print(paste(group, "does not have enough loci (",
@@ -58,15 +67,20 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       print("Proceeding to next genetic group")
       (next)()
     }
-    site_freq <- table(site_variable_group)
-    sites <- names(which(site_freq >= minimum_n))
-    # group_out_matrix <- matrix(NA, length(sites), 10)
-    group_out_list <- list()
     
-    for (s in 1:length(sites)) {
-      site <- sites[s]
-      gt_site <- gt_group_missing_maf[which(site_variable_group == 
-                                              site), ]
+    site_freq <- table(site_variable_group) # get number of samples per site
+    sites <- names(which(site_freq >= minimum_n)) # remove sites less than threshold n
+
+    group_out_list <- list() # make empty list to store group level data in 
+    if(isTRUE(return_locus_stats)){ # if locus stats should be returned
+      group_locus_out_df <- data.table()
+    }
+    
+    for (s in 1:length(sites)) { # for each site
+      site <- sites[s] # get site name
+      gt_site <- gt_group_missing_maf[which(site_variable_group ==  site), ] # get samples gt data
+      
+      # calculate basic stats
       Ho <- calculate_Ho(gt_site) %>% round(.,3)
       Hes <- calculate_Hes(gt_site) %>% round(.,3)
       He <- mean(Hes, na.rm = TRUE) %>% round(.,3)
@@ -93,9 +107,17 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       
       #### bootstrapped Ho, He, Fis ####
       if(isTRUE(fis_ci) || !is.null(boots)){ # run if fis_ci is TRUE or value is supplied for boots
-        boot_stats <- calculate_boot_stats(gt_site, boots, resample_n, fis_alpha=0.05)
-
+        boot_stats <- calculate_boot_stats(gt_site, boots, resample_n, fis_alpha=fis_alpha)
         site_results <- c(site_results, boot_stats)
+      }
+      #### HWE test for loci ####
+      if(isTRUE(HWE_test)){ # run HWE tests 
+        HWE_test_loci <- HWEtest_of_loci(gt_site)
+        site_results <- c(site_results, (HWE_test_loci[1:2]%>% unlist))
+      }
+      
+      if(isTRUE(return_locus_stats)){ # if locus data is requested, add to the table
+        group_locus_out_df <- bind_rows(group_locus_out_df, data.table(HWE_test_loci[[3]], 'site'=site))
       }
       
       group_out_list[[s]] <- site_results
@@ -128,10 +150,25 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
     #                                                       3)
     # group_out_matrix <- cbind(group_out_matrix, mn_ar, sd_ar)
     # out_matrix <- rbind(out_matrix, group_out_matrix)
+    
     out_list[[group]] <- group_out_list
+    
+    if(isTRUE(return_locus_stats)){ # if locus data is requested, add to the table
+      locus_out_list[[group]] <- group_locus_out_df 
+    }
     print(paste(group, "complete"))
   }
+  
   out_matrix <- bind_rows(out_list)
+  
+  if(isTRUE(return_locus_stats)){ # if locus data is requested, add to the table
+    out_data <- list('summary'= out_matrix, 'locus_HWE' = locus_out_list)
+  }else{
+    out_data <- out_matrix
+    }
+  
   print("Process complete!")
-  return(out_matrix)
+  
+  return(out_data)
+  
 }
