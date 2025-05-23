@@ -15,9 +15,7 @@
 #'   \item{loci_HWX_results}{A data table with individual LLR p-values, U-scores, and locus names.}
 #' }
 #'
-#' @importFrom data.table data.table
-#' @importFrom HWxtest hwx.test
-#' @examples
+#' @import data.table HWxtest dplyr stats
 #' @export
 HWEtest_of_loci <- function(gt) {
   

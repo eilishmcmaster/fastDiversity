@@ -4,12 +4,11 @@
 #'           0=aa, 1=aA, 2=AA.
 #' @param boots Number of bootstrap replicates
 #' @param resample_n Number of individuals to resample from the site -- defaults to site n
-#' @param fis_alpha Alpha level for confidence intervals (e.g., 0.05 for 95% CI)
+#' @param CI_alpha Alpha level for confidence intervals (e.g., 0.05 for 95% CI)
 #' @return Named vector of confidence intervals for global FIS, HE, HO
+#' @import data.table dplyr future.apply
 #' @export
-calculate_boot_stats <- function(gt, boots = 100, resample_n = NULL, fis_alpha = 0.05) {
-  library(data.table)
-  library(future.apply)
+calculate_boot_stats <- function(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05) {
   
   # If no resample_n is supplied, use the number of samples in the site
   if (is.null(resample_n)) resample_n <- nrow(gt)
@@ -61,7 +60,7 @@ calculate_boot_stats <- function(gt, boots = 100, resample_n = NULL, fis_alpha =
   fis_mat <- do.call(rbind, lapply(resample_results, `[[`, "fis"))
   
   # Define lower and upper quantile bounds for confidence intervals
-  ci_probs <- c(fis_alpha / 2, 1 - fis_alpha / 2)
+  ci_probs <- c(CI_alpha / 2, 1 - CI_alpha / 2)
   
   # ### Locus-level confidence intervals:
   # # For each locus, calculate the bootstrap confidence interval for Ho, He, and FIS
@@ -77,7 +76,7 @@ calculate_boot_stats <- function(gt, boots = 100, resample_n = NULL, fis_alpha =
   global_fis_ci <- quantile(rowMeans(fis_mat, na.rm = TRUE), probs = ci_probs)
   
   # Return named vector of rounded global confidence intervals
-  return(c('global_fis_ci' = round(global_fis_ci, 3), 
+  return(c('global_f_ci' = round(global_fis_ci, 3), 
            'global_he_ci'  = round(global_he_ci, 3), 
            'global_ho_ci'  = round(global_ho_ci, 3)))
 }

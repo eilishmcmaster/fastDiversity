@@ -11,7 +11,13 @@ faststats(
   minimum_n = 3,
   minimum_loci = 50,
   maf = 0.05,
-  max_missingness = 0.3
+  max_missingness = 0.3,
+  fis_ci = FALSE,
+  boots = NULL,
+  resample_n = NULL,
+  fis_alpha = 0.05,
+  HWE_test = FALSE,
+  return_locus_stats = FALSE
 )
 }
 \arguments{

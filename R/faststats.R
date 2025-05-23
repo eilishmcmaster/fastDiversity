@@ -19,8 +19,15 @@
 #' @param maf Minimum minor allele frequency filter.
 #' @param max_missingness Maximum proportion of missing data allowed per locus (loci with 
 #'                        higher missingness will be filtered out).
+#' @param get_CI Get confidence intervals for Ho, He, F, using bootstrapping
+#' @param boots Number of bootstraps to get confidence intervals, defaults to 100
+#' @param resample_n Number of samples to resample per site if bootstrapping, defaults to site n
+#' @param CI_alpha Alpha value for confidence intervals, defaults to 0.05 (2.5%, 97.5% CIs)
+#' @param run_HWE_test Specify whether to statistically test if allele frequencies differ from Hardy Weinberg equilibrium 
+#' @param return_locus_stats Specify whether to return U-score and LLR p values for each locus from HWE testing
 #' @return A data frame containing diversity statistics (allelic richness, heterozygosity, 
 #'         inbreeding coefficients) per site per genetic group.
+#' @import data.table HWxtest dplyr stats
 #' @examples
 #' data(example_data)
 #' # Calculate observed heterozygosity (Ho), expected heterozygosity (He), unbiased 
@@ -32,8 +39,8 @@
 #' @export
 faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3, 
                        minimum_loci = 50, maf = 0.05, max_missingness = 0.3, 
-                       fis_ci = FALSE, boots = NULL, resample_n = NULL, fis_alpha=0.05,
-                       HWE_test = FALSE, return_locus_stats = FALSE) 
+                       get_CI = FALSE, boots = NULL, resample_n = NULL, CI_alpha=0.05,
+                       run_HWE_test = FALSE, return_locus_stats = FALSE) 
 {
   locus_names <- colnames(gt)
   gt <- data.table::as.data.table(gt, keep.rownames = FALSE) # make genotype data into data.table
@@ -99,19 +106,19 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
         "Ho" = Ho,
         "He" = He,
         "uHe" = uHe,
-        "Fis" = Fis,
-        "uFis" = uFis,
+        "F" = Fis,
+        "uF" = uFis,
         "loci" = loci,
         "n" = n
       )
       
       #### bootstrapped Ho, He, Fis ####
-      if(isTRUE(fis_ci) || !is.null(boots)){ # run if fis_ci is TRUE or value is supplied for boots
-        boot_stats <- calculate_boot_stats(gt_site, boots, resample_n, fis_alpha=fis_alpha)
+      if(isTRUE(get_CI) || !is.null(boots)){ # run if get_CI is TRUE or value is supplied for boots
+        boot_stats <- calculate_boot_stats(gt_site, boots, resample_n, CI_alpha=CI_alpha)
         site_results <- c(site_results, boot_stats)
       }
       #### HWE test for loci ####
-      if(isTRUE(HWE_test)){ # run HWE tests 
+      if(isTRUE(run_HWE_test)){ # run HWE tests 
         HWE_test_loci <- HWEtest_of_loci(gt_site)
         site_results <- c(site_results, (HWE_test_loci[1:2]%>% unlist))
       }
