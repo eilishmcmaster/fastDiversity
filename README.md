@@ -20,7 +20,7 @@ if (!requireNamespace("devtools", quietly = TRUE)) {
 }
 
 # Install the package
-devtools::install_github("https://github.com/eilishmcmaster/fastDiversity")
+remotes::install_github("https://github.com/eilishmcmaster/fastDiversity")
 ```
 
 Example use

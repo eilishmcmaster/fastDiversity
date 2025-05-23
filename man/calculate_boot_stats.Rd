@@ -4,7 +4,7 @@
 \alias{calculate_boot_stats}
 \title{Calculate global bootstrapped He, Ho, and FIS (parallelized)}
 \usage{
-calculate_boot_stats(gt, boots = 100, resample_n = NULL, fis_alpha = 0.05)
+calculate_boot_stats(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05)
 }
 \arguments{
 \item{gt}{Genotype matrix where individuals are rows and loci are columns, coded as 
@@ -14,7 +14,7 @@ calculate_boot_stats(gt, boots = 100, resample_n = NULL, fis_alpha = 0.05)
 
 \item{resample_n}{Number of individuals to resample from the site -- defaults to site n}
 
-\item{fis_alpha}{Alpha level for confidence intervals (e.g., 0.05 for 95% CI)}
+\item{CI_alpha}{Alpha level for confidence intervals (e.g., 0.05 for 95% CI)}
 }
 \value{
 Named vector of confidence intervals for global FIS, HE, HO

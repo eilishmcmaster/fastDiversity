@@ -12,11 +12,11 @@ faststats(
   minimum_loci = 50,
   maf = 0.05,
   max_missingness = 0.3,
-  fis_ci = FALSE,
+  get_CI = FALSE,
   boots = NULL,
   resample_n = NULL,
-  fis_alpha = 0.05,
-  HWE_test = FALSE,
+  CI_alpha = 0.05,
+  run_HWE_test = FALSE,
   return_locus_stats = FALSE
 )
 }
@@ -41,6 +41,18 @@ genetic group (genetic groups with fewer loci will be skipped).}
 
 \item{max_missingness}{Maximum proportion of missing data allowed per locus (loci with 
 higher missingness will be filtered out).}
+
+\item{get_CI}{Get confidence intervals for Ho, He, F, using bootstrapping}
+
+\item{boots}{Number of bootstraps to get confidence intervals, defaults to 100}
+
+\item{resample_n}{Number of samples to resample per site if bootstrapping, defaults to site n}
+
+\item{CI_alpha}{Alpha value for confidence intervals, defaults to 0.05 (2.5%, 97.5% CIs)}
+
+\item{run_HWE_test}{Specify whether to statistically test if allele frequencies differ from Hardy Weinberg equilibrium}
+
+\item{return_locus_stats}{Specify whether to return U-score and LLR p values for each locus from HWE testing}
 }
 \value{
 A data frame containing diversity statistics (allelic richness, heterozygosity, 
