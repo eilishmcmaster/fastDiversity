@@ -39,7 +39,7 @@
 #' @export
 faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3, 
                        minimum_loci = 50, maf = 0.05, max_missingness = 0.3, 
-                       get_CI = FALSE, boots = NULL, resample_n = NULL, CI_alpha=0.05,
+                       get_CI = FALSE, boots = 100, resample_n = NULL, CI_alpha=0.05,
                        run_HWE_test = FALSE, return_locus_stats = FALSE) 
 {
   locus_names <- colnames(gt)

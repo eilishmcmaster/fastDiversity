@@ -44,7 +44,7 @@ higher missingness will be filtered out).}
 
 \item{get_CI}{Get confidence intervals for Ho, He, F, using bootstrapping}
 
-\item{boots}{Number of bootstraps to get confidence intervals, defaults to 100}
+\item{boots}{Number of bootstraps to get confidence intervals}
 
 \item{resample_n}{Number of samples to resample per site if bootstrapping, defaults to site n}
 
