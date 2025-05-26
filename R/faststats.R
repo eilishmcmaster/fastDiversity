@@ -1,41 +1,49 @@
 #' Calculate basic diversity statistics
 #' 
+#' @description
 #' This function calculates allelic richness, heterozygosity, and inbreeding coefficients 
-#' for genetic groups within specified sites. Data is filtered based on genetic group and 
-#' site IDs, and parameters such as minimum number of individuals per site, minimum number 
-#' of loci, minimum minor allele frequency, and maximum missingness per locus.
+#' for specified sites within genetic groups. Data is filtered based on genetic group (minimum
+#' number of loci, minimum minor allele frequency, and maximum missingness per locus) 
+#' and minimum number of individuals per site.
 #' 
 #' @param gt Genotype matrix where individuals are rows and loci are columns, coded as 
-#'           0=aa, 1=aA, 2=AA.
+#'   0=aa, 1=aA, 2=AA.
 #' @param site_variable Vector of group IDs (sites) for each individual (same length as 
-#'                      number of rows in gt).
+#'   number of rows in gt).
 #' @param genetic_group_variable Vector of genetic group IDs for each individual (same 
-#'                               length as number of rows in gt). Can represent species, 
-#'                               subspecies, or other biologically relevant structure groups.
+#'   length as number of rows in gt). Can represent species, subspecies, or other 
+#'   biologically relevant structure groups.
 #' @param minimum_n Minimum number of individuals required per site (sites with fewer 
-#'                  individuals will be filtered out).
+#'   individuals will be filtered out).
 #' @param minimum_loci Minimum number of loci required to proceed with analysis for each 
-#'                    genetic group (genetic groups with fewer loci will be skipped).
+#'   genetic group (genetic groups with fewer loci will be skipped).
 #' @param maf Minimum minor allele frequency filter.
 #' @param max_missingness Maximum proportion of missing data allowed per locus (loci with 
-#'                        higher missingness will be filtered out).
-#' @param get_CI Get confidence intervals for Ho, He, F, using bootstrapping
-#' @param boots Number of bootstraps to get confidence intervals
-#' @param resample_n Number of samples to resample per site if bootstrapping, defaults to site n
-#' @param CI_alpha Alpha value for confidence intervals, defaults to 0.05 (2.5%, 97.5% CIs)
-#' @param run_HWE_test Specify whether to statistically test if allele frequencies differ from Hardy Weinberg equilibrium 
-#' @param return_locus_stats Specify whether to return U-score and LLR p values for each locus from HWE testing
-#' @return A data frame containing diversity statistics (allelic richness, heterozygosity, 
-#'         inbreeding coefficients) per site per genetic group.
+#'   higher missingness will be filtered out).
+#' @param get_CI Get confidence intervals for Ho, He, F, using bootstrapping.
+#' @param boots Number of bootstraps to get confidence intervals.
+#' @param resample_n Number of samples to resample per site if bootstrapping, defaults to site n.
+#' @param CI_alpha Alpha value for confidence intervals, defaults to 0.05 (2.5\%, 97.5\% CIs).
+#' @param run_HWE_test Specify whether to statistically test if allele frequencies differ from Hardy-Weinberg equilibrium.
+#' @param return_locus_stats Specify whether to return U-score and LLR p values for each locus from HWE testing.
+#' 
+#' @return A data frame with the following columns:
+#'   \item{group}{Genetic group ID (e.g., species, subspecies).}
+#'   \item{site}{Site ID corresponding to the sample location.}
+#'   \item{Ar}{Allelic richness per site per group, standardized for sample size.}
+#'   \item{Ho}{Observed heterozygosity.}
+#'   \item{He}{Expected heterozygosity under Hardy-Weinberg equilibrium.}
+#'   \item{uHe}{Unbiased expected heterozygosity (corrected for small sample size).}
+#'   \item{F}{Inbreeding coefficient (F = 1 - Ho / He).}
+#'   \item{uF}{Unbiased inbreeding coefficient (F = 1 - Ho / uHe).}
+#'   \item{loci}{Number of loci used in the analysis for that group-site combination.}
+#'   \item{n}{Number of individuals sampled at the site for the given group.}
+#'   \item{*_ci.*\%, *_ci.*\%}{Lower and upper confidence intervals for F, Ho, and He, generated via bootstrapping. Column prefixes indicate the statistic (e.g., \code{global_f_ci.2.5\%}, \code{global_he_ci.97.5\%}).}
+#'   \item{LLR_fisher_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium log-likelihood ratio (LLR) tests across loci.}
+#'   \item{mean_U_score}{Mean U-score across loci from Hardy-Weinberg tests. Negative values indicate heterozygosity excess; positive values indicate homozygosity excess.}
+#' 
 #' @import data.table HWxtest dplyr stats
-#' @examples
-#' data(example_data)
-#' # Calculate observed heterozygosity (Ho), expected heterozygosity (He), unbiased 
-#' # expected heterozygosity (uHe), inbreeding coefficient (Fis), mean allelic richness (Ar),
-#' # and rarefied allelic richness (rAr):
-#' basicstats <- faststats(example_gt, example_meta$population,
-#'                         example_meta$site, minimum_n=3, 
-#'                         minimum_loci=50, maf=0.05, max_missingness=0.3)
+#' 
 #' @export
 faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3, 
                        minimum_loci = 50, maf = 0.05, max_missingness = 0.3, 
