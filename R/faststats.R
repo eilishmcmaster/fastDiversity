@@ -20,7 +20,8 @@
 #' @param maf Minimum minor allele frequency filter.
 #' @param max_missingness Maximum proportion of missing data allowed per locus (loci with 
 #'   higher missingness will be filtered out).
-#' @param get_CI Get confidence intervals for Ho, He, F, using bootstrapping.
+#' @param get_CI_loci_resampling Get confidence intervals for Ho, He, F, using bootstrapping by resampling loci (as in hierfstat::boot.ppfis)
+#' @param get_CI_individual_resampling Get confidence intervals for Ho, He, F, using bootstrapping by resampling individuals (as in diveRsity::basicstats)
 #' @param boots Number of bootstraps to get confidence intervals.
 #' @param resample_n Number of samples to resample per site if bootstrapping, defaults to site n.
 #' @param CI_alpha Alpha value for confidence intervals, defaults to 0.05 (2.5\%, 97.5\% CIs).
@@ -38,22 +39,25 @@
 #'   \item{uF}{Unbiased inbreeding coefficient (F = 1 - Ho / uHe).}
 #'   \item{loci}{Number of loci used in the analysis for that group-site combination.}
 #'   \item{n}{Number of individuals sampled at the site for the given group.}
-#'   \item{*_ci.*\%, *_ci.*\%}{Lower and upper confidence intervals for F, Ho, and He, generated via bootstrapping. Column prefixes indicate the statistic (e.g., \code{global_f_ci.2.5\%}, \code{global_he_ci.97.5\%}).}
+#'   \item{*_ci.*\%, *_ci.*\%}{Lower and upper confidence intervals for F, Ho, and He, generated via bootstrapping. Column prefixes indicate the statistic (e.g., \code{loci_f.2.5\%}, \code{loci_he.97.5\%}).}
 #'   \item{LLR_fisher_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium log-likelihood ratio (LLR) tests across loci.}
 #'   \item{mean_U_score}{Mean U-score across loci from Hardy-Weinberg tests. Negative values indicate heterozygosity excess; positive values indicate homozygosity excess.}
 #' 
 #' @import data.table HWxtest dplyr stats
+#' @seealso [resampling_individuals_CI(), resampling_loci_CI()]
+#' 
 #' 
 #' @export
 faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3, 
                        minimum_loci = 50, maf = 0.05, max_missingness = 0.3, 
-                       get_CI = FALSE, boots = 100, resample_n = NULL, CI_alpha=0.05,
+                       get_CI_loci_resampling = FALSE, loci_resample_n = NULL, 
+                       get_CI_individual_resampling = FALSE, individual_resample_n = NULL, 
+                       boots = 100, CI_alpha=0.05,
                        run_HWE_test = FALSE, return_locus_stats = FALSE) 
 {
   locus_names <- colnames(gt)
   gt <- data.table::as.data.table(gt, keep.rownames = FALSE) # make genotype data into data.table
   setnames(gt, locus_names)
-  
   
   out_list <- list() # make empty list to put data in 
   
@@ -121,10 +125,16 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       )
       
       #### bootstrapped Ho, He, Fis ####
-      if(isTRUE(get_CI)){ # run if get_CI is TRUE
-        boot_stats <- calculate_boot_stats(gt_site, boots, resample_n, CI_alpha=CI_alpha)
+      if(isTRUE(get_CI_individual_resampling)){ # run if get_CI is TRUE
+        boot_stats <- resampling_individuals_CI(gt_site, boots, individual_resample_n, CI_alpha=CI_alpha)
         site_results <- c(site_results, boot_stats)
       }
+      
+      if(isTRUE(get_CI_loci_resampling)){ # run if get_CI is TRUE
+        boot_stats <- resampling_loci_CI(gt_site, boots, loci_resample_n, CI_alpha=CI_alpha)
+        site_results <- c(site_results, boot_stats)
+      }
+      
       #### HWE test for loci ####
       if(isTRUE(run_HWE_test)){ # run HWE tests 
         HWE_test_loci <- HWEtest_of_loci(gt_site)

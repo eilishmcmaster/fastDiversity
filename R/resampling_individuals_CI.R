@@ -1,14 +1,18 @@
-#' Calculate global bootstrapped He, Ho, and FIS (parallelized)
-#'
+#' Calculate global bootstrapped He, Ho, and FIS (parallelized) by resampling individuals (as in diveRsity::basicstats)
+#' 
+#' @description
+#' Resampling individuals means randomly selecting individuals (rows) from the dataset with replacement. This keeps the same genetic markers (loci), but uses different combinations of individuals in each sample. It tests how your results might change depending on which individuals you sampled.
+#' Resampling loci means randomly selecting genetic markers (columns) with replacement. This keeps the same individuals, but uses different combinations of loci in each sample. It tests how your results might change depending on which loci were included.
+#' 
 #' @param gt Genotype matrix where individuals are rows and loci are columns, coded as 
 #'           0=aa, 1=aA, 2=AA.
 #' @param boots Number of bootstrap replicates
-#' @param resample_n Number of individuals to resample from the site -- defaults to site n
+#' @param resample_n Number of individuals to resample (with replacement) -- defaults to site n
 #' @param CI_alpha Alpha level for confidence intervals (e.g., 0.05 for 95% CI)
 #' @return Named vector of confidence intervals for global FIS, HE, HO
 #' @import data.table dplyr future.apply
 #' @export
-calculate_boot_stats <- function(gt, boots, resample_n = NULL, CI_alpha = 0.05) {
+resampling_individuals_CI <- function(gt, boots, resample_n, CI_alpha = 0.05) {
   
   # If no resample_n is supplied, use the number of samples in the site
   if (is.null(resample_n)) resample_n <- nrow(gt)
@@ -36,7 +40,7 @@ calculate_boot_stats <- function(gt, boots, resample_n = NULL, CI_alpha = 0.05) 
   # For each replicate:
   # 1. Resample individuals with replacement
   # 2. Calculate Ho (observed heterozygosity)
-  # 3. Calculate He (expected heterozygosity) using user-defined calculate_Hes()
+  # 3. Calculate He (expected heterozygosity)
   # 4. Calculate FIS = 1 - (Ho / He)
   # Results are stored in a list of length boots, with each element a list of Ho, He, FIS
   # system.time({
@@ -77,7 +81,7 @@ calculate_boot_stats <- function(gt, boots, resample_n = NULL, CI_alpha = 0.05) 
   global_fis_ci <- quantile(rowMeans(fis_mat, na.rm = TRUE), probs = ci_probs)
   
   # Return named vector of rounded global confidence intervals
-  return(c('global_f_ci' = round(global_fis_ci, 3), 
-           'global_he_ci'  = round(global_he_ci, 3), 
-           'global_ho_ci'  = round(global_ho_ci, 3)))
+  return(c('individuals_f' = round(global_fis_ci, 3), 
+           'sample_he'  = round(global_he_ci, 3), 
+           'sample_ho'  = round(global_ho_ci, 3)))
 }
