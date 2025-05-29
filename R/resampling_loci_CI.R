@@ -1,4 +1,4 @@
-#' Calculate global bootstrapped He, Ho, and FIS (parallelized) by resampling loci (as in hierfstat::boot.ppfis)
+#' Calculate global bootstrapped He, Ho, and FIS (parallelized) by resampling loci (as in hierfstat::boot.ppfis or arlequin)
 #'
 #' @description
 #' Resampling individuals means randomly selecting individuals (rows) from the dataset with replacement. This keeps the same genetic markers (loci), but uses different combinations of individuals in each sample. It tests how your results might change depending on which individuals you sampled.

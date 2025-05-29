@@ -82,6 +82,6 @@ resampling_individuals_CI <- function(gt, boots, resample_n, CI_alpha = 0.05) {
   
   # Return named vector of rounded global confidence intervals
   return(c('individuals_f' = round(global_fis_ci, 3), 
-           'sample_he'  = round(global_he_ci, 3), 
-           'sample_ho'  = round(global_ho_ci, 3)))
+           'individuals_he'  = round(global_he_ci, 3), 
+           'individuals_ho'  = round(global_ho_ci, 3)))
 }
