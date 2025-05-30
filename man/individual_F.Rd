@@ -7,9 +7,11 @@
 individual_F(
   gt,
   genetic_group_variable = NULL,
+  site_variable = NULL,
   minimum_loci = 50,
   maf = 0.05,
-  max_missingness = 0.3
+  max_missingness = 0.3,
+  minimum_n = 3
 )
 }
 \arguments{
@@ -20,6 +22,8 @@ individual_F(
 length as number of rows in gt). Can represent species, 
 subspecies, or other biologically relevant structure groups. If not
 included, the whole gt will be treated as one group.}
+
+\item{site_variable}{(optional) Vector of site IDs for each individual. If supplied, expected heterozygosity will be calculated within sites, which will probably result in F being lower due to the Wahlund effect.}
 
 \item{minimum_loci}{(optional) Minimum number of loci required to proceed with analysis for each 
 genetic group (genetic groups with fewer loci will be skipped).}
