@@ -44,9 +44,9 @@ genetic group (genetic groups with fewer loci will be skipped).}
 \item{max_missingness}{Maximum proportion of missing data allowed per locus (loci with 
 higher missingness will be filtered out).}
 
-\item{get_CI_loci_resampling}{Get confidence intervals for Ho, He, F, using bootstrapping by resampling loci (as in hierfstat::boot.ppfis)}
+\item{get_CI_loci_resampling}{Get confidence intervals for Ho, He, Fis, using bootstrapping by resampling loci (as in hierfstat::boot.ppfis)}
 
-\item{get_CI_individual_resampling}{Get confidence intervals for Ho, He, F, using bootstrapping by resampling individuals (as in diveRsity::basicstats)}
+\item{get_CI_individual_resampling}{Get confidence intervals for Ho, He, Fis, using bootstrapping by resampling individuals (as in diveRsity::basicstats)}
 
 \item{boots}{Number of bootstraps to get confidence intervals.}
 
@@ -64,13 +64,13 @@ A data frame with the following columns:
   \item{site}{Site ID corresponding to the sample location.}
   \item{Ar}{Allelic richness per site per group, standardized for sample size.}
   \item{Ho}{Observed heterozygosity.}
-  \item{He}{Expected heterozygosity under Hardy-Weinberg equilibrium.}
+  \item{He}{Expected heterozygosity under Hardy-Weinberg equilibrium within the site_variable.}
   \item{uHe}{Unbiased expected heterozygosity (corrected for small sample size).}
-  \item{F}{Inbreeding coefficient (F = 1 - Ho / He).}
-  \item{uF}{Unbiased inbreeding coefficient (F = 1 - Ho / uHe).}
+  \item{Fis}{Inbreeding coefficient (Fis = 1 - Ho / He).}
+  \item{uF}{Unbiased inbreeding coefficient (Fis = 1 - Ho / uHe).}
   \item{loci}{Number of loci used in the analysis for that group-site combination.}
   \item{n}{Number of individuals sampled at the site for the given group.}
-  \item{*_ci.*\%, *_ci.*\%}{Lower and upper confidence intervals for F, Ho, and He, generated via bootstrapping. Column prefixes indicate the statistic (e.g., \code{loci_f.2.5\%}, \code{loci_he.97.5\%}).}
+  \item{*_ci.*\%, *_ci.*\%}{Lower and upper confidence intervals for Fis, Ho, and He, generated via bootstrapping. Column prefixes indicate the statistic (e.g., \code{loci_f.2.5\%}, \code{loci_he.97.5\%}).}
   \item{LLR_fisher_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium log-likelihood ratio (LLR) tests across loci.}
   \item{mean_U_score}{Mean U-score across loci from Hardy-Weinberg tests. Negative values indicate heterozygosity excess; positive values indicate homozygosity excess.}
 }
