@@ -73,9 +73,9 @@ resampling_loci_CI <- function(gt, boots, resample_n, CI_alpha = 0.05) {
   ### Global (mean across loci) confidence intervals:
   # 1. Take the mean across loci for each bootstrap replicate
   # 2. Calculate the CI across all replicates for each metric
-  global_ho_ci  <- quantile(rowMeans(ho_mat,  na.rm = TRUE), probs = ci_probs)
-  global_he_ci  <- quantile(rowMeans(he_mat,  na.rm = TRUE), probs = ci_probs)
-  global_fis_ci <- quantile(rowMeans(fis_mat, na.rm = TRUE), probs = ci_probs)
+  global_ho_ci  <- c(quantile(rowMeans(ho_mat,  na.rm = TRUE), probs = ci_probs), 'mean'=mean(rowMeans(ho_mat,  na.rm = TRUE)))
+  global_he_ci  <- c(quantile(rowMeans(he_mat,  na.rm = TRUE), probs = ci_probs), 'mean'=mean(rowMeans(he_mat,  na.rm = TRUE)))
+  global_fis_ci <- c(quantile(rowMeans(fis_mat, na.rm = TRUE), probs = ci_probs), 'mean'=mean(rowMeans(fis_mat,  na.rm = TRUE)))
   
   # Return named vector of rounded global confidence intervals
   return(c('loci_f' = round(global_fis_ci, 3), 
