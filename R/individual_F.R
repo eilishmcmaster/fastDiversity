@@ -140,5 +140,7 @@ individual_F <- function(gt,
   }
   
   rownames(results) <- NULL
-  return(results$F)
+  out_F <- results$F %>% as.vector()
+  names(out_F) <- results$individual
+  return(out_F)
 }
