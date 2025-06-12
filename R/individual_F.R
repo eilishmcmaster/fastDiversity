@@ -61,6 +61,10 @@ individual_F <- function(gt,
   
   
   calculate_f_function <- function(gt){
+    if (is.null(gt) || !is.matrix(gt) && !is.data.frame(gt)) {
+      message("Invalid input: gt must be a non-null matrix or data frame.")
+      return(NA)
+    }
     if (nrow(gt) < minimum_n) {
       message(paste0("Skipping ungrouped dataset - fewer than ", minimum_n, " samples (n = ", nrow(gt), ")"))
       return(rep(NA, nrow(gt)))
@@ -128,7 +132,7 @@ individual_F <- function(gt,
   }
   
   # return(F_values)
-  results$F <- F_values
+  results$F <- F_values[results$individual]
   if(isFALSE(table_out)){
     rownames(results) <- NULL
     out_F <- results$F %>% as.vector()
