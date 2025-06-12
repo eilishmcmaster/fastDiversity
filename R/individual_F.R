@@ -25,13 +25,22 @@
 #' Frankham, R., Ballou, J. D., & Briscoe, D. A. (2010). Introduction to Conservation Genetics (2nd ed.). Cambridge University Press. https://doi.org/10.1017/CBO9780511809002
 #' @export
 individual_F <- function(gt, 
-                         genetic_group_variable = NULL, 
-                         site_variable = NULL,
-                         minimum_loci = 50, 
-                         maf = 0.05, 
-                         max_missingness = 0.3,
-                         minimum_n = 3) {
+                          genetic_group_variable = NULL, 
+                          site_variable = NULL,
+                          minimum_loci = 50, 
+                          maf = 0.05, 
+                          max_missingness = 0.3,
+                          minimum_n = 3, 
+                          table_out = FALSE) {
   
+  if (!is.null(site_variable)) {
+    site_variable <- as.character(site_variable)
+  }
+  if (!is.null(genetic_group_variable)) {
+    genetic_group_variable <- as.character(genetic_group_variable)
+  }
+  
+  # table to store outputs
   all_inds <- rownames(gt)
   results <- data.frame(individual = all_inds, 
                         F = NA_real_,
@@ -39,108 +48,95 @@ individual_F <- function(gt,
                         site = if (!is.null(site_variable)) site_variable else NA,
                         stringsAsFactors = FALSE)
   
-  if (is.null(genetic_group_variable)) {
-    # No grouping
-    if (nrow(gt) < minimum_n) {
-      message(paste("Skipping ungrouped dataset - fewer than", minimum_n, "samples (n =", nrow(gt), ")"))
-      return(results)
-    }
-    
+  # subfunctions
+  filter_loci_function <- function(gt){
     not_missing_loci <- which(colMeans(is.na(gt)) <= max_missingness)
     gt_missing <- gt[, not_missing_loci, drop=FALSE]
     
     loci_mafs <- get_minor_allele_frequencies(gt_missing)
     passing_maf_loci <- which(loci_mafs >= maf)
     gt_filtered <- gt_missing[, passing_maf_loci, drop=FALSE]
-    
-    if (ncol(gt_filtered) < minimum_loci) {
-      message(paste("Dataset does not have enough loci (", ncol(gt_filtered), 
-                    " loci: minimum is ", minimum_loci, ")"))
-      return(results)
-    }
-    
-    individual_heterozygosity <- rowSums((gt_filtered == 1), na.rm = TRUE) /
-      rowSums(!is.na(gt_filtered))
-    expected_heterozygosity <- mean(calculate_Hes(gt_filtered))
-    
-    results$F <- 1 - (individual_heterozygosity / expected_heterozygosity)
-    return(results)
+    return(gt_filtered)
   }
   
-  # Grouped analysis
-  for (group in unique(genetic_group_variable)) {
-    group_idx <- which(genetic_group_variable == group)
-    
-    if (length(group_idx) < minimum_n) {
-      message(paste("Skipping group", group, "- fewer than", minimum_n, "samples (n =", length(group_idx), ")"))
-      next()
+  
+  calculate_f_function <- function(gt){
+    if (nrow(gt) < minimum_n) {
+      message(paste0("Skipping ungrouped dataset - fewer than ", minimum_n, " samples (n = ", nrow(gt), ")"))
+      return(rep(NA, nrow(gt)))
     }
-    
-    gt_group <- gt[group_idx, , drop=FALSE]
-    
-    if (!is.null(site_variable)) {
-      # Group + Site nested loop
-      sites_in_group <- unique(site_variable[group_idx])
-      
-      for (site in sites_in_group) {
-        site_idx <- group_idx[which(site_variable[group_idx] == site)]
-        
-        if (length(site_idx) < minimum_n) {
-          message(paste("Skipping group", group, "site", site, 
-                        "- fewer than", minimum_n, "samples (n =", length(site_idx), ")"))
-          next()
-        }
-        
-        gt_site <- gt[site_idx, , drop=FALSE]
-        
-        not_missing_loci <- which(colMeans(is.na(gt_site)) <= max_missingness)
-        gt_missing <- gt_site[, not_missing_loci, drop=FALSE]
-        
-        loci_mafs <- get_minor_allele_frequencies(gt_missing)
-        passing_maf_loci <- which(loci_mafs >= maf)
-        gt_filtered <- gt_missing[, passing_maf_loci, drop=FALSE]
-        
-        if (ncol(gt_filtered) < minimum_loci) {
-          message(paste("Group", group, "Site", site, 
-                        "does not have enough loci (", ncol(gt_filtered), 
-                        " loci: minimum is ", minimum_loci, ")"))
-          next()
-        }
-        
-        individual_heterozygosity <- rowSums((gt_filtered == 1), na.rm = TRUE) /
-          rowSums(!is.na(gt_filtered))
-        expected_heterozygosity <- mean(calculate_Hes(gt_filtered))
-        
-        F_values <- 1 - (individual_heterozygosity / expected_heterozygosity)
-        results$F[site_idx] <- F_values
-      }
-      
-    } else {
-      # Only group level
-      not_missing_loci <- which(colMeans(is.na(gt_group)) <= max_missingness)
-      gt_missing <- gt_group[, not_missing_loci, drop=FALSE]
-      
-      loci_mafs <- get_minor_allele_frequencies(gt_missing)
-      passing_maf_loci <- which(loci_mafs >= maf)
-      gt_filtered <- gt_missing[, passing_maf_loci, drop=FALSE]
-      
-      if (ncol(gt_filtered) < minimum_loci) {
-        message(paste("Group", group, "does not have enough loci (", 
-                      ncol(gt_filtered), " loci: minimum is ", minimum_loci, ")"))
-        next()
-      }
-      
-      individual_heterozygosity <- rowSums((gt_filtered == 1), na.rm = TRUE) /
-        rowSums(!is.na(gt_filtered))
-      expected_heterozygosity <- mean(calculate_Hes(gt_filtered))
+    if (ncol(gt) < minimum_loci) {
+      message(paste0("Dataset does not have enough loci (", ncol(gt), " loci: minimum is ", minimum_loci, ")"))
+      return(rep(NA, nrow(gt)))
+    }
+      individual_heterozygosity <- rowSums((gt == 1), na.rm = TRUE) /rowSums(!is.na(gt))
+      expected_heterozygosity <- mean(calculate_Hes(gt), na.rm = TRUE)
       
       F_values <- 1 - (individual_heterozygosity / expected_heterozygosity)
-      results$F[group_idx] <- F_values
+      return(F_values)
+  }
+
+  #### run for various scenarios ####
+  
+  # No population or site groups
+  if(is.null(genetic_group_variable) & is.null(site_variable)){
+    gt_filtered <- filter_loci_function(gt)
+    F_values <- calculate_f_function(gt_filtered)
+  }
+  
+  
+  # no population but yes site groups
+  if(is.null(genetic_group_variable) & !is.null(site_variable)){
+    gt_filtered_0 <- filter_loci_function(gt)
+    sites <- unique(site_variable)
+    F_values <- c()
+    for(site in sites){
+      gt_filtered <- gt_filtered_0[which(site_variable==site),]
+      F_values_site <- calculate_f_function(gt_filtered)
+      F_values <- c(F_values, F_values_site)
     }
   }
   
-  rownames(results) <- NULL
-  out_F <- results$F %>% as.vector()
-  names(out_F) <- results$individual
-  return(out_F)
+  # yes population no site 
+  if(!is.null(genetic_group_variable) & is.null(site_variable)){
+    groups <- unique(genetic_group_variable)
+    F_values <- c()
+    for(group in groups){
+      gt_group <- gt[which(genetic_group_variable==group),]
+      gt_filtered <- filter_loci_function(gt_group)
+      F_values_group <- calculate_f_function(gt_filtered)
+      F_values <- c(F_values, F_values_group)
+    }
+  }
+  
+  # yes population yes site 
+  if(!is.null(genetic_group_variable) & !is.null(site_variable)){
+    groups <- unique(genetic_group_variable)
+    F_values <- c()
+    for(group in groups){
+      gt_group <- gt[which(genetic_group_variable==group),]
+      group_sites <- site_variable[which(genetic_group_variable==group)]
+      gt_filtered <- filter_loci_function(gt_group)
+      sites <- unique(group_sites)
+      
+      for(site in sites){
+        gt_filtered_2 <- gt_filtered[which(group_sites==site),]
+        F_values_site <- calculate_f_function(gt_filtered_2)
+        F_values <- c(F_values, F_values_site)
+      }
+    }
+  }
+  
+  # return(F_values)
+  results$F <- F_values
+  if(isFALSE(table_out)){
+    rownames(results) <- NULL
+    out_F <- results$F %>% as.vector()
+    names(out_F) <- results$individual
+    return(out_F)
+  }
+  if(isTRUE(table_out)){
+    rownames(results) <- NULL
+    return(results)
+  }
 }
