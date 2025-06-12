@@ -11,7 +11,8 @@ individual_F(
   minimum_loci = 50,
   maf = 0.05,
   max_missingness = 0.3,
-  minimum_n = 3
+  minimum_n = 3,
+  table_out = FALSE
 )
 }
 \arguments{
