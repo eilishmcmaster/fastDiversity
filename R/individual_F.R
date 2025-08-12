@@ -118,6 +118,8 @@ individual_F <- function(gt,
     groups <- unique(genetic_group_variable)
     F_values <- c()
     for(group in groups){
+      if(length(which(genetic_group_variable==group))<=1){next}
+      
       gt_group <- gt[which(genetic_group_variable==group),]
       group_sites <- site_variable[which(genetic_group_variable==group)]
       gt_filtered <- filter_loci_function(gt_group)

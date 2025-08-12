@@ -42,6 +42,8 @@ individual_Ho <- function(gt, genetic_group_variable=NULL, minimum_loci=50, maf=
   else{
     individual_heterozygosity <- c()
     for(group in unique(genetic_group_variable)){
+      if(length(which(genetic_group_variable==group))<=1){next}
+      
       gt_group <- gt[which(genetic_group_variable==group),]
       
       not_missing_loci <- which(colMeans(is.na(gt_group))<=max_missingness)
