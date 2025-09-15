@@ -5,8 +5,8 @@
 #' @title fastDiversity: Population Genetics Analysis
 #' @description
 #' This package was developed to simplify population genetic analysis tasks by offering
-#' efficient functions compatible with SNP data in biallelic format (0, 1, 2). It aims to
-#' save time compared to other methods by providing streamlined and effective algorithms.
+#' efficient functions compatible with SNP data in biallelic format (0, 1, 2), especially
+#' when there are multiple species or subpopulations in a single dataset.
 #'
 #' @details
 #' The package includes functions for:
