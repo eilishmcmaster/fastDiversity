@@ -11,7 +11,7 @@ Imports:
   data.table,
   future.apply,
   stats,
-  HWxtest, 
+  HardyWeinberg, 
   future.apply
 Encoding: UTF-8
 RoxygenNote: 7.3.2
