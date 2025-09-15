@@ -12,15 +12,11 @@ Genotypes must be coded as 0 (AA), 1 (AB), or 2 (BB).}
 }
 \value{
 A named vector containing:
-\describe{
-  \item{LLR_fisher_p}{Fisher combined p-value from the log-likelihood ratio (LLR) test across loci.}
-  \item{mean_U_score}{Mean of the U-scores across all loci.}
-  \item{loci_HWX_results}{A data table with individual LLR p-values, U-scores, and locus names.}
-}
 }
 \description{
+\strong{This function is defunct.}  
 This function performs Hardy-Weinberg equilibrium tests on multiple genetic loci
-using the hwx.test from the HWxtest package. It returns the Fisher 
-combined p-value of the LLR test, the mean U-score, and individual test results 
+using the hwx.test from the HWxtest package. It returns the Fisher
+combined p-value of the LLR test, the mean U-score, and individual test results
 for each locus.
 }

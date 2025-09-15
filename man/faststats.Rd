@@ -54,7 +54,7 @@ higher missingness will be filtered out).}
 
 \item{run_HWE_test}{Specify whether to statistically test if allele frequencies differ from Hardy-Weinberg equilibrium.}
 
-\item{return_locus_stats}{Specify whether to return U-score and LLR p values for each locus from HWE testing.}
+\item{return_locus_stats}{Specify whether to return p values for each locus from HWE testing.}
 
 \item{resample_n}{Number of samples to resample per site if bootstrapping, defaults to site n.}
 }
@@ -71,8 +71,7 @@ A data frame with the following columns:
   \item{loci}{Number of loci used in the analysis for that group-site combination.}
   \item{n}{Number of individuals sampled at the site for the given group.}
   \item{*_ci.*\%, *_ci.*\%}{Lower and upper confidence intervals for Fis, Ho, and He, generated via bootstrapping. Column prefixes indicate the statistic (e.g., \code{loci_f.2.5\%}, \code{loci_he.97.5\%}).}
-  \item{LLR_fisher_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium log-likelihood ratio (LLR) tests across loci.}
-  \item{mean_U_score}{Mean U-score across loci from Hardy-Weinberg tests. Negative values indicate heterozygosity excess; positive values indicate homozygosity excess.}
+  \item{HW_fisher_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium tests across loci (HardyWeinberg::HWExact.}
 }
 \description{
 This function calculates allelic richness, heterozygosity, and inbreeding coefficients 
