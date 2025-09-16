@@ -141,7 +141,9 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
         #### HWE test for loci ####
         if(isTRUE(run_HWE_test)){ # run HWE tests 
           HWE_test_loci <- MC_HWEtest_of_loci(gt_site)
-          site_results <- c(site_results, (HWE_test_loci[[1]]))
+          HWE_overall_p <- HWE_test_loci[[1]]
+          names(HWE_overall_p) <- 'HWE_p'
+          site_results <- c(site_results, HWE_overall_p)
         }
         
         if(isTRUE(return_locus_stats)){ # if locus data is requested, add to the table
@@ -179,7 +181,7 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       # group_out_matrix <- cbind(group_out_matrix, mn_ar, sd_ar)
       # out_matrix <- rbind(out_matrix, group_out_matrix)
       
-      out_list[[group]] <- group_out_list
+      out_list[[group]] <- bind_rows(group_out_list)
       
       if(isTRUE(return_locus_stats)){ # if locus data is requested, add to the table
         locus_out_list[[group]] <- group_locus_out_df 
