@@ -36,6 +36,7 @@
 #'   \item{He}{Expected heterozygosity under Hardy-Weinberg equilibrium within the site_variable.}
 #'   \item{uHe}{Unbiased expected heterozygosity (corrected for small sample size).}
 #'   \item{Fis}{Inbreeding coefficient (Fis = 1 - Ho / He).}
+#'   \item{Fst}{Fst/Gst Inbreeding due to population subdivision (Fst = (Ht-Hs)/Ht [W+C 1984]) }
 #'   \item{uF}{Unbiased inbreeding coefficient (Fis = 1 - Ho / uHe).}
 #'   \item{loci}{Number of loci used in the analysis for that group-site combination.}
 #'   \item{n}{Number of individuals sampled at the site for the given group.}
@@ -104,7 +105,7 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
         Ho <- calculate_Ho(gt_site) %>% round(.,4)
         Hes <- calculate_Hes(gt_site) %>% round(.,4)
         He <- mean(Hes, na.rm = TRUE) %>% round(.,4)
-        Fst <- ((Ht-He)/(Ht)) %>% round(.,4) #W+C 1984
+        Fst <- ((Ht-He)/(Ht)) %>% round(.,4) #W+C 1984 from frankham 2015 p 324
         ns <- colSums(!is.na(gt_site))
         uHe <- calculate_uHe(ns, Hes) %>% round(.,4)
         Fis <- (1 - (Ho/He) ) %>% round(.,4)

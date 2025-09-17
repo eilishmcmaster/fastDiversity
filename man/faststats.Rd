@@ -67,6 +67,7 @@ A data frame with the following columns:
   \item{He}{Expected heterozygosity under Hardy-Weinberg equilibrium within the site_variable.}
   \item{uHe}{Unbiased expected heterozygosity (corrected for small sample size).}
   \item{Fis}{Inbreeding coefficient (Fis = 1 - Ho / He).}
+  \item{Fst}{Fst/Gst Inbreeding due to population subdivision (Fst = (Ht-Hs)/Ht [W+C 1984]) }
   \item{uF}{Unbiased inbreeding coefficient (Fis = 1 - Ho / uHe).}
   \item{loci}{Number of loci used in the analysis for that group-site combination.}
   \item{n}{Number of individuals sampled at the site for the given group.}
