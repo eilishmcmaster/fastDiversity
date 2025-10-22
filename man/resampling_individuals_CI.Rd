@@ -2,9 +2,9 @@
 % Please edit documentation in R/resampling_individuals_CI.R
 \name{resampling_individuals_CI}
 \alias{resampling_individuals_CI}
-\title{Calculate global bootstrapped He, Ho, and FIS (parallelized) by resampling individuals (as in diveRsity::basicstats)}
+\title{Calculate global bootstrapped He, Ho, and FIS (parallelized) by resampling individuals}
 \usage{
-resampling_individuals_CI(gt, boots, resample_n, CI_alpha = 0.05)
+resampling_individuals_CI(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05)
 }
 \arguments{
 \item{gt}{Genotype matrix where individuals are rows and loci are columns, coded as 
@@ -12,7 +12,7 @@ resampling_individuals_CI(gt, boots, resample_n, CI_alpha = 0.05)
 
 \item{boots}{Number of bootstrap replicates}
 
-\item{resample_n}{Number of individuals to resample (with replacement) -- defaults to site n}
+\item{resample_n}{Number of individuals to resample with replacement (defaults to total individuals)}
 
 \item{CI_alpha}{Alpha level for confidence intervals (e.g., 0.05 for 95% CI)}
 }
@@ -21,5 +21,4 @@ Named vector of confidence intervals for global FIS, HE, HO
 }
 \description{
 Resampling individuals means randomly selecting individuals (rows) from the dataset with replacement. This keeps the same genetic markers (loci), but uses different combinations of individuals in each sample. It tests how your results might change depending on which individuals you sampled.
-Resampling loci means randomly selecting genetic markers (columns) with replacement. This keeps the same individuals, but uses different combinations of loci in each sample. It tests how your results might change depending on which loci were included.
 }

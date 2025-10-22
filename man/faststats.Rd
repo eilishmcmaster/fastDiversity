@@ -46,7 +46,11 @@ higher missingness will be filtered out).}
 
 \item{get_CI_loci_resampling}{Get confidence intervals for Ho, He, Fis, using bootstrapping by resampling loci (as in hierfstat::boot.ppfis)}
 
+\item{loci_resample_n}{Number of loci to resample if bootstrapping, defaults to site n.}
+
 \item{get_CI_individual_resampling}{Get confidence intervals for Ho, He, Fis, using bootstrapping by resampling individuals (as in diveRsity::basicstats)}
+
+\item{individual_resample_n}{Number of samples to resample if bootstrapping, defaults to site n.}
 
 \item{boots}{Number of bootstraps to get confidence intervals.}
 
@@ -55,8 +59,6 @@ higher missingness will be filtered out).}
 \item{run_HWE_test}{Specify whether to statistically test if allele frequencies differ from Hardy-Weinberg equilibrium.}
 
 \item{return_locus_stats}{Specify whether to return p values for each locus from HWE testing.}
-
-\item{resample_n}{Number of samples to resample per site if bootstrapping, defaults to site n.}
 }
 \value{
 A data frame with the following columns:
@@ -72,7 +74,7 @@ A data frame with the following columns:
   \item{loci}{Number of loci used in the analysis for that group-site combination.}
   \item{n}{Number of individuals sampled at the site for the given group.}
   \item{*_ci.*\%, *_ci.*\%}{Lower and upper confidence intervals for Fis, Ho, and He, generated via bootstrapping. Column prefixes indicate the statistic (e.g., \code{loci_f.2.5\%}, \code{loci_he.97.5\%}).}
-  \item{HW_fisher_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium tests across loci (HardyWeinberg::HWExact.}
+  \item{HW_fisher_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium tests across loci (HardyWeinberg::HWExact).}
 }
 \description{
 This function calculates allelic richness, heterozygosity, and inbreeding coefficients 

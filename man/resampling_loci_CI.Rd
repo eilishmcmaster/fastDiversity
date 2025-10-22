@@ -4,7 +4,7 @@
 \alias{resampling_loci_CI}
 \title{Calculate global bootstrapped He, Ho, and FIS (parallelized) by resampling loci (as in hierfstat::boot.ppfis or arlequin)}
 \usage{
-resampling_loci_CI(gt, boots, resample_n, CI_alpha = 0.05)
+resampling_loci_CI(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05)
 }
 \arguments{
 \item{gt}{Genotype matrix where individuals are rows and loci are columns, coded as 
@@ -20,6 +20,5 @@ resampling_loci_CI(gt, boots, resample_n, CI_alpha = 0.05)
 Named vector of confidence intervals for global FIS, HE, HO
 }
 \description{
-Resampling individuals means randomly selecting individuals (rows) from the dataset with replacement. This keeps the same genetic markers (loci), but uses different combinations of individuals in each sample. It tests how your results might change depending on which individuals you sampled.
 Resampling loci means randomly selecting genetic markers (columns) with replacement. This keeps the same individuals, but uses different combinations of loci in each sample. It tests how your results might change depending on which loci were included.
 }

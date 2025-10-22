@@ -12,6 +12,7 @@ Imports:
   future.apply,
   stats,
   HardyWeinberg, 
-  future.apply
+  Rcpp
+LinkingTo: Rcpp
 Encoding: UTF-8
 RoxygenNote: 7.3.2
