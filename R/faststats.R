@@ -72,6 +72,15 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
     for (group in genetic_groups) { # for each genetic group
       gt_group <- gt[which(genetic_group_variable == group), ] # filter samples
       site_variable_group <- site_variable[which(genetic_group_variable ==  group)] # get vector of sites for samples in the group
+      #
+      site_freq <- table(site_variable_group) # get number of samples per site
+      sites <- names(which(site_freq >= minimum_n)) # remove sites less than threshold n
+      
+      if (length(sites) == 0) {
+        message(sprintf("Skipping group '%s': no sites meet n ≥ %d.", 
+                        group, minimum_n)) 
+        next  }
+      #
       not_missing_loci <- which(colMeans(is.na(gt_group)) <=  max_missingness)  # determine which loci pass missingness threshold
       
       gt_group_missing <- gt_group[, ..not_missing_loci] # filter to remove high missing loci
@@ -89,10 +98,6 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       }
       
       Ht <- calculate_Hes(gt_group_missing_maf) %>% mean() %>% round(.,4) # expected heterozygosity across all individuals and averaged across loci
-      
-      site_freq <- table(site_variable_group) # get number of samples per site
-      sites <- names(which(site_freq >= minimum_n)) # remove sites less than threshold n
-      
       group_out_list <- list() # make empty list to store group level data in 
       if(isTRUE(return_locus_stats)){ # if locus stats should be returned
         group_locus_out_df <- data.table()
