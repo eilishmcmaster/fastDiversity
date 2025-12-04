@@ -4,9 +4,9 @@
 #' This function calculates Tajima's D, Watterson's theta, and pi following the methods in Pixy, which accounts for missing data to produce unbiased estimates. For further details see https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13326 and https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14104 
 #' 
 #' @param gt Genotype matrix where individuals are rows and loci are columns, coded as 
-#'   0=aa, 1=aA, 2=AA. Note these methods are designed to have fixed/invariant loci 
+#'   0=aa, 1=aA, 2=AA. Note these methods are designed to have fixed/invariant loci                                              
 #'   included (https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13326). 
-tajimas_d <- function(gt) {
+calculate_pi_theta_d <- function(gt) {
   
   site_stats <- apply(gt, 2, function(col) {
     nonmiss <- !is.na(col)
@@ -14,22 +14,25 @@ tajimas_d <- function(gt) {
     n_s <- 2 * k  # haploid sample size
     # note this PIXY version includes fixed sites (where all alleles are the same) which is not the case in Tajima 1989
     
-    if (n_s < 2) {
+    x <- sum(col[nonmiss])  # alt allele count
+    num_pairs <- n_s * (n_s - 1) / 2 # total number of haploid pairs (no. comparisons Korunes + Samuk 2021)
+    num_diff_pairs <- x * (n_s - x) # number of different haploid pairs (total differences Korunes + Samuk 2021)
+    
+    if (isTRUE(n_s < 2)) {
       return(c(n_s = n_s,
-               mpd = 0,
+               # mpd = 0,
+               num_diff_pairs = num_diff_pairs,
+               num_pairs = num_pairs,
                segregating = 0))
     }
-    
-    x <- sum(col[nonmiss])  # alt allele count
     
     if (x == 0 || x == n_s) { # if there are no alt alleles or alt allele is fixed, return 0
       return(c(n_s = n_s,
-               mpd = 0,
+               # mpd = 0,
+               num_diff_pairs = num_diff_pairs,
+               num_pairs = num_pairs,
                segregating = 0))
     }
-    
-    num_diff_pairs <- x * (n_s - x) # number of different haploid pairs (total differences Korunes + Samuk 2021)
-    num_pairs <- n_s * (n_s - 1) / 2 # total number of haploid pairs (no. comparisons Korunes + Samuk 2021)
     
     return(c(
       n_s = n_s,
@@ -42,6 +45,8 @@ tajimas_d <- function(gt) {
   site_stats <- as.data.frame(t(site_stats))
   
   pi <- sum(site_stats$num_diff_pairs, na.rm = TRUE)/ sum(site_stats$num_pairs, na.rm = TRUE) # pi raw described in Korunes + Samuk 2021 
+  #print(paste('pi:',pi))
+  
   
   S <- sum(site_stats$segregating) # number of sites/loci that are segregating/polymorphic
   
@@ -62,8 +67,10 @@ tajimas_d <- function(gt) {
   
   # calcs for tajimas D
   n <- mean(site_stats$n_s, na.rm = TRUE) # mean haploid count (number of haploid sequences)
-  if (n < 3){ # if there are less than 3 haploid sequences D is NA
-    return(list(pi = pi, S = S, theta_w = theta_w, Tajimas_D = NA,
+  #print(paste("n:",n))
+  
+  if (isTRUE(n < 3)){ # if there are less than 3 haploid sequences D is NA
+    return(list(pi = pi, S = S, theta = theta_w, D = NA,
                 per_site_stats = site_stats))
   }
 
@@ -102,8 +109,8 @@ tajimas_d <- function(gt) {
   return(list(
     pi = pi,
     S = S,
-    theta_w = theta_w,
-    Tajimas_D = D,
+    theta = theta_w,
+    D = D,
     per_site_stats = site_stats
   ))
 }
