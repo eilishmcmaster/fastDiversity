@@ -1,4 +1,10 @@
 .Rproj.user
 .Rhistory
 .RData
+.fastDiversity.Rproj
 .Ruserdata
+/notes
+testing_CI_boots.R
+/draft_R
+.positai
+.DS_Store

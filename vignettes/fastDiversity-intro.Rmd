@@ -1,0 +1,436 @@
+---
+title: "Introduction to fastDiversity"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to fastDiversity}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 6,
+  fig.height = 4
+)
+```
+
+## Overview
+
+`fastDiversity` provides fast and flexible calculation of standard population
+genetic diversity statistics from biallelic SNP data. It is designed for
+datasets where samples span multiple populations, sites, or species that need
+to be analysed simultaneously, a common scenario in conservation genomics and
+comparative population studies.
+
+The package accepts genotype data in standard biallelic dosage format: `0`
+(homozygous reference, *aa*), `1` (heterozygous, *aA*), and `2` (homozygous
+alternate, *AA*), with missing data as `NA`. This format is the direct output
+of DArTseq and can be produced by most SNP-calling pipelines.
+
+---
+
+## Installation
+
+```{r install, eval = FALSE}
+remotes::install_github("eilishmcmaster/fastDiversity")
+```
+
+```{r load, message = FALSE, warning = FALSE}
+library(fastDiversity)
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+```
+
+---
+
+## Example dataset: *Doryphora sassafras*
+
+The package ships with SNP data from *Doryphora sassafras* (Sassafras,
+Atherospermataceae), a rainforest tree endemic to the eastern Australian coast.
+The dataset spans five genetic populations, each sampled across multiple sites.
+This structure — multiple hierarchical grouping levels within a single species
+— is the typical use case for `fastDiversity`.
+
+```{r load-data}
+data(example_data)
+
+# Genotype matrix: rows are samples, columns are SNP loci
+# Values are 0 (aa), 1 (aA), 2 (AA), or NA (missing)
+dim(example_gt)
+
+example_print <- example_gt[c(1,100,150,200,250), 1:10]
+colnames(example_print) <- NULL
+example_print
+
+```
+
+```{r inspect-meta}
+# Metadata: one row per sample, matching the row order of example_gt
+head(example_meta)
+
+# Five genetic populations, each with multiple sampling sites
+table(example_meta$site, example_meta$population)
+```
+
+The row order of `example_gt` must match the row order of `example_meta` —
+the nth row of the genotype matrix corresponds to the nth row of the metadata.
+
+--- 
+
+## Principal coordinates analysis
+
+A distance-based PCA provides an intuitive overview of genetic structure across
+individuals. PC scores are computed from pairwise genetic distances and merged
+with metadata for plotting:
+
+```{r pca, fig.width = 6.5, fig.height = 5}
+pca   <- prcomp(dist(example_gt), center = TRUE, scale. = TRUE)
+s_pca <- summary(pca)
+
+# Axis labels showing % variance explained
+importance <- s_pca[["importance"]][2, ]
+axis_names  <- paste0(names(importance), " (", round(importance * 100, 1), "%)")
+
+# Merge PC scores with sample metadata
+pcs <- pca$x %>%
+  data.frame() %>%
+  merge(example_meta, by.x = 0, by.y = "sample")
+
+ggplot(pcs, aes(x = PC1, y = PC2, color = factor(population))) +
+  geom_point(size = 2, alpha = 0.8) +
+  labs(
+    title  = expression(paste("PCA of SNP genotypes: ", italic("D. sassafras"))),
+    x      = axis_names[1],
+    y      = axis_names[2],
+    color  = "Population"
+  ) +
+  theme_bw()
+```
+
+Clustering of samples in PCA space corroborates the population structure
+indicated by the diversity statistics and private allele analysis.
+
+
+---
+
+## Allele sharing and private alleles
+
+Understanding which alleles are unique to a single population (private) versus
+shared across populations is a useful first step in assessing population
+distinctiveness. Populations with many private alleles may represent distinct
+evolutionary lineages that warrant separate management.
+
+### Step 1: Build the allele list
+
+`make_allele_list()` takes the genotype matrix and a grouping vector and
+returns a named list of allele sets, one per group.
+
+```{r allele-list}
+allele_list_population <- make_allele_list(example_gt, example_meta$population)
+
+names(allele_list_population)
+```
+
+### Step 2: Visualise allele overlap
+
+Because the result is a standard named list, it works directly with `ggvenn`:
+
+```{r venn, fig.width = 5.5, fig.height = 5.5, message = FALSE}
+ggvenn::ggvenn(allele_list_population, 
+               stroke_size=0)+
+  ggtitle("Allele sharing among populations")
+```
+
+This shows how much allelic diversity is shared across populations versus
+restricted to individual groups. A large exclusive region indicates a
+genetically distinct population.
+
+### Step 3: Count private and total alleles
+
+```{r private-alleles}
+private_total_alleles_population <- calculate_private_alleles(allele_list_population)
+
+private_total_alleles_population
+```
+
+The output gives private allele counts (alleles found in only one population)
+and total allele counts per group. These can be used directly in reporting or
+joined to the main statistics table (shown below).
+
+---
+
+## Diversity statistics with `faststats()`
+
+`faststats()` calculates allelic richness, heterozygosity, inbreeding
+coefficients, and population differentiation for each combination of genetic
+group and site, with locus-level filtering applied independently within each
+genetic group.
+
+### Filtering parameters
+
+| Parameter | Description |
+|-----------|-------------|
+| `minimum_n`| Exclude sites with fewer than this many individuals |
+| `minimum_loci`| Exclude genetic groups where fewer than this many loci pass filtering |
+| `maf`| Minor allele frequency threshold — loci below this value are excluded per genetic group (typically 0.05) |
+| `max_missingness`| Exclude loci missing in more than this proportion of samples within a group (e.g. 0.3 removes loci missing in >30% of samples) |
+
+Filtering is applied within each genetic group independently. A locus retained
+for one population may be excluded for another if it fails MAF or missingness
+thresholds in that group — an important distinction from global pre-filtering,
+which can retain uninformative loci in some groups or discard informative ones
+in others.
+
+### Running faststats
+
+`genetic_group_variable` defines the level at which locus filtering is applied
+(e.g. species or population). `site_variable` defines the grouping unit for
+which statistics are calculated (e.g. sampling site). The function returns one
+row per unique genetic group × site combination.
+
+```{r faststats}
+basicstats <- faststats(
+  gt                    = example_gt,
+  genetic_group_variable = example_meta$population,
+  site_variable         = example_meta$site,
+  minimum_n             = 6,
+  minimum_loci          = 50,
+  maf                   = 0.05,
+  max_missingness       = 0.3
+)
+
+head(basicstats)
+```
+
+### Output columns explained
+
+| Column | Description |
+|--------|-------------|
+| `group`| Genetic group ID (e.g. population, species) |
+| `site`| Site ID |
+| `Ar`| Allelic richness per site per group, standardised for sample size |
+| `Ho`| Observed heterozygosity — proportion of heterozygous loci averaged across individuals |
+| `He`| Expected heterozygosity under Hardy-Weinberg equilibrium within `site_variable` |
+| `uHe`| Unbiased expected heterozygosity (corrected for small sample size) |
+| `Fis`| Inbreeding coefficient (`1 - Ho/He`). Positive values indicate excess homozygosity; negative values indicate excess heterozygosity |
+| `uFis`| Unbiased inbreeding coefficient (`1 - Ho/uHe`) |
+| `Fst`| Population differentiation — Weir & Cockerham (1984) FST, calculated as `(Ht - Hs) / Ht` |
+| `loci`| Number of loci retained after filtering for this group |
+| `n`| Number of individuals sampled at this site × group combination |
+
+
+### Plotting diversity statistics
+
+Because `faststats()` returns one row per site, each population contributes
+multiple points — one per site. A faceted multi-panel plot gives a
+simultaneous overview of heterozygosity, inbreeding, and differentiation:
+
+```{r plot-multi, fig.width = 6, fig.height = 4, message = FALSE, warning = FALSE}
+library(tidyr)
+
+stats_long <- basicstats %>%
+  mutate(across(c(Ho, He, Fis, Fst), as.numeric)) %>%
+  pivot_longer(
+    cols      = c(Ho, He, Fis, Fst),
+    names_to  = "statistic",
+    values_to = "value"
+  ) %>%
+  mutate(statistic = factor(statistic,
+    levels = c("Ho", "He", "Fis", "Fst"),
+    labels = c("Observed heterozygosity (Ho)",
+               "Expected heterozygosity (He)",
+               "Inbreeding coefficient (Fis)",
+               "Fixation index (Fst)")
+  ))
+
+ggplot(stats_long, aes(x = group, y = value, fill = group)) +
+  geom_boxplot(alpha = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.15, size = 1.5, alpha = 0.7) +
+  facet_wrap(~ statistic, scales = "free_y", ncol = 2) +
+  labs(
+    title = "Diversity statistics",
+    x     = "Population",
+    y     = NULL
+  ) +
+  theme_bw() +
+  theme(
+    legend.position  = "none",
+    strip.background = element_rect(fill = "grey92"),
+    strip.text       = element_text(size = 9),
+    axis.text.x      = element_text(angle = 30, hjust = 1)
+  )
+```
+
+### Optional: bootstrapped confidence intervals
+
+For published reporting, bootstrapped confidence intervals can be added around
+Ho, He, and Fis. Two resampling strategies are available:
+
+- **By loci** (`get_CI_loci_resampling = TRUE`): analogous to
+  `hierfstat::boot.ppfis` — loci are resampled with replacement to quantify
+  how sensitive statistics are to the choice of markers.
+- **By individuals** (`get_CI_individual_resampling = TRUE`): analogous to
+  `diveRsity::basicstats` — individuals are resampled with replacement to
+  quantify sampling uncertainty.
+
+```{r faststats-ci, eval = FALSE}
+basicstats_ci <- faststats(
+  gt                     = example_gt,
+  genetic_group_variable = example_meta$population,
+  site_variable          = example_meta$site,
+  minimum_n              = 6,
+  minimum_loci           = 50,
+  maf                    = 0.05,
+  max_missingness        = 0.3,
+  get_CI_loci_resampling = TRUE,
+  boots                  = 100,
+  CI_alpha               = 0.05
+)
+```
+
+CI columns are appended with a prefix for the resampling strategy (`loci_` or
+`ind_`) and a suffix for the statistic and quantile boundary (e.g.
+`loci_ho.2.5%`, `loci_ho.97.5%`). These plug directly into
+`geom_pointrange()`:
+
+```{r plot-ci, eval = FALSE}
+ggplot(basicstats_ci, aes(x = group, y = as.numeric(Ho), colour = group)) +
+  geom_pointrange(
+    aes(
+      ymin = as.numeric(`loci_ho.2.5%`),
+      ymax = as.numeric(`loci_ho.97.5%`)
+    ),
+    position = position_jitter(width = 0.2, seed = 1),
+    size = 0.6
+  ) +
+  labs(
+    title = expression("Ho ± 95% CI (loci bootstrap)"),
+    x = "Population",
+    y = "Observed heterozygosity (Ho)"
+  ) +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+### Optional: Hardy-Weinberg equilibrium testing
+
+`faststats()` can test whether allele frequencies at each site deviate
+significantly from Hardy-Weinberg equilibrium expectations using Fisher's
+exact test, with p-values combined across loci using Fisher's method:
+
+```{r faststats-hwe, eval = FALSE}
+basicstats_hwe <- suppressWarnings( faststats(
+  gt                     = example_gt,
+  genetic_group_variable = example_meta$population,
+  site_variable          = example_meta$population,
+  minimum_n              = 6,
+  minimum_loci           = 50,
+  maf                    = 0.05,
+  max_missingness        = 0.3,
+  run_HWE_test           = TRUE,
+  return_locus_stats     = FALSE   # set TRUE to retrieve per-locus p-values
+))
+
+basicstats_hwe[,c("site", "Ho", "He", "Fis", "Fst", "loci", "n", "HWE_p")]
+```
+
+The `HW_fisher_p` column gives the combined p-value per site. Sites with
+values below the chosen alpha threshold show significant deviation from HWE,
+which may reflect inbreeding, cryptic population structure within a site,
+selection at linked loci, or genotyping artefacts.
+
+
+---
+## Individual-level statistics
+
+In addition to site-level summaries, `fastDiversity` provides two functions
+for calculating statistics at the level of individual samples. These are useful
+for examining variation in inbreeding and heterozygosity on an individual basis,
+which can be informative for fitness and hybridisation.
+
+Both functions apply the same locus-level filtering as `faststats()`: MAF and
+missingness thresholds are applied per genetic group before calculation, ensuring
+that individual estimates are based on the same high-quality, informative loci
+used in population-level analyses.
+
+### Individual multilocus heterozygosity
+
+`individual_Ho()` calculates multilocus heterozygosity (MLH) for each sample:
+the proportion of retained loci that are heterozygous in that individual.
+
+```{r ind-ho}
+ind_MLH_ho <- individual_Ho(
+  example_gt,
+  genetic_group_variable = example_meta$population,
+  maf                    = 0.05,
+  max_missingness        = 0.3
+)
+
+head(ind_MLH_ho)
+```
+
+### Individual inbreeding coefficient (Wright's *F*)
+
+`individual_F()` calculates Wright's inbreeding coefficient for each sample:
+*F* = 1 − (Ho / He), where He is calculated across the genetic group. This
+measures the probability that both alleles at a locus are identical by descent
+(Frankham, Ballou & Briscoe 2010). Because He is calculated at the group level
+rather than within the site, estimates are not deflated by the Wahlund effect
+that would arise from pooling genetically differentiated individuals.
+
+```{r ind-f}
+ind_F <- individual_F(
+  example_gt,
+  genetic_group_variable = example_meta$population,
+  maf                    = 0.05,
+  max_missingness        = 0.3
+)
+
+head(ind_F)
+```
+
+### Relating MLH to *F*
+
+Plotting individual MLH against *F* reveals the expected negative relationship:
+individuals with higher observed heterozygosity have lower inbreeding
+coefficients. 
+
+```{r plot-ind, fig.width = 5.5, fig.height = 4.5}
+# Combine into a data frame and add population labels
+ind_df <- data.frame(
+  sample     = names(ind_MLH_ho),
+  MLH        = as.numeric(ind_MLH_ho),
+  F          = as.numeric(ind_F)
+) %>%
+  merge(example_meta, by = "sample")
+
+ggplot(ind_df, aes(x = MLH, y = F, colour = as.factor(population))) +
+  geom_point(size = 2, alpha = 0.8) +
+  labs(
+    title    = expression("Individual MLH vs inbreeding coefficient"),
+    x        = "Multilocus heterozygosity (Ho)",
+    y        = expression(paste("Inbreeding coefficient (", italic(F), ")")),
+    colour   = "Population"
+  ) +
+  theme_bw()
+```
+
+
+## References
+
+Kalinowski, S. T. (2004). hp-rare 1.0: a computer program for performing
+rarefaction on measures of allelic richness. *Molecular Ecology Notes*, 5(1),
+187–189. https://doi.org/10.1111/j.1471-8286.2004.00845.x
+
+Keenan, K. G., McGinnity, P., Cross, T. F., Crozier, W. W., & Prodöhl, P. A.
+(2013). diveRsity: An R package for the estimation and exploration of
+population genetics parameters and their associated errors. *Methods in
+Ecology and Evolution*, 4(8), 782–788.
+https://doi.org/10.1111/2041-210x.12067
+
+Nei, M. (1978). Estimation of average heterozygosity and genetic distance from
+a small number of individuals. *Genetics*, 89(3), 583–590.
+https://doi.org/10.1093/genetics/89.3.583

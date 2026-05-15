@@ -1,58 +1,117 @@
-
 [![DOI](https://zenodo.org/badge/797486652.svg)](https://zenodo.org/doi/10.5281/zenodo.12741582)
 
-fastDiversity: A simple and efficient population genetics analysis package.
-=================================================================================
+# fastDiversity
 
-This is the repository for the latest version of the ```fastDiversity``` package. It contains the latest bug fixes, as well as the newest functionality.
+**fastDiversity** is an R package for fast, flexible calculation of population genetic diversity statistics from biallelic SNP data.
 
-This package was created to address shortcomings in existing methods, which often necessitate specific data structures and file types, and are occasionally no longer maintained. It offers essential functions for basic population genomic analysis in a format compatible with any SNP data in biallelic 0 (aa), 1 (aA), 2 (AA) format (e.g., DArTseq), thereby saving time compared to alternative approaches.
+Many existing tools require specific file formats or data structures, and some are no longer actively maintained. fastDiversity is designed to work directly with any SNP dataset encoded in standard biallelic dosage format (`0` (homozygous reference, *aa*), `1` (heterozygous, *aA*), `2` (homozygous alternate, *AA*), with `NA` for missing data) including the direct output of DArTseq and most SNP-calling pipelines.
 
-Installing fastDiversity
-=======================
-Development version
--------------------
+A key design goal is support for datasets spanning **multiple species or genetic groups**, where locus filtering and statistics need to be calculated independently per group. This is a common scenario in conservation genomics and comparative population studies that is not well served by existing tools.
 
+## Functions
+
+| Function | Description |
+|----------|-------------|
+| `make_allele_list()` | Returns a named list of allele sets per group, for allele sharing analysis |
+| `calculate_private_alleles()` | Counts private (group-exclusive) and total alleles per group |
+| `faststats()` | Calculates Ho, He, uHe, Fis, uFis, Fst, and Ar per site, with per-group locus filtering, optional bootstrapped confidence intervals, and optional Hardy-Weinberg equilibrium testing |
+
+## Installation
+
+```r
+# Install remotes if needed
+if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+
+remotes::install_github("eilishmcmaster/fastDiversity")
 ```
-# Install devtools if not already installed
-if (!requireNamespace("devtools", quietly = TRUE)) {
-  install.packages("devtools")
-}
 
-# Install the package
-remotes::install_github("https://github.com/eilishmcmaster/fastDiversity")
-```
+## Quick start
 
-Example use
-=======================
-Load package and data:
-```
+```r
 library(fastDiversity)
-data(example_gt)
-data(example_meta)
+
+data(example_gt)    # genotype matrix: samples × loci, values 0/1/2/NA
+data(example_meta)  # sample metadata with population and site columns
 ```
 
-Calculate private and total alleles by specified group (in this case, population):
-```
-allele_list_population <- make_allele_list(example_gt, example_meta$population)
-ggvenn::ggvenn(allele_list_population)
-private_total_alleles_population  <- calculate_private_alleles(allele_list_population)
-```
+**Allele sharing and private alleles:**
 
-Calculate observed heterozygosity (Ho), expected heterozygosity (He), unbiased expected heterozygosity (uHe), inbreeding coefficient (Fis), mean allelic richness (Ar), and rarefied allelic richness (rAr):
-```
-basicstats <- faststats(example_gt, example_meta$population,
-                          example_meta$site, minimum_n=3, 
-                          minimum_loci=50, maf=0.05, max_missingness=0.3)
+```r
+allele_list <- make_allele_list(example_gt, example_meta$population)
+
+# Visualise overlap between populations
+ggvenn::ggvenn(allele_list)
+
+# Count private and total alleles per population
+calculate_private_alleles(allele_list)
 ```
 
+**Diversity statistics:**
 
-References
-=======================
+```r
+basicstats <- faststats(
+  gt                     = example_gt,
+  genetic_group_variable = example_meta$population,
+  site_variable          = example_meta$site,
+  minimum_n              = 3,
+  minimum_loci           = 50,
+  maf                    = 0.05,
+  max_missingness        = 0.3
+)
+```
 
-Frankham, R., Ballou, J. D., & Briscoe, D. A. (2010). Introduction to Conservation Genetics (2nd ed.). Cambridge University Press. https://doi.org/10.1017/CBO9780511809002
+Returns one row per genetic group × site combination, with columns for Ho, He, uHe, Fis, uFis, Fst, Ar, and the number of individuals and loci used.
 
-Kalinowski, S. T. (2004). hp‐rare 1.0: a computer program for performing rarefaction on measures of allelic richness. Molecular Ecology Notes, 5(1), 187-189. https://doi.org/10.1111/j.1471-8286.2004.00845.x
+**With bootstrapped confidence intervals:**
 
-Keenan, K. G., McGinnity, P., Cross, T. F., Crozier, W. W., & Prodöhl, P. A. (2013). Diversity: an r package for the estimation and exploration of population genetics parameters and their associated errors. Methods in Ecology and Evolution, 4(8), 782-788. https://doi.org/10.1111/2041-210x.12067
+```r
+basicstats_ci <- faststats(
+  gt                     = example_gt,
+  genetic_group_variable = example_meta$population,
+  site_variable          = example_meta$site,
+  minimum_n              = 3,
+  minimum_loci           = 50,
+  maf                    = 0.05,
+  max_missingness        = 0.3,
+  get_CI_loci_resampling = TRUE,   # resample loci
+  boots                  = 100,
+  CI_alpha               = 0.05
+)
+```
+**Individual-level statistics:**
 
+```r
+# Individual multilocus heterozygosity (MLH)
+ind_MLH_ho <- individual_Ho(
+  example_gt,
+  genetic_group_variable = example_meta$population,
+  maf                    = 0.05,
+  max_missingness        = 0.3
+)
+
+# Individual inbreeding coefficient (Wright's F = 1 - Ho/He)
+# He is calculated at the genetic group level, avoiding Wahlund effect inflation
+ind_F <- individual_F(
+  example_gt,
+  genetic_group_variable = example_meta$population,
+  maf                    = 0.05,
+  max_missingness        = 0.3
+)
+
+plot(ind_MLH_ho, ind_F)
+```
+
+Both functions apply MAF and missingness filtering per genetic group before
+calculation, so individual estimates are based on the same loci used in
+population-level analyses.
+
+
+For a full worked example with plots, see `vignette("fastDiversity-intro")`.
+
+## References
+
+Keenan, K. G., McGinnity, P., Cross, T. F., Crozier, W. W., & Prodöhl, P. A. (2013). diveRsity: An R package for the estimation and exploration of population genetics parameters and their associated errors. *Methods in Ecology and Evolution*, 4(8), 782–788. https://doi.org/10.1111/2041-210x.12067
+
+Nei, M. (1978). Estimation of average heterozygosity and genetic distance from a small number of individuals. *Genetics*, 89(3), 583–590. https://doi.org/10.1093/genetics/89.3.583
+
+Weir, B. S., & Cockerham, C. C. (1984). Estimating F-statistics for the analysis of population structure. *Evolution*, 38(6), 1358–1370. https://doi.org/10.1111/j.1558-5646.1984.tb05657.x
