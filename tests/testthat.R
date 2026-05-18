@@ -9,4 +9,5 @@
 library(testthat)
 library(fastDiversity)
 
+
 test_check("fastDiversity")

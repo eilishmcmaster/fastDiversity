@@ -27,9 +27,11 @@ biologically relevant structure groups.}
 \item{site_variable}{Vector of group IDs (sites) for each individual (same length as 
 number of rows in gt).}
 
+\item{n}{Number of individuals to use for calculations per site. If left as NULL, 
+all individuals are used.}
+
 \item{minimum_n}{Minimum number of individuals required per site (sites with fewer 
- individuals will be filtered out).
-@param n Number of individuals to use for calculations per site. If left as NULL, all individuals are used.}
+individuals will be filtered out).}
 
 \item{minimum_loci}{Minimum number of loci required to proceed with analysis for each 
 genetic group (genetic groups with fewer loci will be skipped).}
@@ -39,7 +41,8 @@ higher missingness will be filtered out).}
 
 \item{maf}{Minimum minor allele frequency filter.}
 
-\item{allele_count_min}{Minimum minor allele count to keep a locus, can be used to exclude singletons.}
+\item{allele_count_min}{Minimum minor allele count to keep a locus, can be used to 
+exclude singletons.}
 }
 \value{
 A data frame with the following columns:
@@ -47,9 +50,14 @@ A data frame with the following columns:
   \item{site}{Site ID corresponding to the sample location.}
   \item{loci}{Number of loci used in the analysis for that group-site combination.}
   \item{n}{Number of individuals sampled at the site for the given group.}
+  \item{pi}{Nucleotide diversity (raw pi).}
+  \item{S}{Number of segregating sites.}
+  \item{theta}{Watterson's theta.}
+  \item{D}{Tajima's D statistic.}
+  \item{real_missingness}{Proportion of missing data in the filtered genotype matrix.}
 }
 \description{
-This function calculates pi, Wu and Watterson's theta, and Tajima's D
+This function calculates pi, Watterson's theta, and Tajima's D
 for specified sites within genetic groups following the methods in Pixy,
 which accounts for missing data to produce unbiased estimates. For further
 details see https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13326 and

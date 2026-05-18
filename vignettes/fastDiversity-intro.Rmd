@@ -51,8 +51,8 @@ library(ggthemes)
 The package ships with SNP data from *Doryphora sassafras* (Sassafras,
 Atherospermataceae), a rainforest tree endemic to the eastern Australian coast.
 The dataset spans five genetic populations, each sampled across multiple sites.
-This structure — multiple hierarchical grouping levels within a single species
-— is the typical use case for `fastDiversity`.
+This structure, multiple hierarchical grouping levels within a single species,
+is the typical use case for `fastDiversity`.
 
 ```{r load-data}
 data(example_data)
@@ -75,7 +75,7 @@ head(example_meta)
 table(example_meta$site, example_meta$population)
 ```
 
-The row order of `example_gt` must match the row order of `example_meta` —
+The row order of `example_gt` must match the row order of `example_meta`,
 the nth row of the genotype matrix corresponds to the nth row of the metadata.
 
 --- 
@@ -102,7 +102,7 @@ pcs <- pca$x %>%
 ggplot(pcs, aes(x = PC1, y = PC2, color = factor(population))) +
   geom_point(size = 2, alpha = 0.8) +
   labs(
-    title  = expression(paste("PCA of SNP genotypes: ", italic("D. sassafras"))),
+    title  = expression("PCA of SNP genotypes"),
     x      = axis_names[1],
     y      = axis_names[2],
     color  = "Population"
@@ -144,6 +144,12 @@ ggvenn::ggvenn(allele_list_population,
   ggtitle("Allele sharing among populations")
 ```
 
+Alternatively, an upset plot may be easier to read: 
+
+```{r venn upset plot, fig.width = 8, fig.height = 6, message = FALSE}
+ggVennDiagram::plot_upset(ggVennDiagram::Venn(allele_list_population), sets.bar.show.numbers = FALSE)
+```
+
 This shows how much allelic diversity is shared across populations versus
 restricted to individual groups. A large exclusive region indicates a
 genetically distinct population.
@@ -175,12 +181,12 @@ genetic group.
 |-----------|-------------|
 | `minimum_n`| Exclude sites with fewer than this many individuals |
 | `minimum_loci`| Exclude genetic groups where fewer than this many loci pass filtering |
-| `maf`| Minor allele frequency threshold — loci below this value are excluded per genetic group (typically 0.05) |
+| `maf`| Minor allele frequency threshold: loci below this value are excluded per genetic group (typically 0.05) |
 | `max_missingness`| Exclude loci missing in more than this proportion of samples within a group (e.g. 0.3 removes loci missing in >30% of samples) |
 
 Filtering is applied within each genetic group independently. A locus retained
 for one population may be excluded for another if it fails MAF or missingness
-thresholds in that group — an important distinction from global pre-filtering,
+thresholds in that group, an important distinction from global pre-filtering,
 which can retain uninformative loci in some groups or discard informative ones
 in others.
 
@@ -209,23 +215,23 @@ head(basicstats)
 
 | Column | Description |
 |--------|-------------|
-| `group`| Genetic group ID (e.g. population, species) |
-| `site`| Site ID |
-| `Ar`| Allelic richness per site per group, standardised for sample size |
-| `Ho`| Observed heterozygosity — proportion of heterozygous loci averaged across individuals |
-| `He`| Expected heterozygosity under Hardy-Weinberg equilibrium within `site_variable` |
-| `uHe`| Unbiased expected heterozygosity (corrected for small sample size) |
-| `Fis`| Inbreeding coefficient (`1 - Ho/He`). Positive values indicate excess homozygosity; negative values indicate excess heterozygosity |
-| `uFis`| Unbiased inbreeding coefficient (`1 - Ho/uHe`) |
-| `Fst`| Population differentiation — Weir & Cockerham (1984) FST, calculated as `(Ht - Hs) / Ht` |
-| `loci`| Number of loci retained after filtering for this group |
-| `n`| Number of individuals sampled at this site × group combination |
+| `group` | Genetic group ID (e.g. population, species) |
+| `site` | Site ID |
+| `Ar` | Allelic richness per site per group, standardised for sample size |
+| `Ho` | Observed heterozygosity: proportion of heterozygous loci averaged across individuals |
+| `He` | Expected heterozygosity under Hardy-Weinberg equilibrium within site_variable |
+| `uHe` | Unbiased expected heterozygosity (corrected for small sample size) |
+| `Fis` | Inbreeding coefficient (1 - Ho/He). Positive values indicate excess homozygosity; negative values indicate excess heterozygosity |
+| `uFis` | Unbiased inbreeding coefficient (1 - Ho/uHe) |
+| `Fst` | Population differentiation: Weir & Cockerham (1984) FST, calculated as (Ht - Hs) / Ht |
+| `loci` | Number of loci retained after filtering for this group |
+| `n` | Number of individuals sampled at this site x group combination |
 
 
 ### Plotting diversity statistics
 
 Because `faststats()` returns one row per site, each population contributes
-multiple points — one per site. A faceted multi-panel plot gives a
+multiple points, one per site. A faceted multi-panel plot gives a
 simultaneous overview of heterozygosity, inbreeding, and differentiation:
 
 ```{r plot-multi, fig.width = 6, fig.height = 4, message = FALSE, warning = FALSE}
@@ -259,8 +265,7 @@ ggplot(stats_long, aes(x = group, y = value, fill = group)) +
   theme(
     legend.position  = "none",
     strip.background = element_rect(fill = "grey92"),
-    strip.text       = element_text(size = 9),
-    axis.text.x      = element_text(angle = 30, hjust = 1)
+    strip.text       = element_text(size = 9)
   )
 ```
 
@@ -270,10 +275,10 @@ For published reporting, bootstrapped confidence intervals can be added around
 Ho, He, and Fis. Two resampling strategies are available:
 
 - **By loci** (`get_CI_loci_resampling = TRUE`): analogous to
-  `hierfstat::boot.ppfis` — loci are resampled with replacement to quantify
+  `hierfstat::boot.ppfis` : loci are resampled with replacement to quantify
   how sensitive statistics are to the choice of markers.
 - **By individuals** (`get_CI_individual_resampling = TRUE`): analogous to
-  `diveRsity::basicstats` — individuals are resampled with replacement to
+  `diveRsity::basicstats` : individuals are resampled with replacement to
   quantify sampling uncertainty.
 
 ```{r faststats-ci, eval = FALSE}
@@ -378,7 +383,7 @@ head(ind_MLH_ho)
 *F* = 1 − (Ho / He), where He is calculated across the genetic group. This
 measures the probability that both alleles at a locus are identical by descent
 (Frankham, Ballou & Briscoe 2010). Because He is calculated at the group level
-rather than within the site, estimates are not deflated by the Wahlund effect
+rather than across genetic groups, estimates are not deflated by the Wahlund effect
 that would arise from pooling genetically differentiated individuals.
 
 ```{r ind-f}
@@ -419,7 +424,157 @@ ggplot(ind_df, aes(x = MLH, y = F, colour = as.factor(population))) +
 ```
 
 
+## Nucleotide diversity and Tajima's D
+
+`pi_theta_d_stats()` calculates nucleotide diversity (pi), Wu & Watterson's theta
+(W), the number of segregating sites (S), and Tajima's D for each genetic
+site_variable specified within genetic_group_variable. The implementation follows the missing-data-aware
+approach of Korunes & Samuk (2021), meaning that loci with missing genotypes
+contribute proportionally rather than being excluded entirely, an important
+correction for RADseq and DArTseq data where missingness is common.
+
+### Running pi_theta_d_stats
+
+When `n = NULL`, all individuals at each site are used. The `n` argument can
+be set to a fixed integer to subsample individuals, which allows comparison
+across sites with unequal sample sizes:
+
+```{r tajima-run}
+# Use all available individuals per population
+D_n_all <- pi_theta_d_stats(
+  example_gt,
+  genetic_group_variable = example_meta$population,
+  site_variable          = example_meta$population,
+  n                      = NULL,
+  minimum_n              = 5,
+  minimum_loci           = 5,
+  max_missingness        = 0.1,
+  maf                    = 0,
+  allele_count_min       = 0
+)
+
+# Subsample to 20 individuals per population
+D_n_20 <- pi_theta_d_stats(
+  example_gt,
+  genetic_group_variable = example_meta$population,
+  site_variable          = example_meta$population,
+  n                      = 20,
+  minimum_n              = 5,
+  minimum_loci           = 5,
+  max_missingness        = 0.1,
+  maf                    = 0,
+  allele_count_min       = 0
+)
+
+# Subsample to 10 individuals per population
+D_n_10 <- pi_theta_d_stats(
+  example_gt,
+  genetic_group_variable = example_meta$population,
+  site_variable          = example_meta$population,
+  n                      = 10,
+  minimum_n              = 5,
+  minimum_loci           = 5,
+  max_missingness        = 0.1,
+  maf                    = 0,
+  allele_count_min       = 0
+)
+
+# Subsample to 5 individuals per population
+D_n_5 <- pi_theta_d_stats(
+  example_gt,
+  genetic_group_variable = example_meta$population,
+  site_variable          = example_meta$population,
+  n                      = 5,
+  minimum_n              = 5,
+  minimum_loci           = 5,
+  max_missingness        = 0.1,
+  maf                    = 0,
+  allele_count_min       = 0
+)
+```
+
+### Output columns explained
+
+| Column | Description |
+|--------|-------------|
+| `group` | Genetic group ID |
+| `site` | Site ID |
+| `loci` | Number of loci retained after filtering |
+| `n` | Number of individuals used |
+| `pi` | Nucleotide diversity: mean pairwise differences across loci |
+| `S` | Number of segregating (polymorphic) sites |
+| `theta` | Wu & Watterson's theta: diversity estimate based on S, corrected for sample size |
+| `D` | Tajima's D: standardised difference between pi and W. Negative values suggest an excess of rare variants (population expansion or purifying selection); positive values suggest an excess of intermediate-frequency variants (balancing selection or population contraction) |
+| `real_missingness` | Proportion of missing data in the filtered matrix used for calculation |
+
+### Effect of sample size on diversity estimates
+
+A key feature of `pi_theta_d_stats()` is the `n` argument, which subsamples
+individuals to a fixed number before calculation. This allows fair comparison
+across populations with unequal sample sizes. However, sample size affects
+estimates differently: S is particularly sensitive to n because larger samples
+are more likely to capture rare variants, which inflates W relative to pi and
+therefore pulls D negative.
+
+The plot below illustrates this by comparing estimates across three levels of
+subsampling:
+
+```{r tajima-plot, fig.width = 6, fig.height = 6, message = FALSE, warning = FALSE}
+library(tidyr)
+
+# Combine results and label by sample size used
+D_combined <- bind_rows(
+  D_n_all %>% mutate(sample_size = paste0("All (n=", n, ")")),
+  D_n_20  %>% mutate(sample_size = "n = 20"),
+  D_n_10  %>% mutate(sample_size = "n = 10"),
+  D_n_5   %>% mutate(sample_size = "n = 5")
+) %>%
+  mutate(
+    across(c(pi, S, theta, D), as.numeric),
+    sample_size = factor(sample_size,
+                         levels = c("n = 5", "n = 10", "n = 20",
+                                    unique(D_n_all %>%
+                                             mutate(l = paste0("All (n=", n, ")")) %>%
+                                             pull(l))))
+  )
+
+# Reshape to long for faceting
+D_long <- D_combined %>%
+  pivot_longer(cols = c(pi, S, theta, D),
+               names_to  = "statistic",
+               values_to = "value") %>%
+  mutate(statistic = factor(statistic,
+    levels = c("pi", "theta", "S", "D"),
+    labels = c("Nucleotide diversity (pi)",
+               "Wu & Watterson's theta (W)",
+               "Segregating sites (S)",
+               "Tajima's D")))
+
+ggplot(D_long, aes(x = group, y = value, colour = sample_size,
+                   group = sample_size)) +
+  geom_line(linewidth = 0.7, alpha = 0.8) +
+  geom_point(size = 2) +
+  facet_wrap(~ statistic, scales = "free_y", ncol = 2) +
+  labs(
+    title   = expression("Effect of sample size on diversity statistics"),
+    x       = "Population",
+    y       = NULL,
+    colour  = "Sample size"
+  ) +
+  theme_bw() +
+  theme(
+    strip.background = element_rect(fill = "grey92"),
+    strip.text       = element_text(size = 9),
+    legend.position  = "bottom"
+  )
+```
+
+
+
 ## References
+
+Goudet, J. (2005). Hierfstat, a package for r to compute and test hierarchical F-statistics. 
+*Molecular Ecology Notes*, 5(1), 184–186. https://doi.org/10.1111/j.1471-8286.2004.00828.x
 
 Kalinowski, S. T. (2004). hp-rare 1.0: a computer program for performing
 rarefaction on measures of allelic richness. *Molecular Ecology Notes*, 5(1),
@@ -430,6 +585,10 @@ Keenan, K. G., McGinnity, P., Cross, T. F., Crozier, W. W., & Prodöhl, P. A.
 population genetics parameters and their associated errors. *Methods in
 Ecology and Evolution*, 4(8), 782–788.
 https://doi.org/10.1111/2041-210x.12067
+
+Korunes, K. L., & Samuk, K. (2021). pixy: Unbiased estimation of nucleotide diversity 
+and divergence in the presence of missing data. *Molecular Ecology Resources*,
+21(4), 1359–1368. https://doi.org/10.1111/1755-0998.13326
 
 Nei, M. (1978). Estimation of average heterozygosity and genetic distance from
 a small number of individuals. *Genetics*, 89(3), 583–590.

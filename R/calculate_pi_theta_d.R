@@ -1,116 +1,87 @@
-#' Calculate Tajima's D as in Pixy 
-#' 
+#' Calculate Tajima's D, pi, and Watterson's theta
+#'
 #' @description
-#' This function calculates Tajima's D, Watterson's theta, and pi following the methods in Pixy, which accounts for missing data to produce unbiased estimates. For further details see https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13326 and https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.14104 
-#' 
-#' @param gt Genotype matrix where individuals are rows and loci are columns, coded as 
-#'   0=aa, 1=aA, 2=AA. Note these methods are designed to have fixed/invariant loci                                              
-#'   included (https://onlinelibrary.wiley.com/doi/10.1111/1755-0998.13326). 
+#' Calculates Tajima's D, nucleotide diversity (pi), and Watterson's theta
+#' from a biallelic genotype matrix, following the approach of Korunes & Samuk
+#' (2021) to account for missing data. Non-segregating and monomorphic sites
+#' are removed prior to calculation.
+#'
+#' @param gt Genotype matrix where individuals are rows and loci are columns,
+#'   coded as 0=aa, 1=aA, 2=AA.
+#'
+#' @return A list with elements:
+#'   \item{tajima_d}{Tajima's D statistic}
+#'   \item{num_sites}{Number of sites used after filtering}
+#'   \item{raw_pi}{Nucleotide diversity (pi)}
+#'   \item{watterson_theta}{Watterson's theta}
+#'   \item{d_stdev}{Standard deviation of the denominator}
+#'
+#' @references
+#' Korunes, K. L., & Samuk, K. (2021). pixy: Unbiased estimation of
+#' nucleotide diversity and divergence in the presence of missing data.
+#' Molecular Ecology Resources, 21(4), 1359–1368.
+#' https://doi.org/10.1111/1755-0998.13326
+#'
+#' Tajima, F. (1989). Statistical method for testing the neutral mutation
+#' hypothesis by DNA polymorphism. Genetics, 123(3), 585–595.
+#' https://doi.org/10.1093/genetics/123.3.585
+#'
+#' @export
 calculate_pi_theta_d <- function(gt) {
+  snp_mat <- as.matrix(gt)
   
-  site_stats <- apply(gt, 2, function(col) {
-    nonmiss <- !is.na(col)
-    k <- sum(nonmiss)   # diploid individuals
-    n_s <- 2 * k  # haploid sample size
-    # note this PIXY version includes fixed sites (where all alleles are the same) which is not the case in Tajima 1989
-    
-    x <- sum(col[nonmiss])  # alt allele count
-    num_pairs <- n_s * (n_s - 1) / 2 # total number of haploid pairs (no. comparisons Korunes + Samuk 2021)
-    num_diff_pairs <- x * (n_s - x) # number of different haploid pairs (total differences Korunes + Samuk 2021)
-    
-    if (isTRUE(n_s < 2)) {
-      return(c(n_s = n_s,
-               # mpd = 0,
-               num_diff_pairs = num_diff_pairs,
-               num_pairs = num_pairs,
-               segregating = 0))
-    }
-    
-    if (x == 0 || x == n_s) { # if there are no alt alleles or alt allele is fixed, return 0
-      return(c(n_s = n_s,
-               # mpd = 0,
-               num_diff_pairs = num_diff_pairs,
-               num_pairs = num_pairs,
-               segregating = 0))
-    }
-    
-    return(c(
-      n_s = n_s,
-      num_diff_pairs = num_diff_pairs, 
-      num_pairs = num_pairs, 
-      segregating = 1
-    ))
-  })
+  # remove loci that are not segregating (all 0 or all 2) or are empty
+  obs_counts <- colSums(!is.na(snp_mat))
+  all_ref <- colSums(snp_mat == 0, na.rm = TRUE) == obs_counts
+  all_alt <- colSums(snp_mat == 2, na.rm = TRUE) == obs_counts
+  keep <- obs_counts > 0 & !(all_ref | all_alt)
+  snp_mat <- snp_mat[, keep]
   
-  site_stats <- as.data.frame(t(site_stats))
+  # allele counts per locus
+  ref_counts   <- colSums(2 - snp_mat, na.rm = TRUE)
+  alt_counts   <- colSums(snp_mat, na.rm = TRUE)
+  total_counts <- ref_counts + alt_counts
   
-  pi <- sum(site_stats$num_diff_pairs, na.rm = TRUE)/ sum(site_stats$num_pairs, na.rm = TRUE) # pi raw described in Korunes + Samuk 2021 
-  #print(paste('pi:',pi))
+  valid        <- total_counts > 1
+  alt_counts   <- alt_counts[valid]
+  ref_counts   <- ref_counts[valid]
+  total_counts <- total_counts[valid]
   
+  num_sites <- sum(total_counts > 0)
   
-  S <- sum(site_stats$segregating) # number of sites/loci that are segregating/polymorphic
+  # pi
+  p         <- alt_counts / total_counts
+  q         <- ref_counts / total_counts
+  pi_values <- 2 * p * q * total_counts / (total_counts - 1)
+  pi_values[total_counts <= 1] <- 0
+  raw_pi    <- sum(pi_values, na.rm = TRUE)
   
-  # wattersons theta used by pixy described in Bailey, Stevison, Samuk 2025
-  # pixy groups segregating sites by n_s then W = sum(S_n / a1_n)
+  # Watterson's theta
+  variant_idx   <- alt_counts > 0 & alt_counts < total_counts
+  variant_total <- total_counts[variant_idx]
+  a1_vec        <- 1 / (seq_len(max(variant_total) - 1))
+  watterson_theta <- sum(1 / sapply(variant_total,
+                                    function(n) sum(a1_vec[1:(n - 1)])))
   
-  theta_w <- 0
-  segregating_sites <- site_stats[site_stats$segregating == 1, ]
-  
-  if (nrow(segregating_sites) > 0) { 
-    # group by haploid sample size
-    for (n_s in unique(segregating_sites$n_s)) { # group sites/loci that share the same number of haploid genotypes (handles missingness)
-      S_n <- sum(segregating_sites$n_s == n_s)
-      a1_n <- sum(1 / (1:(n_s - 1)))
-      theta_w <- theta_w + S_n / a1_n
-    }
-  }
-  
-  # calcs for tajimas D
-  n <- mean(site_stats$n_s, na.rm = TRUE) # mean haploid count (number of haploid sequences)
-  #print(paste("n:",n))
-  
-  if (isTRUE(n < 3)){ # if there are less than 3 haploid sequences D is NA
-    return(list(pi = pi, S = S, theta = theta_w, D = NA,
-                per_site_stats = site_stats))
-  }
-
-  a1 <- sum(1 / (1:(n - 1))) # harmonic numbers from Tajima 1989
-  a2 <- sum(1 / ((1:(n - 1)))^2)
-
+  # Tajima's D
+  n  <- round(mean(total_counts))
+  s  <- length(variant_total)
+  a1 <- sum(1 / seq(1, n - 1))
+  a2 <- sum(1 / (seq(1, n - 1)^2))
   b1 <- (n + 1) / (3 * (n - 1))
   b2 <- 2 * (n^2 + n + 3) / (9 * n * (n - 1))
-
   c1 <- b1 - (1 / a1)
-  c2 <- b2 - ((n + 2) / (a1 * n)) + (a2 / a1^2)
-
+  c2 <- b2 - ((n + 2) / (a1 * n)) + (a2 / (a1^2))
   e1 <- c1 / a1
   e2 <- c2 / (a1^2 + a2)
-
-  V <- e1 * S + e2 * S * (S - 1) # variance
-  if (V == 0) {
-    D <- NA
-  } else {
-    D <- (pi - theta_w) / sqrt(V)
-  }
-
-  # ## original Tajimas D code and example:
-  # # pi <- 15.38 # average pairwise nucleotide differences between individuals
-  # # S <- 45 # number of segregating sites
-  # # n <- 7 # number of individuals
-  # 
-  # a1 <- sum(1 / (1:(n - 1))) # should be 2.45
-  # a2 <- sum(1 / ((1:(n - 1))^2)) # 1.49 
-  # e1 <- (1/a1) * ((n+1)/(3*(n-1)) - 1/a1) #0.0148 
-  # c <- ((2*(n^2 + n + 3))/(9*n*(n-1))) - ((n+2)/(a1*n)) + (a2/(a1^2)) #0.0358 
-  # e2 <- c/(a1^2 + a2) #0.00478 
-  # D <- (pi - S/a1)/ sqrt(e1*S + e2*S*(S-1)) #-0.938 
-  ##
-
+  d_stdev  <- sqrt((e1 * s) + (e2 * s * (s - 1)))
+  tajima_d <- if (d_stdev > 0) (raw_pi - watterson_theta) / d_stdev else NA
+  
   return(list(
-    pi = pi,
-    S = S,
-    theta = theta_w,
-    D = D,
-    per_site_stats = site_stats
+    tajima_d        = tajima_d,
+    num_sites       = num_sites,
+    raw_pi          = raw_pi,
+    watterson_theta = watterson_theta,
+    d_stdev         = d_stdev
   ))
 }

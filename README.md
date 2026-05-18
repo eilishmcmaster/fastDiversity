@@ -8,13 +8,14 @@ Many existing tools require specific file formats or data structures, and some a
 
 A key design goal is support for datasets spanning **multiple species or genetic groups**, where locus filtering and statistics need to be calculated independently per group. This is a common scenario in conservation genomics and comparative population studies that is not well served by existing tools.
 
-## Functions
+## Key functions
 
 | Function | Description |
 |----------|-------------|
 | `make_allele_list()` | Returns a named list of allele sets per group, for allele sharing analysis |
 | `calculate_private_alleles()` | Counts private (group-exclusive) and total alleles per group |
 | `faststats()` | Calculates Ho, He, uHe, Fis, uFis, Fst, and Ar per site, with per-group locus filtering, optional bootstrapped confidence intervals, and optional Hardy-Weinberg equilibrium testing |
+| `pi_theta_d_stats()` | Calculates pi, theta, S, and D with per-group locus filtering |
 
 ## Installation
 
@@ -105,13 +106,47 @@ Both functions apply MAF and missingness filtering per genetic group before
 calculation, so individual estimates are based on the same loci used in
 population-level analyses.
 
+***Neutrality statistics:***
+
+```r
+# Use all available individuals per population
+D_n_all <- pi_theta_d_stats(
+  example_gt,
+  genetic_group_variable = example_meta$population,
+  site_variable          = example_meta$population,
+  n                      = NULL, # if set to NULL, all individuals are used, but downsampling can be specified
+  minimum_n              = 5, 
+  minimum_loci           = 5,
+  max_missingness        = 0.1,
+  maf                    = 0,
+  allele_count_min       = 0
+)
+```
+Returns a table containing nucleotide diversity (pi), segregating sites (S), 
+Wu & Watterson's theta (W), and Tajima's D (D) per site_variable grouping. 
+
 
 For a full worked example with plots, see `vignette("fastDiversity-intro")`.
 
 ## References
 
-Keenan, K. G., McGinnity, P., Cross, T. F., Crozier, W. W., & Prodöhl, P. A. (2013). diveRsity: An R package for the estimation and exploration of population genetics parameters and their associated errors. *Methods in Ecology and Evolution*, 4(8), 782–788. https://doi.org/10.1111/2041-210x.12067
+Goudet, J. (2005). Hierfstat, a package for r to compute and test hierarchical F-statistics. 
+*Molecular Ecology Notes*, 5(1), 184–186. https://doi.org/10.1111/j.1471-8286.2004.00828.x
 
-Nei, M. (1978). Estimation of average heterozygosity and genetic distance from a small number of individuals. *Genetics*, 89(3), 583–590. https://doi.org/10.1093/genetics/89.3.583
+Kalinowski, S. T. (2004). hp-rare 1.0: a computer program for performing
+rarefaction on measures of allelic richness. *Molecular Ecology Notes*, 5(1),
+187–189. https://doi.org/10.1111/j.1471-8286.2004.00845.x
 
-Weir, B. S., & Cockerham, C. C. (1984). Estimating F-statistics for the analysis of population structure. *Evolution*, 38(6), 1358–1370. https://doi.org/10.1111/j.1558-5646.1984.tb05657.x
+Keenan, K. G., McGinnity, P., Cross, T. F., Crozier, W. W., & Prodöhl, P. A.
+(2013). diveRsity: An R package for the estimation and exploration of
+population genetics parameters and their associated errors. *Methods in
+Ecology and Evolution*, 4(8), 782–788.
+https://doi.org/10.1111/2041-210x.12067
+
+Korunes, K. L., & Samuk, K. (2021). pixy: Unbiased estimation of nucleotide diversity 
+and divergence in the presence of missing data. *Molecular Ecology Resources*,
+21(4), 1359–1368. https://doi.org/10.1111/1755-0998.13326
+
+Nei, M. (1978). Estimation of average heterozygosity and genetic distance from
+a small number of individuals. *Genetics*, 89(3), 583–590.
+https://doi.org/10.1093/genetics/89.3.583
