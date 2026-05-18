@@ -51,7 +51,7 @@ individual-level summaries including multilocus heterozygosity and Wright’s in
 
 All functions return tidy tabular outputs compatible with standard R visualisation and downstream analysis workflows.
 
-# Relationship to existing software
+# State of the field
 
 fastDiversity complements rather than replaces existing population genetic software ecosystems. hierfstat [@goudet2005] and diveRsity [@keenan2013] provide established implementations of diversity and differentiation statistics but apply filtering globally and require specialised input structures. adegenet [@jombart2008] and dartR [@gruber2018] provide extensive infrastructure for genomic analyses and DArTseq workflows but are centred on custom object classes and single-species analytical assumptions. poppr [@kamvar2014] supports clonal and mixed-ploidy systems but does not specifically address per-group filtering in comparative multi-species datasets.
 
