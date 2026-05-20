@@ -26,8 +26,7 @@ comparative population studies.
 
 The package accepts genotype data in standard biallelic dosage format: `0`
 (homozygous reference, *aa*), `1` (heterozygous, *aA*), and `2` (homozygous
-alternate, *AA*), with missing data as `NA`. This format is the direct output
-of DArTseq and can be produced by most SNP-calling pipelines.
+alternate, *AA*), with missing data as `NA`. This format is the output produced by most SNP-calling pipelines.
 
 ---
 

@@ -4,7 +4,7 @@
 
 **fastDiversity** is an R package for fast, flexible calculation of population genetic diversity statistics from biallelic SNP data.
 
-Many existing tools require specific file formats or data structures, and some are no longer actively maintained. fastDiversity is designed to work directly with any SNP dataset encoded in standard biallelic dosage format (`0` (homozygous reference, *aa*), `1` (heterozygous, *aA*), `2` (homozygous alternate, *AA*), with `NA` for missing data) including the direct output of DArTseq and most SNP-calling pipelines.
+Many existing tools require specific file formats or data structures, and some are no longer actively maintained. fastDiversity is designed to work directly with any SNP dataset encoded in standard biallelic dosage format (`0` (homozygous reference, *aa*), `1` (heterozygous, *aA*), `2` (homozygous alternate, *AA*), with `NA` for missing data), the direct output of most SNP-calling pipelines.
 
 A key design goal is support for datasets spanning **multiple species or genetic groups**, where locus filtering and statistics need to be calculated independently per group. This is a common scenario in conservation genomics and comparative population studies that is not well served by existing tools.
 
