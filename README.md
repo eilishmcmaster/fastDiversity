@@ -23,7 +23,13 @@ A key design goal is support for datasets spanning **multiple species or genetic
 # Install remotes if needed
 if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
 
-remotes::install_github("eilishmcmaster/fastDiversity")
+remotes::install_github("eilishmcmaster/fastDiversity", build_vignettes = TRUE)
+
+library(fastDiversity)
+
+# View tutorial vignette
+browseVignettes("fastDiversity")
+
 ```
 
 ## Quick start
