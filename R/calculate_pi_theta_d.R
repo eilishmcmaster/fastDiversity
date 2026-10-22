@@ -35,7 +35,11 @@ calculate_pi_theta_d <- function(gt) {
   all_ref <- colSums(snp_mat == 0, na.rm = TRUE) == obs_counts
   all_alt <- colSums(snp_mat == 2, na.rm = TRUE) == obs_counts
   keep <- obs_counts > 0 & !(all_ref | all_alt)
-  snp_mat <- snp_mat[, keep]
+  snp_mat <- snp_mat[, keep, drop = FALSE]
+  if (ncol(snp_mat) == 0) { # no segregating sites
+    return(list(tajima_d = NA_real_, num_sites = 0, raw_pi = 0,
+                watterson_theta = 0, d_stdev = NA_real_))
+  }
   
   # allele counts per locus
   ref_counts   <- colSums(2 - snp_mat, na.rm = TRUE)

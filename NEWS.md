@@ -31,6 +31,14 @@
 - `MC_HWEtest_of_loci()`: matrix input now works (previously only data
   frames), and the per-locus "genotypes are not labelled" warnings are gone.
 - `individual_Ho()`: no longer errors when a group has too few loci.
+- `faststats()`: statistics are calculated at full precision and rounded only
+  in the output (per-locus He was previously rounded before averaging).
+- `faststats()`: groups where no loci pass the missingness filter are skipped
+  with a message instead of erroring.
+- `faststats()`: bootstrap CIs no longer error when all resampled values are NA.
+- `pi_theta_d_stats()`: `minimum_loci` is now applied (it was ignored),
+  statistic columns are numeric, and sites with a single remaining locus or no
+  segregating sites no longer error.
 
 ## Other changes
 - C++ helpers are compiled with the package instead of at runtime with
