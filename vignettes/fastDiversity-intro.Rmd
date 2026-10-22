@@ -45,11 +45,11 @@ library(ggthemes)
 
 ---
 
-## Example dataset: *Doryphora sassafras*
+## Example dataset
 
-The package ships with SNP data from *Doryphora sassafras* (Sassafras,
-Atherospermataceae), a rainforest tree endemic to the eastern Australian coast.
-The dataset spans five genetic populations, each sampled across multiple sites.
+The package ships with unpublished DArTseq SNP data from a plant species from
+eastern Australia (see `?example_data`). The dataset spans five genetic
+populations, each sampled across multiple sites.
 This structure, multiple hierarchical grouping levels within a single species,
 is the typical use case for `fastDiversity`.
 
