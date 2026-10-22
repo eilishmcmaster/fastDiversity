@@ -7,7 +7,8 @@
 matcher(gt, loci)
 }
 \arguments{
-\item{gt}{Genotype matrix where the first row represents loci and subsequent rows are genotype data (0, 1, 2).}
+\item{gt}{Genotype matrix where the first row represents loci and subsequent rows are genotype data
+coded as 0=aa, 1=aA, 2=AA.}
 
 \item{loci}{Data frame containing locus information with columns 'loci', 'allele1', and 'allele2'.}
 }
