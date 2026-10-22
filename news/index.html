@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fastDiversity</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.4.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -33,13 +33,13 @@
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Changelog</h1>
-      <small>Source: <a href="https://github.com/eilishmcmaster/fastDiversity/blob/v1.4.0/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/eilishmcmaster/fastDiversity/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="fastdiversity-development-version">fastDiversity (development version)<a class="anchor" aria-label="anchor" href="#fastdiversity-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="1.4.0" id="fastdiversity-140">fastDiversity 1.4.0<a class="anchor" aria-label="anchor" href="#fastdiversity-140"></a></h2>
 <div class="section level3">
-<h3 id="changes-to-statistics-development-version">Changes to statistics<a class="anchor" aria-label="anchor" href="#changes-to-statistics-development-version"></a></h3>
+<h3 id="changes-to-statistics-1-4-0">Changes to statistics<a class="anchor" aria-label="anchor" href="#changes-to-statistics-1-4-0"></a></h3>
 <ul><li>Documentation now explains how monomorphic sites affect each statistic, including that <code>pi</code> and <code>theta</code> from <code><a href="../reference/pi_theta_d_stats.html">pi_theta_d_stats()</a></code> are sums over segregating sites rather than per-site values.</li>
 <li>
 <code><a href="../reference/faststats.html">faststats()</a></code>: the previous <code>Fst</code> column, (Ht - Hs) / Ht, was mislabelled as Weir &amp; Cockerham (1984). It is now named <code>Gst</code> (Nei 1973). A new <code>Fst</code> column gives population-specific FST (Weir &amp; Goudet 2017) for each site, relative to the other retained sites in the genetic group.</li>
@@ -52,7 +52,7 @@
 <code><a href="../reference/calculate_rarified_Ar.html">calculate_rarified_Ar()</a></code>: uses log-scale binomial coefficients (previously overflowed to 0 for large samples), returns NA for loci not genotyped at every site, returns site and locus names, and handles single-individual sites; matches <code><a href="https://rdrr.io/pkg/hierfstat/man/allelic.richness.html" class="external-link">hierfstat::allelic.richness()</a></code> on complete data.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-1-4-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-1-4-0"></a></h3>
 <ul><li>
 <code><a href="../reference/make_allele_list.html">make_allele_list()</a></code> / <code><a href="../reference/matcher.html">matcher()</a></code>: alleles were assigned using DArT 1-row coding (2 = heterozygote) instead of the package’s 0=aa, 1=aA, 2=AA coding. Private and total allele counts from <code><a href="../reference/calculate_private_alleles.html">calculate_private_alleles()</a></code> change as a result, and now agree with <code><a href="../reference/calculate_total_alleles.html">calculate_total_alleles()</a></code>.</li>
 <li>
@@ -75,7 +75,7 @@
 <code><a href="../reference/pi_theta_d_stats.html">pi_theta_d_stats()</a></code>: <code>minimum_loci</code> is now applied (it was ignored), statistic columns are numeric, and sites with a single remaining locus or no segregating sites no longer error.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="other-changes-development-version">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-development-version"></a></h3>
+<h3 id="other-changes-1-4-0">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-1-4-0"></a></h3>
 <ul><li>C++ helpers are compiled with the package instead of at runtime with <code><a href="https://rdrr.io/pkg/Rcpp/man/cppFunction.html" class="external-link">Rcpp::cppFunction()</a></code>, so bootstrapping is much faster and no compiler is needed after installation.</li>
 <li>Progress output uses <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code> instead of <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>/<code><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat()</a></code>, so it can be silenced with <code><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages()</a></code>.</li>
 <li>Unused <code>future.apply</code> dependency removed.</li>

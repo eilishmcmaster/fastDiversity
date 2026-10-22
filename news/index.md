@@ -1,6 +1,6 @@
 # Changelog
 
-## fastDiversity (development version)
+## fastDiversity 1.4.0
 
 ### Changes to statistics
 
