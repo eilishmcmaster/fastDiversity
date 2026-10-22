@@ -9,6 +9,17 @@
 #' filtered based on genetic group (minimum number of loci, minimum minor 
 #' allele frequency, and maximum missingness per locus) and minimum number of
 #' individuals per site.
+#'
+#' @details
+#' \strong{Monomorphic and invariant sites.} Monomorphic sites are excluded, and
+#' \code{pi} and \code{theta} are sums over segregating sites rather than per-site
+#' (per-nucleotide) values. Per-site estimates require the number of invariant
+#' sites sequenced, which is unavailable for many reduced-representation datasets
+#' (such as DArTseq SNP reports); monomorphic SNP loci alone do not provide it.
+#' \code{pi} and \code{theta} therefore scale with the number of loci analysed, and
+#' are comparable among sites analysed with the same loci, not with genome-wide
+#' nucleotide diversity estimates. Tajima's D does not depend on invariant sites.
+#' See \code{\link{calculate_pi_theta_d}}.
 #' 
 #' @param gt Genotype matrix where individuals are rows and loci are columns, coded as 
 #'   0=aa, 1=aA, 2=AA.
@@ -34,9 +45,9 @@
 #'   \item{site}{Site ID corresponding to the sample location.}
 #'   \item{loci}{Number of loci used in the analysis for that group-site combination.}
 #'   \item{n}{Number of individuals sampled at the site for the given group.}
-#'   \item{pi}{Nucleotide diversity (raw pi).}
+#'   \item{pi}{Nucleotide diversity summed over segregating sites.}
 #'   \item{S}{Number of segregating sites.}
-#'   \item{theta}{Watterson's theta.}
+#'   \item{theta}{Watterson's theta summed over segregating sites.}
 #'   \item{D}{Tajima's D statistic.}
 #'   \item{real_missingness}{Proportion of missing data in the filtered genotype matrix.}
 #' @seealso [resampling_individuals_CI(), resampling_loci_CI()]

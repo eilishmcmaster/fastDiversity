@@ -3,17 +3,23 @@
 #' @description
 #' Calculates Tajima's D, nucleotide diversity (pi), and Watterson's theta
 #' from a biallelic genotype matrix, following the approach of Korunes & Samuk
-#' (2021) to account for missing data. Non-segregating and monomorphic sites
-#' are removed prior to calculation.
+#' (2021) to account for missing data.
+#'
+#' Monomorphic sites are removed before calculation, and \code{raw_pi} and
+#' \code{watterson_theta} are sums over segregating sites. They are not per-site
+#' (per-nucleotide) values, which would require the number of invariant sites
+#' sequenced; this information is unavailable for many reduced-representation
+#' datasets, and monomorphic SNP loci alone do not provide it. Tajima's D does not
+#' depend on invariant sites.
 #'
 #' @param gt Genotype matrix where individuals are rows and loci are columns,
 #'   coded as 0=aa, 1=aA, 2=AA.
 #'
 #' @return A list with elements:
 #'   \item{tajima_d}{Tajima's D statistic}
-#'   \item{num_sites}{Number of sites used after filtering}
-#'   \item{raw_pi}{Nucleotide diversity (pi)}
-#'   \item{watterson_theta}{Watterson's theta}
+#'   \item{num_sites}{Number of segregating sites}
+#'   \item{raw_pi}{Nucleotide diversity (pi) summed over segregating sites}
+#'   \item{watterson_theta}{Watterson's theta summed over segregating sites}
 #'   \item{d_stdev}{Standard deviation of the denominator}
 #'
 #' @references
