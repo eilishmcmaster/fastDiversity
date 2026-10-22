@@ -92,6 +92,18 @@ for specified sites within genetic groups. Data is filtered based on genetic gro
 number of loci, minimum minor allele frequency, and maximum missingness per locus) 
 and minimum number of individuals per site.
 }
+\details{
+\strong{Monomorphic sites and comparability.} Statistics are calculated from the
+loci that pass the filters within each genetic group. With \code{maf > 0} (the
+default) these are polymorphic loci only, and most SNP-calling pipelines output only
+polymorphic sites in any case. Ho, He, uHe and Ar are therefore SNP-level values:
+they are comparable among sites within a genetic group, which share the same loci,
+but they are not genome-wide heterozygosity and should not be compared with values
+from other datasets or from other genetic groups, which retain different loci.
+Fis, uFis, Gst and Fst are ratios that do not change when monomorphic loci are
+added (exactly for complete data, approximately with missing data), so they can be
+compared more broadly.
+}
 \references{
 Nei, M. (1973). Analysis of gene diversity in subdivided populations. Proceedings of the
 National Academy of Sciences, 70(12), 3321--3323. https://doi.org/10.1073/pnas.70.12.3321

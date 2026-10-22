@@ -30,6 +30,18 @@
 #' @param return_locus_stats Specify whether to return p values for each locus from HWE testing.
 #'   Setting this to TRUE also runs the HWE test (\code{run_HWE_test = TRUE}).
 #' 
+#' @details
+#' \strong{Monomorphic sites and comparability.} Statistics are calculated from the
+#' loci that pass the filters within each genetic group. With \code{maf > 0} (the
+#' default) these are polymorphic loci only, and most SNP-calling pipelines output only
+#' polymorphic sites in any case. Ho, He, uHe and Ar are therefore SNP-level values:
+#' they are comparable among sites within a genetic group, which share the same loci,
+#' but they are not genome-wide heterozygosity and should not be compared with values
+#' from other datasets or from other genetic groups, which retain different loci.
+#' Fis, uFis, Gst and Fst are ratios that do not change when monomorphic loci are
+#' added (exactly for complete data, approximately with missing data), so they can be
+#' compared more broadly.
+#'
 #' @return A data frame with the following columns (or, if \code{return_locus_stats = TRUE},
 #'   a list with this data frame as \code{summary} and per-locus HWE p-values as \code{locus_HWE}):
 #'   \item{group}{Genetic group ID (e.g., species, subspecies).}
