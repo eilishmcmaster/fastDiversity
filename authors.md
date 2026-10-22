@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/eilishmcmaster/fastDiversity/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/eilishmcmaster/fastDiversity/blob/v1.4.0/DESCRIPTION)
 
 McMaster ES (2026). *fastDiversity: Simple and Quick Diversity
 Calculations for Biallelic Data*. R package version 1.3.0,
