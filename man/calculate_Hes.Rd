@@ -2,7 +2,7 @@
 % Please edit documentation in R/calculate_Hes.R
 \name{calculate_Hes}
 \alias{calculate_Hes}
-\title{Calculate Observed Heterozygosity (Hes)}
+\title{Calculate Expected Heterozygosity per Locus (Hes)}
 \usage{
 calculate_Hes(gt)
 }
@@ -11,9 +11,9 @@ calculate_Hes(gt)
 0=aa, 1=aA, 2=AA.}
 }
 \value{
-Vector of observed heterozygosity values (Hes) for each locus.
+Vector of expected heterozygosity values (Hes) for each locus.
 }
 \description{
-This function calculates observed heterozygosity (Hes) for each locus based on genotype data.
+This function calculates expected heterozygosity (Hes) for each locus based on genotype data.
 Hes is the expected proportion of heterozygotes at each locus assuming HW equilibrium.
 }

@@ -58,10 +58,12 @@ higher missingness will be filtered out).}
 
 \item{run_HWE_test}{Specify whether to statistically test if allele frequencies differ from Hardy-Weinberg equilibrium.}
 
-\item{return_locus_stats}{Specify whether to return p values for each locus from HWE testing.}
+\item{return_locus_stats}{Specify whether to return p values for each locus from HWE testing.
+Setting this to TRUE also runs the HWE test (\code{run_HWE_test = TRUE}).}
 }
 \value{
-A data frame with the following columns:
+A data frame with the following columns (or, if \code{return_locus_stats = TRUE},
+  a list with this data frame as \code{summary} and per-locus HWE p-values as \code{locus_HWE}):
   \item{group}{Genetic group ID (e.g., species, subspecies).}
   \item{site}{Site ID corresponding to the sample location.}
   \item{Ar}{Allelic richness per site per group, standardized for sample size.}
@@ -70,11 +72,11 @@ A data frame with the following columns:
   \item{uHe}{Unbiased expected heterozygosity (corrected for small sample size).}
   \item{Fis}{Inbreeding coefficient (Fis = 1 - Ho / He).}
   \item{Fst}{Fst/Gst Inbreeding due to population subdivision (Fst = (Ht-Hs)/Ht [W+C 1984]) }
-  \item{uF}{Unbiased inbreeding coefficient (Fis = 1 - Ho / uHe).}
+  \item{uFis}{Unbiased inbreeding coefficient (uFis = 1 - Ho / uHe).}
   \item{loci}{Number of loci used in the analysis for that group-site combination.}
   \item{n}{Number of individuals sampled at the site for the given group.}
   \item{*_ci.*\%, *_ci.*\%}{Lower and upper confidence intervals for Fis, Ho, and He, generated via bootstrapping. Column prefixes indicate the statistic (e.g., \code{loci_f.2.5\%}, \code{loci_he.97.5\%}).}
-  \item{HW_fisher_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium tests across loci (HardyWeinberg::HWExact).}
+  \item{HWE_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium tests across loci (HardyWeinberg::HWExact).}
 }
 \description{
 This function calculates allelic richness, heterozygosity, and inbreeding coefficients 

@@ -28,8 +28,10 @@
 #' @param CI_alpha Alpha value for confidence intervals, defaults to 0.05 (2.5\%, 97.5\% CIs).
 #' @param run_HWE_test Specify whether to statistically test if allele frequencies differ from Hardy-Weinberg equilibrium.
 #' @param return_locus_stats Specify whether to return p values for each locus from HWE testing.
+#'   Setting this to TRUE also runs the HWE test (\code{run_HWE_test = TRUE}).
 #' 
-#' @return A data frame with the following columns:
+#' @return A data frame with the following columns (or, if \code{return_locus_stats = TRUE},
+#'   a list with this data frame as \code{summary} and per-locus HWE p-values as \code{locus_HWE}):
 #'   \item{group}{Genetic group ID (e.g., species, subspecies).}
 #'   \item{site}{Site ID corresponding to the sample location.}
 #'   \item{Ar}{Allelic richness per site per group, standardized for sample size.}
@@ -38,11 +40,11 @@
 #'   \item{uHe}{Unbiased expected heterozygosity (corrected for small sample size).}
 #'   \item{Fis}{Inbreeding coefficient (Fis = 1 - Ho / He).}
 #'   \item{Fst}{Fst/Gst Inbreeding due to population subdivision (Fst = (Ht-Hs)/Ht [W+C 1984]) }
-#'   \item{uF}{Unbiased inbreeding coefficient (Fis = 1 - Ho / uHe).}
+#'   \item{uFis}{Unbiased inbreeding coefficient (uFis = 1 - Ho / uHe).}
 #'   \item{loci}{Number of loci used in the analysis for that group-site combination.}
 #'   \item{n}{Number of individuals sampled at the site for the given group.}
 #'   \item{*_ci.*\%, *_ci.*\%}{Lower and upper confidence intervals for Fis, Ho, and He, generated via bootstrapping. Column prefixes indicate the statistic (e.g., \code{loci_f.2.5\%}, \code{loci_he.97.5\%}).}
-#'   \item{HW_fisher_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium tests across loci (HardyWeinberg::HWExact).}
+#'   \item{HWE_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium tests across loci (HardyWeinberg::HWExact).}
 #' 
 #' @seealso [resampling_individuals_CI(), resampling_loci_CI()]
 #' 
@@ -55,6 +57,11 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
                        boots = 100, CI_alpha=0.05,
                        run_HWE_test = FALSE, return_locus_stats = FALSE) 
   {
+    if(isTRUE(return_locus_stats) && !isTRUE(run_HWE_test)){ # locus stats come from the HWE test
+      message("return_locus_stats = TRUE requires the HWE test; setting run_HWE_test = TRUE.")
+      run_HWE_test <- TRUE
+    }
+    
     locus_names <- colnames(gt)
     gt <- data.table::as.data.table(gt, keep.rownames = FALSE) # make genotype data into data.table
     data.table::setnames(gt, locus_names)
@@ -196,6 +203,10 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
     }
     
     out_matrix <- bind_rows(out_list)
+    
+    # site_results is built with c(), which makes every value character; restore numeric columns
+    numeric_cols <- setdiff(names(out_matrix), c("group", "site"))
+    out_matrix[numeric_cols] <- lapply(out_matrix[numeric_cols], as.numeric)
     
     if(isTRUE(return_locus_stats)){ # if locus data is requested, add to the table
       out_data <- list('summary'= out_matrix, 'locus_HWE' = locus_out_list)
