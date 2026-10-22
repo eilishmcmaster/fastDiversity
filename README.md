@@ -37,8 +37,9 @@ browseVignettes("fastDiversity")
 ```r
 library(fastDiversity)
 
-data(example_gt)    # genotype matrix: samples × loci, values 0/1/2/NA
-data(example_meta)  # sample metadata with population and site columns
+data(example_data)  # loads two objects:
+                    #   example_gt:   genotype matrix, samples × loci, values 0/1/2/NA
+                    #   example_meta: sample metadata with population and site columns
 ```
 
 **Allele sharing and private alleles:**
