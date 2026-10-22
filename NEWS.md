@@ -1,5 +1,22 @@
 # fastDiversity (development version)
 
+## Changes to statistics
+- `faststats()`: the previous `Fst` column, (Ht - Hs) / Ht, was mislabelled as
+  Weir & Cockerham (1984). It is now named `Gst` (Nei 1973). A new `Fst`
+  column gives population-specific FST (Weir & Goudet 2017) for each site,
+  relative to the other retained sites in the genetic group.
+- New `calculate_Fst()`: population-specific FST (Weir & Goudet 2017); matches
+  `hierfstat::fs.dosage()`.
+- `faststats()`: `Ar` is now rarefied allelic richness, as documented, using
+  `calculate_rarified_Ar()` across the retained sites in each genetic group.
+  Previously it was the mean number of alleles per individual (1 + Ho).
+- `calculate_Ar()`: now returns the (unrarefied) mean number of alleles
+  observed per locus. Previously it returned 1 + Ho.
+- `calculate_rarified_Ar()`: uses log-scale binomial coefficients (previously
+  overflowed to 0 for large samples), returns NA for loci not genotyped at
+  every site, returns site and locus names, and handles single-individual
+  sites; matches `hierfstat::allelic.richness()` on complete data.
+
 ## Bug fixes
 - `make_allele_list()` / `matcher()`: alleles were assigned using DArT 1-row
   coding (2 = heterozygote) instead of the package's 0=aa, 1=aA, 2=AA coding.

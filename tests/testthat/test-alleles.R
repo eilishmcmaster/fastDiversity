@@ -40,6 +40,39 @@ test_that("calculate_rarified_Ar matches hand-calculated rarefaction", {
   # L2, S1: only alt present (1);   S2: alt certain, ref seen with prob 1 - choose(4,4)/choose(6,4)
   expected <- matrix(c(2, 1,
                        1, 1 + (1 - 1 / choose(6, 4))),
-                     nrow = 2)
+                     nrow = 2, dimnames = list(c("S1", "S2"), NULL))
   expect_equal(ar, expected)
+})
+
+test_that("calculate_rarified_Ar matches hierfstat::allelic.richness without missing data", {
+  skip_if_not_installed("hierfstat")
+  data(example_data)
+  keep <- example_meta$population == 1
+  gt <- as.matrix(example_gt[keep, ])
+  gt <- gt[, colSums(is.na(gt)) == 0]  # no missing data, so per-locus and global minimum n agree
+  sites <- example_meta$site[keep]
+  big <- names(which(table(sites) >= 4))
+  gt <- gt[sites %in% big, ]
+  sites <- sites[sites %in% big]
+
+  ours <- calculate_rarified_Ar(gt, sites)
+  hf_data <- data.frame(pop = sites, apply(gt, 2, function(x) c(11, 12, 22)[x + 1]))
+  theirs <- hierfstat::allelic.richness(hf_data)$Ar  # loci x sites
+  expect_equal(unname(ours), unname(t(as.matrix(theirs))), tolerance = 1e-10)
+})
+
+test_that("calculate_rarified_Ar handles large samples and loci missing at a site", {
+  gt <- cbind(L1 = c(rep(0, 1500), rep(1, 1500), rep(0, 1500)),  # 3000 / 1500 individuals
+              L2 = c(rep(0, 3000), rep(NA, 1500)))               # not genotyped at site B
+  sites <- c(rep("A", 3000), rep("B", 1500))
+  ar <- calculate_rarified_Ar(gt, sites)
+  expect_true(all(is.finite(ar[, "L1"])))  # choose() overflowed to NaN here before
+  expect_equal(unname(ar[, "L1"]), c(2, 1))
+  expect_true(all(is.na(ar[, "L2"])))
+})
+
+test_that("calculate_Ar counts the alleles observed per locus", {
+  # toy_gt loci each carry both alleles; add a locus where only allele a is seen
+  gt <- cbind(toy_gt, M = c(0, 0, 0, NA), E = NA)
+  expect_equal(calculate_Ar(gt), mean(c(2, 2, 2, 1)))
 })

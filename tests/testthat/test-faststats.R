@@ -13,7 +13,7 @@ test_that("faststats has expected columns", {
   result <- faststats(example_gt, example_meta$population,
                       example_meta$site, minimum_n = 3,
                       minimum_loci = 50, maf = 0.05, max_missingness = 0.3)
-  expect_true(all(c("group", "site", "Ho", "He", "Fis", "Fst") %in% colnames(result)))
+  expect_true(all(c("group", "site", "Ar", "Ho", "He", "Fis", "Gst", "Fst") %in% colnames(result)))
 })
 
 test_that("faststats Ho values are between 0 and 1", {
@@ -53,7 +53,9 @@ test_that("faststats matches hand-calculated values for a single site", {
   expect_equal(result$He, round(He, 4))
   expect_equal(result$uHe, round(mean(2 * toy_ns / (2 * toy_ns - 1) * toy_Hes), 4))
   expect_equal(result$Fis, round(1 - round(4/11, 4) / round(He, 4), 4))
-  expect_equal(result$Fst, 0)  # one site, so Hs equals Ht
+  expect_equal(result$Gst, 0)  # one site, so Hs equals Ht
+  expect_true(is.na(result$Fst))  # Weir & Goudet Fst needs two or more sites
+  expect_equal(result$Ar, 2)  # every locus has both alleles, rarefied to its own sample size
   expect_equal(result$loci, 3)
   expect_equal(result$n, 4)
 })
@@ -85,4 +87,19 @@ test_that("faststats adds bootstrap CI columns when requested", {
   expect_true(all(c("loci_ho.2.5%", "loci_ho.97.5%",
                     "individuals_ho.2.5%", "individuals_ho.97.5%") %in% names(result)))
   expect_true(all(result$`loci_ho.2.5%` <= result$`loci_ho.97.5%`))
+})
+
+test_that("faststats Fst and Ar match calculate_Fst and calculate_rarified_Ar on retained sites", {
+  data(example_data)
+  keep <- example_meta$population == 1
+  gt <- example_gt[keep, ]
+  sites <- example_meta$site[keep]
+  result <- suppressMessages(faststats(gt, rep("1", sum(keep)), sites,
+                                       minimum_n = 5, minimum_loci = 1, maf = 0,
+                                       max_missingness = 1))
+  retained <- sites %in% result$site
+  fst <- calculate_Fst(gt[retained, ], sites[retained])
+  ar  <- rowMeans(calculate_rarified_Ar(gt[retained, ], sites[retained]), na.rm = TRUE)
+  expect_equal(result$Fst, unname(round(fst[result$site], 4)))
+  expect_equal(result$Ar,  unname(round(ar[result$site], 4)))
 })

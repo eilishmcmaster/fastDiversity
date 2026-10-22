@@ -3,6 +3,7 @@
 export(HWEtest_of_loci)
 export(MC_HWEtest_of_loci)
 export(calculate_Ar)
+export(calculate_Fst)
 export(calculate_Hes)
 export(calculate_Ho)
 export(calculate_pi_theta_d)

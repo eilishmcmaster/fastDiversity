@@ -37,6 +37,7 @@ reference:
       - calculate_Ho
       - calculate_Hes
       - calculate_uHe
+      - calculate_Fst
       - calculate_Ar
       - calculate_rarified_Ar
       - calculate_pi_theta_d

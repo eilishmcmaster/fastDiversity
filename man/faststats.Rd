@@ -66,12 +66,20 @@ A data frame with the following columns (or, if \code{return_locus_stats = TRUE}
   a list with this data frame as \code{summary} and per-locus HWE p-values as \code{locus_HWE}):
   \item{group}{Genetic group ID (e.g., species, subspecies).}
   \item{site}{Site ID corresponding to the sample location.}
-  \item{Ar}{Allelic richness per site per group, standardized for sample size.}
+  \item{Ar}{Rarefied allelic richness: the expected number of alleles per locus in a sample of
+    the smallest size observed at that locus among the sites retained for the genetic group,
+    averaged across loci (see \code{\link{calculate_rarified_Ar}}). Comparable among sites within
+    a genetic group.}
   \item{Ho}{Observed heterozygosity.}
   \item{He}{Expected heterozygosity under Hardy-Weinberg equilibrium within the site_variable.}
   \item{uHe}{Unbiased expected heterozygosity (corrected for small sample size).}
   \item{Fis}{Inbreeding coefficient (Fis = 1 - Ho / He).}
-  \item{Fst}{Fst/Gst Inbreeding due to population subdivision (Fst = (Ht-Hs)/Ht [W+C 1984]) }
+  \item{Gst}{Site-level gene diversity differentiation in the sense of Nei (1973),
+    (Ht - Hs) / Ht, where Hs is the site's He and Ht is the He of all individuals in the
+    genetic group.}
+  \item{Fst}{Population-specific Fst of Weir & Goudet (2017) for the site, relative to the other
+    sites retained for the genetic group (see \code{\link{calculate_Fst}}). NA if the group
+    has only one retained site.}
   \item{uFis}{Unbiased inbreeding coefficient (uFis = 1 - Ho / uHe).}
   \item{loci}{Number of loci used in the analysis for that group-site combination.}
   \item{n}{Number of individuals sampled at the site for the given group.}
@@ -84,6 +92,18 @@ for specified sites within genetic groups. Data is filtered based on genetic gro
 number of loci, minimum minor allele frequency, and maximum missingness per locus) 
 and minimum number of individuals per site.
 }
+\references{
+Nei, M. (1973). Analysis of gene diversity in subdivided populations. Proceedings of the
+National Academy of Sciences, 70(12), 3321--3323. https://doi.org/10.1073/pnas.70.12.3321
+
+Weir, B. S., & Goudet, J. (2017). A unified characterization of population structure and
+relatedness. Genetics, 206(4), 2085--2103. https://doi.org/10.1534/genetics.116.198424
+
+Kalinowski, S. T. (2004). Counting alleles with rarefaction: private alleles and hierarchical
+sampling designs. Conservation Genetics, 5(4), 539--543.
+https://doi.org/10.1023/B:COGE.0000041021.91777.1a
+}
 \seealso{
-[resampling_individuals_CI(), resampling_loci_CI()]
+[resampling_individuals_CI(), resampling_loci_CI(), calculate_Fst(),
+  calculate_rarified_Ar()]
 }

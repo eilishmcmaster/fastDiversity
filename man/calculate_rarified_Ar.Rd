@@ -14,8 +14,10 @@ calculate_rarified_Ar(gt, site_variable)
 number of rows in gt).}
 }
 \value{
-A data frame containing rarified allelic richness of each locus per genetic 
-        group (site).
+A matrix of rarefied allelic richness with one row per site and one column
+        per locus. Each locus is rarefied to the smallest number of alleles sampled
+        at that locus across sites. Loci with no genotypes at one or more sites are
+        returned as NA.
 }
 \description{
 This function calculates rarified allelic richness across genetic groups (sites) 
