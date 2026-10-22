@@ -7,9 +7,9 @@
 #'           0=aa, 1=aA, 2=AA.
 #' @return Vector of minor allele counts for each locus.
 #' @export
-get_minor_allele_counts <- function(mat) {
-  alt <- colSums(mat, na.rm = TRUE)
-  n_called <- colSums(!is.na(mat))
+get_minor_allele_counts <- function(gt) {
+  alt <- colSums(gt, na.rm = TRUE)
+  n_called <- colSums(!is.na(gt))
   total_alleles <- 2 * n_called
   ref <- total_alleles - alt
   pmin(ref, alt)

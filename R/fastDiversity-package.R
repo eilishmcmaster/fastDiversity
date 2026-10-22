@@ -16,8 +16,6 @@
 #'
 #' For more details on each function, use `?function_name`.
 #' 
-#' @docType _PACKAGE
-#' @name fastDiversity
 #' @seealso \code{\link{faststats}}, \code{\link{calculate_private_alleles}}
 #' @references
 #' Frankham, R., Ballou, J. D., & Briscoe, D. A. (2010). Introduction to Conservation Genetics (2nd ed.). Cambridge University Press. https://doi.org/10.1017/CBO9780511809002
@@ -29,4 +27,10 @@
 #' @author
 #' Eilish S. McMaster <emcm4052@uni.sydney.edu.au> <eilish.mcmaster@botanicgardens.nsw.gov.au>
 #' @keywords population-genetics package
-NULL
+#' @importFrom data.table data.table as.data.table setnames
+#' @importFrom dplyr %>% bind_rows
+#' @importFrom HardyWeinberg HWExact
+#' @importFrom Rcpp cppFunction
+#' @importFrom stats pchisq quantile setNames
+#' @importFrom utils globalVariables
+"_PACKAGE"

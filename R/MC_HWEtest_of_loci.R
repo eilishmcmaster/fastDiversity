@@ -14,7 +14,6 @@
 #'   \item{loci_HWX_results}{A data table with individual p-values and locus names.}
 #' }
 #'
-#' @import data.table HardyWeinberg dplyr stats
 #' @export
 MC_HWEtest_of_loci <- function(gt) {
   

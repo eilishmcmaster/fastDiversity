@@ -16,7 +16,12 @@
 #' @param maf (optional) Minimum minor allele frequency filter.
 #' @param max_missingness (optional) Maximum proportion of missing data allowed per locus (loci with 
 #'                        higher missingness will be filtered out).
-#' @return A named vector containing F for each individual in gt.
+#' @param minimum_n (optional) Minimum number of individuals required in a group or site
+#'                  for F to be calculated (individuals in smaller groups or sites return NA).
+#' @param table_out (optional) If TRUE, return a data frame with columns individual, F,
+#'                  group and site instead of a named vector.
+#' @return A named vector containing F for each individual in gt, or a data frame if
+#'         \code{table_out = TRUE}.
 #' @examples
 #' data(example_data)
 #' # get inbreeding coefficients for individuals by genetic group

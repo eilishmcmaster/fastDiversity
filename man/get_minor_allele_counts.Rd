@@ -4,7 +4,7 @@
 \alias{get_minor_allele_counts}
 \title{Get Minor Allele Counts}
 \usage{
-get_minor_allele_counts(mat)
+get_minor_allele_counts(gt)
 }
 \arguments{
 \item{gt}{Genotype matrix where individuals are rows and loci are columns, coded as 

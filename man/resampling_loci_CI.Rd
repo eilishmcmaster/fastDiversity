@@ -14,7 +14,7 @@ resampling_loci_CI(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05)
 
 \item{resample_n}{Number of loci to resample with replacement -- defaults to total loci}
 
-\item{CI_alpha}{Alpha level for confidence intervals (e.g., 0.05 for 95% CI)}
+\item{CI_alpha}{Alpha level for confidence intervals (e.g., 0.05 for 95\% CI)}
 }
 \value{
 Named vector of confidence intervals for global FIS, HE, HO

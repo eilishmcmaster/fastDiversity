@@ -33,9 +33,16 @@ genetic group (genetic groups with fewer loci will be skipped).}
 
 \item{max_missingness}{(optional) Maximum proportion of missing data allowed per locus (loci with 
 higher missingness will be filtered out).}
+
+\item{minimum_n}{(optional) Minimum number of individuals required in a group or site
+for F to be calculated (individuals in smaller groups or sites return NA).}
+
+\item{table_out}{(optional) If TRUE, return a data frame with columns individual, F,
+group and site instead of a named vector.}
 }
 \value{
-A named vector containing F for each individual in gt.
+A named vector containing F for each individual in gt, or a data frame if
+        \code{table_out = TRUE}.
 }
 \description{
 This function calculates Wright's F (individual inbreeding coefficient), the probability 

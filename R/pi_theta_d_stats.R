@@ -39,7 +39,6 @@
 #'   \item{theta}{Watterson's theta.}
 #'   \item{D}{Tajima's D statistic.}
 #'   \item{real_missingness}{Proportion of missing data in the filtered genotype matrix.}
-#' @import data.table HardyWeinberg dplyr stats
 #' @seealso [resampling_individuals_CI(), resampling_loci_CI()]
 #' 
 #' @export
