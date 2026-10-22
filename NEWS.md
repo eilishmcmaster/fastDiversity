@@ -1,4 +1,4 @@
-# fastDiversity (development version)
+# fastDiversity 1.4.0
 
 ## Changes to statistics
 - Documentation now explains how monomorphic sites affect each statistic,
