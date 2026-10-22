@@ -1,7 +1,7 @@
 # Calculate Unbiased Expected Heterozygosity (uHe)
 
 This function calculates unbiased expected heterozygosity (uHe) based on
-the number of individuals (ns) and observed heterozygosity (Hes) for
+the number of individuals (ns) and expected heterozygosity (Hes) for
 each genetic group or locus. Unbiased expected heterozygosity corrects
 for sample size biases and provides an estimate of heterozygosity
 accounting for the number of alleles and individuals.
@@ -21,7 +21,7 @@ calculate_uHe(ns, Hes)
 
 - Hes:
 
-  Vector containing observed heterozygosity values for each genetic
+  Vector containing expected heterozygosity values for each genetic
   group or locus.
 
 ## Value

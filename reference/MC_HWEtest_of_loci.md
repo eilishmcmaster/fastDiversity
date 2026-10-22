@@ -20,7 +20,7 @@ MC_HWEtest_of_loci(gt)
 
 ## Value
 
-A named vector containing:
+A list containing:
 
 - HW_fisher_p:
 

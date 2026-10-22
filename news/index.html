@@ -37,6 +37,45 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="fastdiversity-development-version">fastDiversity (development version)<a class="anchor" aria-label="anchor" href="#fastdiversity-development-version"></a></h2>
+<div class="section level3">
+<h3 id="changes-to-statistics-development-version">Changes to statistics<a class="anchor" aria-label="anchor" href="#changes-to-statistics-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/faststats.html">faststats()</a></code>: the previous <code>Fst</code> column, (Ht - Hs) / Ht, was mislabelled as Weir &amp; Cockerham (1984). It is now named <code>Gst</code> (Nei 1973). A new <code>Fst</code> column gives population-specific FST (Weir &amp; Goudet 2017) for each site, relative to the other retained sites in the genetic group.</li>
+<li>New <code><a href="../reference/calculate_Fst.html">calculate_Fst()</a></code>: population-specific FST (Weir &amp; Goudet 2017); matches <code><a href="https://rdrr.io/pkg/hierfstat/man/fs.dosage.html" class="external-link">hierfstat::fs.dosage()</a></code>.</li>
+<li>
+<code><a href="../reference/faststats.html">faststats()</a></code>: <code>Ar</code> is now rarefied allelic richness, as documented, using <code><a href="../reference/calculate_rarified_Ar.html">calculate_rarified_Ar()</a></code> across the retained sites in each genetic group. Previously it was the mean number of alleles per individual (1 + Ho).</li>
+<li>
+<code><a href="../reference/calculate_Ar.html">calculate_Ar()</a></code>: now returns the (unrarefied) mean number of alleles observed per locus. Previously it returned 1 + Ho.</li>
+<li>
+<code><a href="../reference/calculate_rarified_Ar.html">calculate_rarified_Ar()</a></code>: uses log-scale binomial coefficients (previously overflowed to 0 for large samples), returns NA for loci not genotyped at every site, returns site and locus names, and handles single-individual sites; matches <code><a href="https://rdrr.io/pkg/hierfstat/man/allelic.richness.html" class="external-link">hierfstat::allelic.richness()</a></code> on complete data.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/make_allele_list.html">make_allele_list()</a></code> / <code><a href="../reference/matcher.html">matcher()</a></code>: alleles were assigned using DArT 1-row coding (2 = heterozygote) instead of the package’s 0=aa, 1=aA, 2=AA coding. Private and total allele counts from <code><a href="../reference/calculate_private_alleles.html">calculate_private_alleles()</a></code> change as a result, and now agree with <code><a href="../reference/calculate_total_alleles.html">calculate_total_alleles()</a></code>.</li>
+<li>
+<code><a href="../reference/faststats.html">faststats()</a></code>: statistic columns are now numeric (previously character).</li>
+<li>
+<code><a href="../reference/faststats.html">faststats()</a></code>: <code>return_locus_stats = TRUE</code> no longer errors when <code>run_HWE_test = FALSE</code>; it now runs the HWE test automatically.</li>
+<li>
+<code><a href="../reference/resampling_loci_CI.html">resampling_loci_CI()</a></code>, <code><a href="../reference/resampling_individuals_CI.html">resampling_individuals_CI()</a></code>: no longer call <code>set.seed(14)</code> internally, which overwrote the user’s random number state. Use <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> before calling them for reproducible intervals.</li>
+<li>
+<code><a href="../reference/MC_HWEtest_of_loci.html">MC_HWEtest_of_loci()</a></code>: matrix input now works (previously only data frames), and the per-locus “genotypes are not labelled” warnings are gone.</li>
+<li>
+<code><a href="../reference/individual_Ho.html">individual_Ho()</a></code>: no longer errors when a group has too few loci.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="other-changes-development-version">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-development-version"></a></h3>
+<ul><li>C++ helpers are compiled with the package instead of at runtime with <code><a href="https://rdrr.io/pkg/Rcpp/man/cppFunction.html" class="external-link">Rcpp::cppFunction()</a></code>, so bootstrapping is much faster and no compiler is needed after installation.</li>
+<li>Progress output uses <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code> instead of <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code>/<code><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat()</a></code>, so it can be silenced with <code><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressMessages()</a></code>.</li>
+<li>Unused <code>future.apply</code> dependency removed.</li>
+<li>Example dataset documented (<code><a href="../reference/example_data.html">?example_data</a></code>).</li>
+<li>Expanded test suite with checks against hand-calculated values.</li>
+<li>pkgdown documentation site and R CMD check GitHub Action added.</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.3.0" id="fastdiversity-130">fastDiversity 1.3.0<a class="anchor" aria-label="anchor" href="#fastdiversity-130"></a></h2>
 <div class="section level3">
 <h3 id="changes-to-existing-functions-1-3-0">Changes to existing functions<a class="anchor" aria-label="anchor" href="#changes-to-existing-functions-1-3-0"></a></h3>

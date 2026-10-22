@@ -194,11 +194,11 @@ of allele sets, one per group.
 ``` r
 
 allele_list_population <- make_allele_list(example_gt, example_meta$population)
-#> There are  57  samples in  5 
-#> There are  31  samples in  4 
-#> There are  46  samples in  3 
-#> There are  23  samples in  2 
-#> There are  100  samples in  1
+#> There are 57 samples in 5
+#> There are 31 samples in 4
+#> There are 46 samples in 3
+#> There are 23 samples in 2
+#> There are 100 samples in 1
 
 names(allele_list_population)
 #> [1] "5" "4" "3" "2" "1"
@@ -239,11 +239,11 @@ private_total_alleles_population <- calculate_private_alleles(allele_list_popula
 
 private_total_alleles_population
 #>   population private_allele_count total_allele_count
-#> 1          5                   16               3475
-#> 2          4                    1               3515
-#> 3          3                    0               3372
-#> 4          2                    0               3178
-#> 5          1                   54               3471
+#> 1          5                   24               3425
+#> 2          4                    1               3474
+#> 3          3                    0               3245
+#> 4          2                    0               2966
+#> 5          1                   58               3334
 #> 6      Total                 3812               3812
 ```
 
@@ -296,23 +296,23 @@ basicstats <- faststats(
   maf                   = 0.05,
   max_missingness       = 0.3
 )
-#> [1] "1 complete"
-#> [1] "2 complete"
-#> [1] "3 complete"
-#> [1] "4 complete"
-#> [1] "5 complete"
-#> [1] "Process complete!"
+#> 1 complete
+#> 2 complete
+#> 3 complete
+#> 4 complete
+#> 5 complete
+#> Process complete!
 
 head(basicstats)
-#> # A tibble: 6 × 11
-#>   group site               Ar    Ho    He    uHe   Fis   Fst   uFis  loci  n    
-#>   <chr> <chr>              <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr> <chr>
-#> 1 1     Airdrop_Rd         1.25… 0.26… 0.25… 0.283 -0.0… 0.14… 0.05… 844   6    
-#> 2 1     Big_Scrub Loop1    1.28… 0.28… 0.26… 0.28… -0.1… 0.12… -0.0… 844   6    
-#> 3 1     Big_Scrub Loop2    1.25… 0.26… 0.26… 0.29… 0.02… 0.09… 0.11… 844   6    
-#> 4 1     Binna_Burra        1.25… 0.26… 0.25… 0.27… -0.0… 0.15… 0.05… 844   6    
-#> 5 1     Gibbergunyah Nigh… 1.25… 0.25… 0.28… 0.29… 0.09… 0.05… 0.14… 844   11   
-#> 6 1     Koonyum_Range      1.22… 0.23… 0.21… 0.24… -0.0… 0.26… 0.04… 844   6
+#> # A tibble: 6 × 12
+#>   group site      Ar    Ho    He   uHe     Fis    Gst    Fst    uFis  loci     n
+#>   <chr> <chr>  <dbl> <dbl> <dbl> <dbl>   <dbl>  <dbl>  <dbl>   <dbl> <dbl> <dbl>
+#> 1 1     Airdr…  1.68 0.268 0.256 0.283 -0.046  0.142  0.046   0.0527   844     6
+#> 2 1     Big_S…  1.70 0.290 0.262 0.289 -0.104  0.122  0.0407 -0.0014   844     6
+#> 3 1     Big_S…  1.72 0.262 0.269 0.297  0.0238 0.0998 0.0134  0.117    844     6
+#> 4 1     Binna…  1.69 0.264 0.253 0.278 -0.0431 0.153  0.0604  0.0524   844     6
+#> 5 1     Gibbe…  1.74 0.256 0.284 0.299  0.0994 0.0502 0.0153  0.145    844    11
+#> 6 1     Koony…  1.59 0.233 0.220 0.244 -0.0629 0.265  0.166   0.0442   844     6
 ```
 
 ### Output columns explained
@@ -321,13 +321,14 @@ head(basicstats)
 |----|----|
 | `group` | Genetic group ID (e.g. population, species) |
 | `site` | Site ID |
-| `Ar` | Allelic richness per site per group, standardised for sample size |
+| `Ar` | Rarefied allelic richness: expected number of alleles per locus at the smallest sample size among sites in the group (Kalinowski 2004) |
 | `Ho` | Observed heterozygosity: proportion of heterozygous loci averaged across individuals |
 | `He` | Expected heterozygosity under Hardy-Weinberg equilibrium within site_variable |
 | `uHe` | Unbiased expected heterozygosity (corrected for small sample size) |
 | `Fis` | Inbreeding coefficient (1 - Ho/He). Positive values indicate excess homozygosity; negative values indicate excess heterozygosity |
 | `uFis` | Unbiased inbreeding coefficient (1 - Ho/uHe) |
-| `Fst` | Population differentiation: Weir & Cockerham (1984) FST, calculated as (Ht - Hs) / Ht |
+| `Gst` | Gene diversity differentiation (Nei 1973) for the site: (Ht - Hs) / Ht, where Hs is the site’s He and Ht the He of the whole genetic group |
+| `Fst` | Population-specific FST (Weir & Goudet 2017) for the site, relative to the other sites in the group; the per-population counterpart of Weir & Cockerham’s (1984) θ |
 | `loci` | Number of loci retained after filtering for this group |
 | `n` | Number of individuals sampled at this site x group combination |
 
@@ -383,8 +384,9 @@ For published reporting, bootstrapped confidence intervals can be added
 around Ho, He, and Fis. Two resampling strategies are available:
 
 - **By loci** (`get_CI_loci_resampling = TRUE`): analogous to
-  `hierfstat::boot.ppfis` : loci are resampled with replacement to
-  quantify how sensitive statistics are to the choice of markers.
+  [`hierfstat::boot.ppfis`](https://rdrr.io/pkg/hierfstat/man/boot.ppfis.html)
+  : loci are resampled with replacement to quantify how sensitive
+  statistics are to the choice of markers.
 - **By individuals** (`get_CI_individual_resampling = TRUE`): analogous
   to `diveRsity::basicstats` : individuals are resampled with
   replacement to quantify sampling uncertainty.
@@ -580,7 +582,7 @@ D_n_all <- pi_theta_d_stats(
   maf                    = 0,
   allele_count_min       = 0
 )
-#> [1] "Process complete!"
+#> Process complete!
 
 # Subsample to 20 individuals per population
 D_n_20 <- pi_theta_d_stats(
@@ -594,7 +596,7 @@ D_n_20 <- pi_theta_d_stats(
   maf                    = 0,
   allele_count_min       = 0
 )
-#> [1] "Process complete!"
+#> Process complete!
 
 # Subsample to 10 individuals per population
 D_n_10 <- pi_theta_d_stats(
@@ -608,7 +610,7 @@ D_n_10 <- pi_theta_d_stats(
   maf                    = 0,
   allele_count_min       = 0
 )
-#> [1] "Process complete!"
+#> Process complete!
 
 # Subsample to 5 individuals per population
 D_n_5 <- pi_theta_d_stats(
@@ -622,7 +624,7 @@ D_n_5 <- pi_theta_d_stats(
   maf                    = 0,
   allele_count_min       = 0
 )
-#> [1] "Process complete!"
+#> Process complete!
 ```
 
 ### Output columns explained

@@ -83,7 +83,7 @@
 </tr>
 <tr>
 <td><code><a href="reference/faststats.html">faststats()</a></code></td>
-<td>Calculates Ho, He, uHe, Fis, uFis, Fst, and Ar per site, with per-group locus filtering, optional bootstrapped confidence intervals, and optional Hardy-Weinberg equilibrium testing</td>
+<td>Calculates Ho, He, uHe, Fis, uFis, Gst, Fst, and rarefied Ar per site, with per-group locus filtering, optional bootstrapped confidence intervals, and optional Hardy-Weinberg equilibrium testing</td>
 </tr>
 <tr>
 <td><code><a href="reference/pi_theta_d_stats.html">pi_theta_d_stats()</a></code></td>
@@ -139,7 +139,7 @@
 <span>  maf                    <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  max_missingness        <span class="op">=</span> <span class="fl">0.3</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Returns one row per genetic group × site combination, with columns for Ho, He, uHe, Fis, uFis, Fst, Ar, and the number of individuals and loci used.</p>
+<p>Returns one row per genetic group × site combination, with columns for Ho, He, uHe, Fis, uFis, Gst (Nei 1973), population-specific Fst (Weir &amp; Goudet 2017), rarefied allelic richness (Ar), and the number of individuals and loci used.</p>
 <p><strong>With bootstrapped confidence intervals:</strong></p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">basicstats_ci</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/faststats.html">faststats</a></span><span class="op">(</span></span>
@@ -218,7 +218,9 @@
 <p>Kalinowski, S. T. (2004). hp-rare 1.0: a computer program for performing rarefaction on measures of allelic richness. <em>Molecular Ecology Notes</em>, 5(1), 187–189. <a href="https://doi.org/10.1111/j.1471-8286.2004.00845.x" class="external-link uri">https://doi.org/10.1111/j.1471-8286.2004.00845.x</a></p>
 <p>Keenan, K. G., McGinnity, P., Cross, T. F., Crozier, W. W., &amp; Prodöhl, P. A. (2013). diveRsity: An R package for the estimation and exploration of population genetics parameters and their associated errors. <em>Methods in Ecology and Evolution</em>, 4(8), 782–788. <a href="https://doi.org/10.1111/2041-210x.12067" class="external-link uri">https://doi.org/10.1111/2041-210x.12067</a></p>
 <p>Korunes, K. L., &amp; Samuk, K. (2021). pixy: Unbiased estimation of nucleotide diversity and divergence in the presence of missing data. <em>Molecular Ecology Resources</em>, 21(4), 1359–1368. <a href="https://doi.org/10.1111/1755-0998.13326" class="external-link uri">https://doi.org/10.1111/1755-0998.13326</a></p>
+<p>Nei, M. (1973). Analysis of gene diversity in subdivided populations. <em>Proceedings of the National Academy of Sciences</em>, 70(12), 3321–3323. <a href="https://doi.org/10.1073/pnas.70.12.3321" class="external-link uri">https://doi.org/10.1073/pnas.70.12.3321</a></p>
 <p>Nei, M. (1978). Estimation of average heterozygosity and genetic distance from a small number of individuals. <em>Genetics</em>, 89(3), 583–590. <a href="https://doi.org/10.1093/genetics/89.3.583" class="external-link uri">https://doi.org/10.1093/genetics/89.3.583</a></p>
+<p>Weir, B. S., &amp; Goudet, J. (2017). A unified characterization of population structure and relatedness. <em>Genetics</em>, 206(4), 2085–2103. <a href="https://doi.org/10.1534/genetics.116.198424" class="external-link uri">https://doi.org/10.1534/genetics.116.198424</a></p>
 </div>
 </div>
 

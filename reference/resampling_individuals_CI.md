@@ -1,4 +1,4 @@
-# Calculate global bootstrapped He, Ho, and FIS (parallelized) by resampling individuals
+# Calculate global bootstrapped He, Ho, and FIS by resampling individuals
 
 Resampling individuals means randomly selecting individuals (rows) from
 the dataset with replacement. This keeps the same genetic markers
@@ -35,3 +35,9 @@ resampling_individuals_CI(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05)
 ## Value
 
 Named vector of confidence intervals for global FIS, HE, HO
+
+## Details
+
+Bootstrap replicates are drawn with R's random number generator. Call
+[`set.seed()`](https://rdrr.io/r/base/Random.html) before this function
+for reproducible confidence intervals.

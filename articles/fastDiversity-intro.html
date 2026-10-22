@@ -245,11 +245,11 @@ grouping vector and returns a named list of allele sets, one per
 group.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">allele_list_population</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_allele_list.html">make_allele_list</a></span><span class="op">(</span><span class="va">example_gt</span>, <span class="va">example_meta</span><span class="op">$</span><span class="va">population</span><span class="op">)</span></span>
-<span><span class="co">#&gt; There are  57  samples in  5 </span></span>
-<span><span class="co">#&gt; There are  31  samples in  4 </span></span>
-<span><span class="co">#&gt; There are  46  samples in  3 </span></span>
-<span><span class="co">#&gt; There are  23  samples in  2 </span></span>
-<span><span class="co">#&gt; There are  100  samples in  1</span></span>
+<span><span class="co">#&gt; There are 57 samples in 5</span></span>
+<span><span class="co">#&gt; There are 31 samples in 4</span></span>
+<span><span class="co">#&gt; There are 46 samples in 3</span></span>
+<span><span class="co">#&gt; There are 23 samples in 2</span></span>
+<span><span class="co">#&gt; There are 100 samples in 1</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">allele_list_population</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "5" "4" "3" "2" "1"</span></span></code></pre></div>
@@ -280,11 +280,11 @@ indicates a genetically distinct population.</p>
 <span></span>
 <span><span class="va">private_total_alleles_population</span></span>
 <span><span class="co">#&gt;   population private_allele_count total_allele_count</span></span>
-<span><span class="co">#&gt; 1          5                   16               3475</span></span>
-<span><span class="co">#&gt; 2          4                    1               3515</span></span>
-<span><span class="co">#&gt; 3          3                    0               3372</span></span>
-<span><span class="co">#&gt; 4          2                    0               3178</span></span>
-<span><span class="co">#&gt; 5          1                   54               3471</span></span>
+<span><span class="co">#&gt; 1          5                   24               3425</span></span>
+<span><span class="co">#&gt; 2          4                    1               3474</span></span>
+<span><span class="co">#&gt; 3          3                    0               3245</span></span>
+<span><span class="co">#&gt; 4          2                    0               2966</span></span>
+<span><span class="co">#&gt; 5          1                   58               3334</span></span>
 <span><span class="co">#&gt; 6      Total                 3812               3812</span></span></code></pre></div>
 <p>The output gives private allele counts (alleles found in only one
 population) and total allele counts per group. These can be used
@@ -358,23 +358,23 @@ row per unique genetic group × site combination.</p>
 <span>  maf                   <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  max_missingness       <span class="op">=</span> <span class="fl">0.3</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "1 complete"</span></span>
-<span><span class="co">#&gt; [1] "2 complete"</span></span>
-<span><span class="co">#&gt; [1] "3 complete"</span></span>
-<span><span class="co">#&gt; [1] "4 complete"</span></span>
-<span><span class="co">#&gt; [1] "5 complete"</span></span>
-<span><span class="co">#&gt; [1] "Process complete!"</span></span>
+<span><span class="co">#&gt; 1 complete</span></span>
+<span><span class="co">#&gt; 2 complete</span></span>
+<span><span class="co">#&gt; 3 complete</span></span>
+<span><span class="co">#&gt; 4 complete</span></span>
+<span><span class="co">#&gt; 5 complete</span></span>
+<span><span class="co">#&gt; Process complete!</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">basicstats</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 11</span></span></span>
-<span><span class="co">#&gt;   group site               Ar    Ho    He    uHe   Fis   Fst   uFis  loci  n    </span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>              <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 1     Airdrop_Rd         1.25… 0.26… 0.25… 0.283 -0.0… 0.14… 0.05… 844   6    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 1     Big_Scrub Loop1    1.28… 0.28… 0.26… 0.28… -0.1… 0.12… -0.0… 844   6    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 1     Big_Scrub Loop2    1.25… 0.26… 0.26… 0.29… 0.02… 0.09… 0.11… 844   6    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 1     Binna_Burra        1.25… 0.26… 0.25… 0.27… -0.0… 0.15… 0.05… 844   6    </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 1     Gibbergunyah Nigh… 1.25… 0.25… 0.28… 0.29… 0.09… 0.05… 0.14… 844   11   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 1     Koonyum_Range      1.22… 0.23… 0.21… 0.24… -0.0… 0.26… 0.04… 844   6</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 6 × 12</span></span></span>
+<span><span class="co">#&gt;   group site      Ar    Ho    He   uHe     Fis    Gst    Fst    uFis  loci     n</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> 1     Airdr…  1.68 0.268 0.256 0.283 -<span style="color: #BB0000;">0.046</span>  0.142  0.046   0.052<span style="text-decoration: underline;">7</span>   844     6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> 1     Big_S…  1.70 0.290 0.262 0.289 -<span style="color: #BB0000;">0.104</span>  0.122  0.040<span style="text-decoration: underline;">7</span> -<span style="color: #BB0000;">0.001</span><span style="color: #BB0000; text-decoration: underline;">4</span>   844     6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">3</span> 1     Big_S…  1.72 0.262 0.269 0.297  0.023<span style="text-decoration: underline;">8</span> 0.099<span style="text-decoration: underline;">8</span> 0.013<span style="text-decoration: underline;">4</span>  0.117    844     6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">4</span> 1     Binna…  1.69 0.264 0.253 0.278 -<span style="color: #BB0000;">0.043</span><span style="color: #BB0000; text-decoration: underline;">1</span> 0.153  0.060<span style="text-decoration: underline;">4</span>  0.052<span style="text-decoration: underline;">4</span>   844     6</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">5</span> 1     Gibbe…  1.74 0.256 0.284 0.299  0.099<span style="text-decoration: underline;">4</span> 0.050<span style="text-decoration: underline;">2</span> 0.015<span style="text-decoration: underline;">3</span>  0.145    844    11</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">6</span> 1     Koony…  1.59 0.233 0.220 0.244 -<span style="color: #BB0000;">0.062</span><span style="color: #BB0000; text-decoration: underline;">9</span> 0.265  0.166   0.044<span style="text-decoration: underline;">2</span>   844     6</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="output-columns-explained">Output columns explained<a class="anchor" aria-label="anchor" href="#output-columns-explained"></a>
@@ -399,8 +399,8 @@ row per unique genetic group × site combination.</p>
 </tr>
 <tr class="odd">
 <td><code>Ar</code></td>
-<td>Allelic richness per site per group, standardised for sample
-size</td>
+<td>Rarefied allelic richness: expected number of alleles per locus at
+the smallest sample size among sites in the group (Kalinowski 2004)</td>
 </tr>
 <tr class="even">
 <td><code>Ho</code></td>
@@ -427,15 +427,22 @@ homozygosity; negative values indicate excess heterozygosity</td>
 <td>Unbiased inbreeding coefficient (1 - Ho/uHe)</td>
 </tr>
 <tr class="odd">
-<td><code>Fst</code></td>
-<td>Population differentiation: Weir &amp; Cockerham (1984) FST,
-calculated as (Ht - Hs) / Ht</td>
+<td><code>Gst</code></td>
+<td>Gene diversity differentiation (Nei 1973) for the site: (Ht - Hs) /
+Ht, where Hs is the site’s He and Ht the He of the whole genetic
+group</td>
 </tr>
 <tr class="even">
+<td><code>Fst</code></td>
+<td>Population-specific FST (Weir &amp; Goudet 2017) for the site,
+relative to the other sites in the group; the per-population counterpart
+of Weir &amp; Cockerham’s (1984) θ</td>
+</tr>
+<tr class="odd">
 <td><code>loci</code></td>
 <td>Number of loci retained after filtering for this group</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code>n</code></td>
 <td>Number of individuals sampled at this site x group combination</td>
 </tr>
@@ -494,7 +501,7 @@ available:</p>
 <li>
 <strong>By loci</strong>
 (<code>get_CI_loci_resampling = TRUE</code>): analogous to
-<code>hierfstat::boot.ppfis</code> : loci are resampled with replacement
+<code><a href="https://rdrr.io/pkg/hierfstat/man/boot.ppfis.html" class="external-link">hierfstat::boot.ppfis</a></code> : loci are resampled with replacement
 to quantify how sensitive statistics are to the choice of markers.</li>
 <li>
 <strong>By individuals</strong>
@@ -679,7 +686,7 @@ sizes:</p>
 <span>  maf                    <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  allele_count_min       <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Process complete!"</span></span>
+<span><span class="co">#&gt; Process complete!</span></span>
 <span></span>
 <span><span class="co"># Subsample to 20 individuals per population</span></span>
 <span><span class="va">D_n_20</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pi_theta_d_stats.html">pi_theta_d_stats</a></span><span class="op">(</span></span>
@@ -693,7 +700,7 @@ sizes:</p>
 <span>  maf                    <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  allele_count_min       <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Process complete!"</span></span>
+<span><span class="co">#&gt; Process complete!</span></span>
 <span></span>
 <span><span class="co"># Subsample to 10 individuals per population</span></span>
 <span><span class="va">D_n_10</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pi_theta_d_stats.html">pi_theta_d_stats</a></span><span class="op">(</span></span>
@@ -707,7 +714,7 @@ sizes:</p>
 <span>  maf                    <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  allele_count_min       <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Process complete!"</span></span>
+<span><span class="co">#&gt; Process complete!</span></span>
 <span></span>
 <span><span class="co"># Subsample to 5 individuals per population</span></span>
 <span><span class="va">D_n_5</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pi_theta_d_stats.html">pi_theta_d_stats</a></span><span class="op">(</span></span>
@@ -721,7 +728,7 @@ sizes:</p>
 <span>  maf                    <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  allele_count_min       <span class="op">=</span> <span class="fl">0</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Process complete!"</span></span></code></pre></div>
+<span><span class="co">#&gt; Process complete!</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="output-columns-explained-1">Output columns explained<a class="anchor" aria-label="anchor" href="#output-columns-explained-1"></a>

@@ -1,4 +1,4 @@
-# Calculate global bootstrapped He, Ho, and FIS (parallelized) by resampling loci (as in hierfstat::boot.ppfis or arlequin)
+# Calculate global bootstrapped He, Ho, and FIS by resampling loci (as in hierfstat::boot.ppfis or arlequin)
 
 Resampling loci means randomly selecting genetic markers (columns) with
 replacement. This keeps the same individuals, but uses different
@@ -33,3 +33,9 @@ resampling_loci_CI(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05)
 ## Value
 
 Named vector of confidence intervals for global FIS, HE, HO
+
+## Details
+
+Bootstrap replicates are drawn with R's random number generator. Call
+[`set.seed()`](https://rdrr.io/r/base/Random.html) before this function
+for reproducible confidence intervals.

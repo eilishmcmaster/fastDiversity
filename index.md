@@ -24,7 +24,7 @@ well served by existing tools.
 |----|----|
 | [`make_allele_list()`](https://eilishmcmaster.github.io/fastDiversity/reference/make_allele_list.md) | Returns a named list of allele sets per group, for allele sharing analysis |
 | [`calculate_private_alleles()`](https://eilishmcmaster.github.io/fastDiversity/reference/calculate_private_alleles.md) | Counts private (group-exclusive) and total alleles per group |
-| [`faststats()`](https://eilishmcmaster.github.io/fastDiversity/reference/faststats.md) | Calculates Ho, He, uHe, Fis, uFis, Fst, and Ar per site, with per-group locus filtering, optional bootstrapped confidence intervals, and optional Hardy-Weinberg equilibrium testing |
+| [`faststats()`](https://eilishmcmaster.github.io/fastDiversity/reference/faststats.md) | Calculates Ho, He, uHe, Fis, uFis, Gst, Fst, and rarefied Ar per site, with per-group locus filtering, optional bootstrapped confidence intervals, and optional Hardy-Weinberg equilibrium testing |
 | [`pi_theta_d_stats()`](https://eilishmcmaster.github.io/fastDiversity/reference/pi_theta_d_stats.md) | Calculates pi, theta, S, and D with per-group locus filtering |
 
 ## Installation
@@ -93,8 +93,9 @@ basicstats <- faststats(
 ```
 
 Returns one row per genetic group × site combination, with columns for
-Ho, He, uHe, Fis, uFis, Fst, Ar, and the number of individuals and loci
-used.
+Ho, He, uHe, Fis, uFis, Gst (Nei 1973), population-specific Fst (Weir &
+Goudet 2017), rarefied allelic richness (Ar), and the number of
+individuals and loci used.
 
 **With bootstrapped confidence intervals:**
 
@@ -212,6 +213,14 @@ nucleotide diversity and divergence in the presence of missing data.
 *Molecular Ecology Resources*, 21(4), 1359–1368.
 <https://doi.org/10.1111/1755-0998.13326>
 
+Nei, M. (1973). Analysis of gene diversity in subdivided populations.
+*Proceedings of the National Academy of Sciences*, 70(12), 3321–3323.
+<https://doi.org/10.1073/pnas.70.12.3321>
+
 Nei, M. (1978). Estimation of average heterozygosity and genetic
 distance from a small number of individuals. *Genetics*, 89(3), 583–590.
 <https://doi.org/10.1093/genetics/89.3.583>
+
+Weir, B. S., & Goudet, J. (2017). A unified characterization of
+population structure and relatedness. *Genetics*, 206(4), 2085–2103.
+<https://doi.org/10.1534/genetics.116.198424>

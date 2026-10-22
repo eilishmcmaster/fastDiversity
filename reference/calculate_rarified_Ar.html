@@ -68,8 +68,10 @@ number of rows in gt).</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A data frame containing rarified allelic richness of each locus per genetic
-        group (site).</p>
+    <p>A matrix of rarefied allelic richness with one row per site and one column
+        per locus. Each locus is rarefied to the smallest number of alleles sampled
+        at that locus across sites. Loci with no genotypes at one or more sites are
+        returned as NA.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>

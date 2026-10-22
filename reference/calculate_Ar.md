@@ -1,8 +1,13 @@
-# Calculate Allelic Richness
+# Calculate Allelic Richness (unrarefied)
 
-This function calculates allelic richness (Ar) for each locus based on
-genotype data. Allelic richness is defined as the average number of
-alleles per individual across all loci.
+This function calculates allelic richness (Ar) as the number of distinct
+alleles observed at each locus (1 or 2 for biallelic SNPs), averaged
+across loci. This value is not corrected for sample size, so it should
+only be compared between samples of similar size. Use
+[`calculate_rarified_Ar`](https://eilishmcmaster.github.io/fastDiversity/reference/calculate_rarified_Ar.md)
+for allelic richness standardised to a common sample size, as reported
+by
+[`faststats`](https://eilishmcmaster.github.io/fastDiversity/reference/faststats.md).
 
 ## Usage
 
@@ -19,9 +24,9 @@ calculate_Ar(gt)
 
 ## Value
 
-Average allelic richness across loci.
+Mean number of alleles observed per locus. Loci with no genotypes are
+ignored.
 
-## Details
+## See also
 
-Reference: - Kalinowski, S. T. (2005).
-https://www.montana.edu/kalinowski/software/documents/2005_HP-Rare_MolecularEcologyNotes.pdf
+[`calculate_rarified_Ar`](https://eilishmcmaster.github.io/fastDiversity/reference/calculate_rarified_Ar.md)

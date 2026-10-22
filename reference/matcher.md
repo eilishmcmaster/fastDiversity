@@ -16,7 +16,7 @@ matcher(gt, loci)
 - gt:
 
   Genotype matrix where the first row represents loci and subsequent
-  rows are genotype data (0, 1, 2).
+  rows are genotype data coded as 0=aa, 1=aA, 2=AA.
 
 - loci:
 

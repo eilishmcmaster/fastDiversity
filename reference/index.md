@@ -31,11 +31,11 @@ statistics per site.
 ## Confidence intervals
 
 - [`resampling_loci_CI()`](https://eilishmcmaster.github.io/fastDiversity/reference/resampling_loci_CI.md)
-  : Calculate global bootstrapped He, Ho, and FIS (parallelized) by
-  resampling loci (as in hierfstat::boot.ppfis or arlequin)
+  : Calculate global bootstrapped He, Ho, and FIS by resampling loci (as
+  in hierfstat::boot.ppfis or arlequin)
 - [`resampling_individuals_CI()`](https://eilishmcmaster.github.io/fastDiversity/reference/resampling_individuals_CI.md)
-  : Calculate global bootstrapped He, Ho, and FIS (parallelized) by
-  resampling individuals
+  : Calculate global bootstrapped He, Ho, and FIS by resampling
+  individuals
 
 ## Hardy-Weinberg equilibrium
 
@@ -53,11 +53,13 @@ Lower-level functions used by the wrappers above.
 - [`calculate_Ho()`](https://eilishmcmaster.github.io/fastDiversity/reference/calculate_Ho.md)
   : Calculate Observed Heterozygosity (Ho)
 - [`calculate_Hes()`](https://eilishmcmaster.github.io/fastDiversity/reference/calculate_Hes.md)
-  : Calculate Observed Heterozygosity (Hes)
+  : Calculate Expected Heterozygosity per Locus (Hes)
 - [`calculate_uHe()`](https://eilishmcmaster.github.io/fastDiversity/reference/calculate_uHe.md)
   : Calculate Unbiased Expected Heterozygosity (uHe)
+- [`calculate_Fst()`](https://eilishmcmaster.github.io/fastDiversity/reference/calculate_Fst.md)
+  : Calculate population-specific Fst (Weir & Goudet 2017)
 - [`calculate_Ar()`](https://eilishmcmaster.github.io/fastDiversity/reference/calculate_Ar.md)
-  : Calculate Allelic Richness
+  : Calculate Allelic Richness (unrarefied)
 - [`calculate_rarified_Ar()`](https://eilishmcmaster.github.io/fastDiversity/reference/calculate_rarified_Ar.md)
   : Calculate rarified allelic richness
 - [`calculate_pi_theta_d()`](https://eilishmcmaster.github.io/fastDiversity/reference/calculate_pi_theta_d.md)

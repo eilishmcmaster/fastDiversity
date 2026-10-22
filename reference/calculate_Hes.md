@@ -1,6 +1,6 @@
-# Calculate Observed Heterozygosity (Hes)
+# Calculate Expected Heterozygosity per Locus (Hes)
 
-This function calculates observed heterozygosity (Hes) for each locus
+This function calculates expected heterozygosity (Hes) for each locus
 based on genotype data. Hes is the expected proportion of heterozygotes
 at each locus assuming HW equilibrium.
 
@@ -19,4 +19,4 @@ calculate_Hes(gt)
 
 ## Value
 
-Vector of observed heterozygosity values (Hes) for each locus.
+Vector of expected heterozygosity values (Hes) for each locus.
