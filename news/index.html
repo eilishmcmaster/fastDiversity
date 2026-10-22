@@ -64,6 +64,14 @@
 <code><a href="../reference/MC_HWEtest_of_loci.html">MC_HWEtest_of_loci()</a></code>: matrix input now works (previously only data frames), and the per-locus “genotypes are not labelled” warnings are gone.</li>
 <li>
 <code><a href="../reference/individual_Ho.html">individual_Ho()</a></code>: no longer errors when a group has too few loci.</li>
+<li>
+<code><a href="../reference/faststats.html">faststats()</a></code>: statistics are calculated at full precision and rounded only in the output (per-locus He was previously rounded before averaging).</li>
+<li>
+<code><a href="../reference/faststats.html">faststats()</a></code>: groups where no loci pass the missingness filter are skipped with a message instead of erroring.</li>
+<li>
+<code><a href="../reference/faststats.html">faststats()</a></code>: bootstrap CIs no longer error when all resampled values are NA.</li>
+<li>
+<code><a href="../reference/pi_theta_d_stats.html">pi_theta_d_stats()</a></code>: <code>minimum_loci</code> is now applied (it was ignored), statistic columns are numeric, and sites with a single remaining locus or no segregating sites no longer error.</li>
 </ul></div>
 <div class="section level3">
 <h3 id="other-changes-development-version">Other changes<a class="anchor" aria-label="anchor" href="#other-changes-development-version"></a></h3>

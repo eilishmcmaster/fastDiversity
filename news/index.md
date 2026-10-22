@@ -56,6 +56,18 @@
   per-locus “genotypes are not labelled” warnings are gone.
 - [`individual_Ho()`](https://eilishmcmaster.github.io/fastDiversity/reference/individual_Ho.md):
   no longer errors when a group has too few loci.
+- [`faststats()`](https://eilishmcmaster.github.io/fastDiversity/reference/faststats.md):
+  statistics are calculated at full precision and rounded only in the
+  output (per-locus He was previously rounded before averaging).
+- [`faststats()`](https://eilishmcmaster.github.io/fastDiversity/reference/faststats.md):
+  groups where no loci pass the missingness filter are skipped with a
+  message instead of erroring.
+- [`faststats()`](https://eilishmcmaster.github.io/fastDiversity/reference/faststats.md):
+  bootstrap CIs no longer error when all resampled values are NA.
+- [`pi_theta_d_stats()`](https://eilishmcmaster.github.io/fastDiversity/reference/pi_theta_d_stats.md):
+  `minimum_loci` is now applied (it was ignored), statistic columns are
+  numeric, and sites with a single remaining locus or no segregating
+  sites no longer error.
 
 ### Other changes
 
