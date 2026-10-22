@@ -1,0 +1,52 @@
+url: https://eilishmcmaster.github.io/fastDiversity/
+template:
+  bootstrap: 5
+
+reference:
+  - title: Diversity statistics by group and site
+    desc: Main wrappers that filter loci per genetic group and summarise statistics per site.
+    contents:
+      - faststats
+      - pi_theta_d_stats
+
+  - title: Individual-level statistics
+    contents:
+      - individual_F
+      - individual_Ho
+
+  - title: Allele sharing and private alleles
+    contents:
+      - make_allele_list
+      - calculate_private_alleles
+      - calculate_total_alleles
+      - matcher
+
+  - title: Confidence intervals
+    contents:
+      - resampling_loci_CI
+      - resampling_individuals_CI
+
+  - title: Hardy-Weinberg equilibrium
+    contents:
+      - HWEtest_of_loci
+      - MC_HWEtest_of_loci
+
+  - title: Building blocks
+    desc: Lower-level functions used by the wrappers above.
+    contents:
+      - calculate_Ho
+      - calculate_Hes
+      - calculate_uHe
+      - calculate_Ar
+      - calculate_rarified_Ar
+      - calculate_pi_theta_d
+      - get_minor_allele_counts
+      - get_minor_allele_frequencies
+
+  - title: Data
+    contents:
+      - example_data
+
+  - title: Package
+    contents:
+      - fastDiversity-package

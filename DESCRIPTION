@@ -7,6 +7,8 @@ Authors@R: person(given = c("Eilish", "S."), family = "McMaster",
                   email = "emcm4052@uni.sydney.edu.au")
 Description: Addresses shortcomings in existing methods, which often necessitate specific data structures and file types, and are occasionally no longer maintained. Offers essential functions for basic population genomic analysis in a format compatible with any SNP data in biallelic 0,1,2 (aa, aA, AA) format (e.g., DArTseq), thereby saving time compared to alternative approaches.
 License: MIT + file LICENSE
+URL: https://eilishmcmaster.github.io/fastDiversity/, https://github.com/eilishmcmaster/fastDiversity
+BugReports: https://github.com/eilishmcmaster/fastDiversity/issues
 Depends: R (>= 3.5.0)
 Imports:
   dplyr,

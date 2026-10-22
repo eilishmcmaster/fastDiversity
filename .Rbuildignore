@@ -12,3 +12,6 @@
 ^paper$
 ^\.github$
 ^data/\.Rapp\.history$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
