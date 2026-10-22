@@ -8,7 +8,7 @@
 #' @param gt A data frame or matrix where each column corresponds to genotypes at a single locus.
 #'           Genotypes must be coded as 0 (AA), 1 (AB), or 2 (BB).
 #'
-#' @return A named vector containing:
+#' @return A list containing:
 #' \describe{
 #'   \item{HW_fisher_p}{Fisher combined p-value from the HWExact test across loci.}
 #'   \item{loci_HWX_results}{A data table with individual p-values and locus names.}
@@ -16,6 +16,7 @@
 #'
 #' @export
 MC_HWEtest_of_loci <- function(gt) {
+  gt <- as.data.frame(gt) # so gt[[index]] selects a column for matrix input too
   
   # Helper function to generate genotype count matrix (AA, AB, BB) for one locus
   get_allele_freq_matrix <- function(geno_vector) {
@@ -37,7 +38,7 @@ MC_HWEtest_of_loci <- function(gt) {
       return(NULL)
     }
     result <- tryCatch({
-      HardyWeinberg::HWExact(c(geno_counts[1,1], geno_counts[2,1], geno_counts[2,2]),
+      HardyWeinberg::HWExact(c(AA = geno_counts[1,1], AB = geno_counts[2,1], BB = geno_counts[2,2]),
                              verbose=FALSE)
     }, error = function(e) {
       warning(paste("Error at locus", index, ":", e$message))

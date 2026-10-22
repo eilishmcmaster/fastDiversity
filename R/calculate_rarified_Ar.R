@@ -12,33 +12,37 @@
 #'           0=aa, 1=aA, 2=AA.
 #' @param site_variable Vector of group IDs (sites) for each individual (same length as 
 #'                      number of rows in gt).
-#' @return A data frame containing rarified allelic richness of each locus per genetic 
-#'         group (site).
+#' @return A matrix of rarefied allelic richness with one row per site and one column
+#'         per locus. Each locus is rarefied to the smallest number of alleles sampled
+#'         at that locus across sites. Loci with no genotypes at one or more sites are
+#'         returned as NA.
 #' @export
 calculate_rarified_Ar <- function(gt, site_variable){
   ## calculate rarified allelic richness ##
-  # rows are sites and columns are loci 
-  count_matrix <- t(sapply(split(seq_along(site_variable), site_variable), 
-                           function(idx) colSums(gt[idx, ], na.rm = TRUE))) %>% as.matrix()
-  n_matrix <- t(sapply(split(seq_along(site_variable), site_variable), 
-                       function(idx) colSums(!is.na(gt[idx, ]))))%>% as.matrix()
-  a_matrix <- 2*n_matrix
-  #for each locus
-  # Determine the smallest n for each locus
-  min_n_per_locus <- apply(n_matrix, 2, min)
-  n <- min_n_per_locus *2 #minimum allele count per locus
-  
-  count_matrix2 <- a_matrix-count_matrix
-  
-  all_ar <- matrix(NA, nrow(n_matrix), ncol(n_matrix)) # matrix to stor all ar values per site and locus
-  for(i in 1:ncol(n_matrix)){# for each locus
-    for(j in 1:nrow(n_matrix)){# for each site 
-      samp <- choose(a_matrix[j,i] - c(count_matrix[j,i], count_matrix2[j,i]), n[i]) /
-        choose(a_matrix[j,i], n[i]) # number of alleles at locus i site j - number of reference or alternate alleles observed 
-      
-      samp[is.na(samp)] <- 0  # Replace any NA values with 0 to handle cases where the probability is undefined
-      all_ar[j,i] <- sum(1 - samp)  # Sum the probabilities of sampling each allele to get allelic richness
-    }
+  gt <- as.matrix(gt)
+  site_rows <- split(seq_along(site_variable), site_variable)
+  # rows are sites and columns are loci
+  count_matrix <- t(vapply(site_rows, function(idx) colSums(gt[idx, , drop = FALSE], na.rm = TRUE),
+                           numeric(ncol(gt)))) # alternate allele count
+  n_matrix <- t(vapply(site_rows, function(idx) colSums(!is.na(gt[idx, , drop = FALSE])),
+                       numeric(ncol(gt)))) # individuals genotyped
+  if (ncol(gt) == 1) { # vapply drops to a vector for a single locus
+    count_matrix <- t(count_matrix)
+    n_matrix <- t(n_matrix)
   }
+  a_matrix <- 2*n_matrix # alleles sampled per site and locus
+  count_matrix2 <- a_matrix - count_matrix # reference allele count
+  
+  # rarefy each locus to the smallest number of alleles sampled at that locus
+  g <- matrix(2 * apply(n_matrix, 2, min), nrow(n_matrix), ncol(n_matrix), byrow = TRUE)
+  
+  # probability that an allele is NOT seen in g draws without replacement,
+  # on the log scale to avoid overflow in choose() for large sample sizes
+  p_missing_alt <- exp(lchoose(a_matrix - count_matrix, g) - lchoose(a_matrix, g))
+  p_missing_ref <- exp(lchoose(a_matrix - count_matrix2, g) - lchoose(a_matrix, g))
+  all_ar <- (1 - p_missing_alt) + (1 - p_missing_ref) # expected number of alleles seen
+  
+  all_ar[, g[1, ] == 0] <- NA # locus not genotyped at every site
+  dimnames(all_ar) <- list(names(site_rows), colnames(gt))
   return(all_ar)
 }

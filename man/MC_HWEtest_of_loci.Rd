@@ -11,7 +11,7 @@ MC_HWEtest_of_loci(gt)
 Genotypes must be coded as 0 (AA), 1 (AB), or 2 (BB).}
 }
 \value{
-A named vector containing:
+A list containing:
 \describe{
   \item{HW_fisher_p}{Fisher combined p-value from the HWExact test across loci.}
   \item{loci_HWX_results}{A data table with individual p-values and locus names.}

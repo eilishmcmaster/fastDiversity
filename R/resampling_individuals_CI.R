@@ -1,4 +1,4 @@
-#' Calculate global bootstrapped He, Ho, and FIS (parallelized) by resampling individuals
+#' Calculate global bootstrapped He, Ho, and FIS by resampling individuals
 #'
 #' @description
 #' Resampling individuals means randomly selecting individuals (rows) from the dataset with replacement. This keeps the same genetic markers (loci), but uses different combinations of individuals in each sample. It tests how your results might change depending on which individuals you sampled.
@@ -9,72 +9,25 @@
 #' @param resample_n Number of individuals to resample with replacement (defaults to total individuals)
 #' @param CI_alpha Alpha level for confidence intervals (e.g., 0.05 for 95\% CI)
 #' @return Named vector of confidence intervals for global FIS, HE, HO
+#' @details
+#' Bootstrap replicates are drawn with R's random number generator. Call
+#' \code{set.seed()} before this function for reproducible confidence intervals.
 #' @export
 resampling_individuals_CI <- function(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05) {
   
   if (is.null(resample_n)) resample_n <- nrow(gt)
   
-  # Rcpp functions
-  Rcpp::cppFunction('
-    NumericVector calculate_Ho_cpp(NumericMatrix gt_mat) {
-      int n_col = gt_mat.ncol();
-      int n_row = gt_mat.nrow();
-      NumericVector ho(n_col);
-      
-      for (int j = 0; j < n_col; ++j) {
-        int heteros = 0;
-        int total = 0;
-        for (int i = 0; i < n_row; ++i) {
-          if (!NumericVector::is_na(gt_mat(i,j))) {
-            total++;
-            if (gt_mat(i,j) == 1) heteros++;
-          }
-        }
-        ho[j] = total > 0 ? (double)heteros / total : NA_REAL;
-      }
-      return ho;
-    }
-  ')
-  
-  Rcpp::cppFunction('
-    NumericVector calculate_He_cpp(NumericMatrix gt_mat) {
-      int n_col = gt_mat.ncol();
-      int n_row = gt_mat.nrow();
-      NumericVector he(n_col);
-      
-      for (int j = 0; j < n_col; ++j) {
-        int allele_count = 0;
-        int alt_count = 0;
-        for (int i = 0; i < n_row; ++i) {
-          if (!NumericVector::is_na(gt_mat(i,j))) {
-            allele_count += 2;
-            alt_count += gt_mat(i,j);
-          }
-        }
-        if (allele_count > 0) {
-          double p = (double)alt_count / allele_count;
-          he[j] = 2 * p * (1 - p);
-        } else {
-          he[j] = NA_REAL;
-        }
-      }
-      return he;
-    }
-  ')
-  
-  # Ensure matrix format
   gt_mat <- as.matrix(gt)
-  storage.mode(gt_mat) <- "integer"
+  storage.mode(gt_mat) <- "double"
   n_ind <- nrow(gt_mat)
   
   # Bootstrap resampling of individuals
-  set.seed(14)
   resample_results <- lapply(seq_len(boots), function(i) {
     idx <- sample.int(n_ind, resample_n, replace = TRUE)
     resampled <- gt_mat[idx, , drop = FALSE]
     
-    ho <- calculate_Ho_cpp(resampled)
-    he <- calculate_He_cpp(resampled)
+    ho <- calculate_Ho_vec_cpp(resampled)
+    he <- calculate_Hes_vec_cpp(resampled)
     
     fis <- 1 - (ho / he)
     fis[!is.finite(fis)] <- NA

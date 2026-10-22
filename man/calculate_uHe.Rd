@@ -10,7 +10,7 @@ calculate_uHe(ns, Hes)
 \item{ns}{Vector containing the number of individuals sampled for each genetic group 
 or locus.}
 
-\item{Hes}{Vector containing observed heterozygosity values for each genetic group 
+\item{Hes}{Vector containing expected heterozygosity values for each genetic group 
 or locus.}
 }
 \value{
@@ -18,7 +18,7 @@ Average unbiased expected heterozygosity (uHe) across genetic groups or loci.
 }
 \description{
 This function calculates unbiased expected heterozygosity (uHe) based on the number 
-of individuals (ns) and observed heterozygosity (Hes) for each genetic group or locus.
+of individuals (ns) and expected heterozygosity (Hes) for each genetic group or locus.
 Unbiased expected heterozygosity corrects for sample size biases and provides an 
 estimate of heterozygosity accounting for the number of alleles and individuals.
 }

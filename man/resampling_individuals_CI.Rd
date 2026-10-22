@@ -2,7 +2,7 @@
 % Please edit documentation in R/resampling_individuals_CI.R
 \name{resampling_individuals_CI}
 \alias{resampling_individuals_CI}
-\title{Calculate global bootstrapped He, Ho, and FIS (parallelized) by resampling individuals}
+\title{Calculate global bootstrapped He, Ho, and FIS by resampling individuals}
 \usage{
 resampling_individuals_CI(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05)
 }
@@ -21,4 +21,8 @@ Named vector of confidence intervals for global FIS, HE, HO
 }
 \description{
 Resampling individuals means randomly selecting individuals (rows) from the dataset with replacement. This keeps the same genetic markers (loci), but uses different combinations of individuals in each sample. It tests how your results might change depending on which individuals you sampled.
+}
+\details{
+Bootstrap replicates are drawn with R's random number generator. Call
+\code{set.seed()} before this function for reproducible confidence intervals.
 }

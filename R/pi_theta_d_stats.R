@@ -139,6 +139,6 @@ pi_theta_d_stats <- function(gt, genetic_group_variable, site_variable,
   }
   
   out_matrix <- bind_rows(out_list)
-  print("Process complete!")
+  message("Process complete!")
   return(out_matrix)
 }

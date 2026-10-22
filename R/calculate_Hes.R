@@ -1,11 +1,11 @@
-#' Calculate Observed Heterozygosity (Hes)
+#' Calculate Expected Heterozygosity per Locus (Hes)
 #' 
-#' This function calculates observed heterozygosity (Hes) for each locus based on genotype data.
+#' This function calculates expected heterozygosity (Hes) for each locus based on genotype data.
 #' Hes is the expected proportion of heterozygotes at each locus assuming HW equilibrium.
 #' 
 #' @param gt Genotype matrix where individuals are rows and loci are columns, coded as 
 #'           0=aa, 1=aA, 2=AA.
-#' @return Vector of observed heterozygosity values (Hes) for each locus.
+#' @return Vector of expected heterozygosity values (Hes) for each locus.
 #' @export
 calculate_Hes <- function(gt){
   alleles   <- 2*(colSums(!is.na(gt))) # total number of alleles for a locus (all samples in gt)

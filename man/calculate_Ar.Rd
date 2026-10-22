@@ -2,22 +2,24 @@
 % Please edit documentation in R/calculate_Ar.R
 \name{calculate_Ar}
 \alias{calculate_Ar}
-\title{Calculate Allelic Richness}
+\title{Calculate Allelic Richness (unrarefied)}
 \usage{
 calculate_Ar(gt)
 }
 \arguments{
-\item{gt}{Genotype matrix where individuals are rows and loci are columns, coded as 
+\item{gt}{Genotype matrix where individuals are rows and loci are columns, coded as
 0=aa, 1=aA, 2=AA.}
 }
 \value{
-Average allelic richness across loci.
+Mean number of alleles observed per locus. Loci with no genotypes are ignored.
 }
 \description{
-This function calculates allelic richness (Ar) for each locus based on genotype data.
-Allelic richness is defined as the average number of alleles per individual across all loci.
+This function calculates allelic richness (Ar) as the number of distinct alleles observed
+at each locus (1 or 2 for biallelic SNPs), averaged across loci. This value is not
+corrected for sample size, so it should only be compared between samples of similar size.
+Use \code{\link{calculate_rarified_Ar}} for allelic richness standardised to a common
+sample size, as reported by \code{\link{faststats}}.
 }
-\details{
-Reference:
-- Kalinowski, S. T. (2005). https://www.montana.edu/kalinowski/software/documents/2005_HP-Rare_MolecularEcologyNotes.pdf
+\seealso{
+\code{\link{calculate_rarified_Ar}}
 }

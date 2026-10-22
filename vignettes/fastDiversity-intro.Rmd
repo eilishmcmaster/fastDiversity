@@ -216,13 +216,14 @@ head(basicstats)
 |--------|-------------|
 | `group` | Genetic group ID (e.g. population, species) |
 | `site` | Site ID |
-| `Ar` | Allelic richness per site per group, standardised for sample size |
+| `Ar` | Rarefied allelic richness: expected number of alleles per locus at the smallest sample size among sites in the group (Kalinowski 2004) |
 | `Ho` | Observed heterozygosity: proportion of heterozygous loci averaged across individuals |
 | `He` | Expected heterozygosity under Hardy-Weinberg equilibrium within site_variable |
 | `uHe` | Unbiased expected heterozygosity (corrected for small sample size) |
 | `Fis` | Inbreeding coefficient (1 - Ho/He). Positive values indicate excess homozygosity; negative values indicate excess heterozygosity |
 | `uFis` | Unbiased inbreeding coefficient (1 - Ho/uHe) |
-| `Fst` | Population differentiation: Weir & Cockerham (1984) FST, calculated as (Ht - Hs) / Ht |
+| `Gst` | Gene diversity differentiation (Nei 1973) for the site: (Ht - Hs) / Ht, where Hs is the site's He and Ht the He of the whole genetic group |
+| `Fst` | Population-specific FST (Weir & Goudet 2017) for the site, relative to the other sites in the group; the per-population counterpart of Weir & Cockerham's (1984) θ |
 | `loci` | Number of loci retained after filtering for this group |
 | `n` | Number of individuals sampled at this site x group combination |
 

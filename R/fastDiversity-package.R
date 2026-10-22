@@ -30,7 +30,8 @@
 #' @importFrom data.table data.table as.data.table setnames
 #' @importFrom dplyr %>% bind_rows
 #' @importFrom HardyWeinberg HWExact
-#' @importFrom Rcpp cppFunction
+#' @importFrom Rcpp sourceCpp
+#' @useDynLib fastDiversity, .registration = TRUE
 #' @importFrom stats pchisq quantile setNames
 #' @importFrom utils globalVariables
 "_PACKAGE"

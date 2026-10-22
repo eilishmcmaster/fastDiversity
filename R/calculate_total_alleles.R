@@ -18,7 +18,7 @@ calculate_total_alleles <- function(gt, group_variable, maf) {
   ds <- gt
   keepers <- get_minor_allele_frequencies(ds)
   ds <- ds[, which(keepers >= maf)]
-  cat("Found ", ncol(ds), " poly sites\n")     
+  message("Found ", ncol(ds), " poly sites")     
   
   ds_inverse <- 2 - ds
   colnames(ds) <- paste(colnames(ds), 'A', sep="_")
@@ -33,7 +33,7 @@ calculate_total_alleles <- function(gt, group_variable, maf) {
   for (i in seq_along(groups)) {
     # ds[{{group_variable}} %in% groups[i], , drop = FALSE]
     x3 <- x2[{{group_variable}} %in% groups[i], , drop = FALSE]
-    cat("There are ", nrow(x3), " samples in ", groups[i], "\n")
+    message("There are ", nrow(x3), " samples in ", groups[i])
     # x3 <- rbind("names" = colnames(x3), as.data.frame(x3))
     
     n <- c(n, nrow(x3))

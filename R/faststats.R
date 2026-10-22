@@ -28,23 +28,45 @@
 #' @param CI_alpha Alpha value for confidence intervals, defaults to 0.05 (2.5\%, 97.5\% CIs).
 #' @param run_HWE_test Specify whether to statistically test if allele frequencies differ from Hardy-Weinberg equilibrium.
 #' @param return_locus_stats Specify whether to return p values for each locus from HWE testing.
+#'   Setting this to TRUE also runs the HWE test (\code{run_HWE_test = TRUE}).
 #' 
-#' @return A data frame with the following columns:
+#' @return A data frame with the following columns (or, if \code{return_locus_stats = TRUE},
+#'   a list with this data frame as \code{summary} and per-locus HWE p-values as \code{locus_HWE}):
 #'   \item{group}{Genetic group ID (e.g., species, subspecies).}
 #'   \item{site}{Site ID corresponding to the sample location.}
-#'   \item{Ar}{Allelic richness per site per group, standardized for sample size.}
+#'   \item{Ar}{Rarefied allelic richness: the expected number of alleles per locus in a sample of
+#'     the smallest size observed at that locus among the sites retained for the genetic group,
+#'     averaged across loci (see \code{\link{calculate_rarified_Ar}}). Comparable among sites within
+#'     a genetic group.}
 #'   \item{Ho}{Observed heterozygosity.}
 #'   \item{He}{Expected heterozygosity under Hardy-Weinberg equilibrium within the site_variable.}
 #'   \item{uHe}{Unbiased expected heterozygosity (corrected for small sample size).}
 #'   \item{Fis}{Inbreeding coefficient (Fis = 1 - Ho / He).}
-#'   \item{Fst}{Fst/Gst Inbreeding due to population subdivision (Fst = (Ht-Hs)/Ht [W+C 1984]) }
-#'   \item{uF}{Unbiased inbreeding coefficient (Fis = 1 - Ho / uHe).}
+#'   \item{Gst}{Site-level gene diversity differentiation in the sense of Nei (1973),
+#'     (Ht - Hs) / Ht, where Hs is the site's He and Ht is the He of all individuals in the
+#'     genetic group.}
+#'   \item{Fst}{Population-specific Fst of Weir & Goudet (2017) for the site, relative to the other
+#'     sites retained for the genetic group (see \code{\link{calculate_Fst}}). NA if the group
+#'     has only one retained site.}
+#'   \item{uFis}{Unbiased inbreeding coefficient (uFis = 1 - Ho / uHe).}
 #'   \item{loci}{Number of loci used in the analysis for that group-site combination.}
 #'   \item{n}{Number of individuals sampled at the site for the given group.}
 #'   \item{*_ci.*\%, *_ci.*\%}{Lower and upper confidence intervals for Fis, Ho, and He, generated via bootstrapping. Column prefixes indicate the statistic (e.g., \code{loci_f.2.5\%}, \code{loci_he.97.5\%}).}
-#'   \item{HW_fisher_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium tests across loci (HardyWeinberg::HWExact).}
+#'   \item{HWE_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium tests across loci (HardyWeinberg::HWExact).}
 #' 
-#' @seealso [resampling_individuals_CI(), resampling_loci_CI()]
+#' @references
+#' Nei, M. (1973). Analysis of gene diversity in subdivided populations. Proceedings of the
+#' National Academy of Sciences, 70(12), 3321--3323. https://doi.org/10.1073/pnas.70.12.3321
+#'
+#' Weir, B. S., & Goudet, J. (2017). A unified characterization of population structure and
+#' relatedness. Genetics, 206(4), 2085--2103. https://doi.org/10.1534/genetics.116.198424
+#'
+#' Kalinowski, S. T. (2004). Counting alleles with rarefaction: private alleles and hierarchical
+#' sampling designs. Conservation Genetics, 5(4), 539--543.
+#' https://doi.org/10.1023/B:COGE.0000041021.91777.1a
+#'
+#' @seealso [resampling_individuals_CI(), resampling_loci_CI(), calculate_Fst(),
+#'   calculate_rarified_Ar()]
 #' 
 #' 
 #' @export
@@ -55,6 +77,11 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
                        boots = 100, CI_alpha=0.05,
                        run_HWE_test = FALSE, return_locus_stats = FALSE) 
   {
+    if(isTRUE(return_locus_stats) && !isTRUE(run_HWE_test)){ # locus stats come from the HWE test
+      message("return_locus_stats = TRUE requires the HWE test; setting run_HWE_test = TRUE.")
+      run_HWE_test <- TRUE
+    }
+    
     locus_names <- colnames(gt)
     gt <- data.table::as.data.table(gt, keep.rownames = FALSE) # make genotype data into data.table
     data.table::setnames(gt, locus_names)
@@ -89,14 +116,23 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       gt_group_missing_maf <- gt_group_missing[, ..passing_maf_loci] # remove low MAF loci
       
       if (length(passing_maf_loci) < minimum_loci) {
-        print(paste(group, "does not have enough loci (",
-                    length(passing_maf_loci), "loci: minimum is,",
-                    minimum_loci, ")"))
-        print("Proceeding to next genetic group")
+        message(group, " does not have enough loci (", length(passing_maf_loci),
+                " loci: minimum is ", minimum_loci, "). Proceeding to next genetic group")
         next
       }
       
       Ht <- calculate_Hes(gt_group_missing_maf) %>% mean() %>% round(.,4) # expected heterozygosity across all individuals and averaged across loci
+      # rarefied allelic richness and Weir & Goudet Fst are relative to the other retained sites
+      retained <- which(site_variable_group %in% sites)
+      gt_retained <- as.matrix(gt_group_missing_maf[retained, ])
+      sites_retained <- as.character(site_variable_group[retained])
+      Ar_sites <- rowMeans(calculate_rarified_Ar(gt_retained, sites_retained), na.rm = TRUE)
+      if (length(sites) > 1) {
+        Fst_sites <- calculate_Fst(gt_retained, sites_retained)
+      } else {
+        Fst_sites <- setNames(NA_real_, sites)
+      }
+      
       group_out_list <- list() # make empty list to store group level data in 
       if(isTRUE(return_locus_stats)){ # if locus stats should be returned
         group_locus_out_df <- data.table()
@@ -110,13 +146,14 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
         Ho <- calculate_Ho(gt_site) %>% round(.,4)
         Hes <- calculate_Hes(gt_site) %>% round(.,4)
         He <- mean(Hes, na.rm = TRUE) %>% round(.,4)
-        Fst <- ((Ht-He)/(Ht)) %>% round(.,4) #W+C 1984 from frankham 2015 p 324
+        Gst <- ((Ht-He)/(Ht)) %>% round(.,4) # Nei 1973 gene diversity differentiation for this site
+        Fst <- round(Fst_sites[[site]], 4) # Weir & Goudet 2017 population-specific Fst
         ns <- colSums(!is.na(gt_site))
         uHe <- calculate_uHe(ns, Hes) %>% round(.,4)
         Fis <- (1 - (Ho/He) ) %>% round(.,4)
         uFis <- (1 - (Ho/uHe)) %>% round(.,4)
         loci <- ncol(gt_site) 
-        Ar <- calculate_Ar(gt_site) %>% round(.,4)
+        Ar <- round(Ar_sites[[site]], 4)
         n <- nrow(gt_site)
         
         site_results <- c(
@@ -127,7 +164,8 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
           "He" = He,
           "uHe" = uHe,
           "Fis" = Fis,
-          "Fst" = Fst, 
+          "Gst" = Gst,
+          "Fst" = Fst,
           "uFis" = uFis,
           "loci" = loci,
           "n" = n
@@ -159,43 +197,19 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
         group_out_list[[s]] <- site_results
       }
       
-      # # rarefied AR
-      # count_matrix <- t(sapply(split(seq_along(site_variable_group), 
-      #                                site_variable_group), function(idx) colSums(gt_group_missing_maf[idx, 
-      #                                ], na.rm = TRUE))) %>% as.matrix()
-      # n_matrix <- t(sapply(split(seq_along(site_variable_group), 
-      #                            site_variable_group), function(idx) colSums(!is.na(gt_group_missing_maf[idx, 
-      #                            ])))) %>% as.matrix()
-      # a_matrix <- 2 * n_matrix
-      # min_n_per_locus <- apply(n_matrix, 2, min)
-      # n <- min_n_per_locus * 2
-      # count_matrix2 <- a_matrix - count_matrix
-      # all_ar <- matrix(NA, nrow(n_matrix), ncol(n_matrix))
-      # for (i in 1:ncol(n_matrix)) {
-      #   for (j in 1:nrow(n_matrix)) {
-      #     samp <- choose(a_matrix[j, i] - c(count_matrix[j, 
-      #                                                    i], count_matrix2[j, i]), n[i])/choose(a_matrix[j, 
-      #                                                                                                    i], n[i])
-      #     samp[is.na(samp)] <- 0
-      #     all_ar[j, i] <- sum(1 - samp)
-      #   }
-      # }
-      # mn_ar <- rowMeans(all_ar, na.rm = TRUE) %>% round(., 
-      #                                                   3)
-      # sd_ar <- apply(all_ar, 1, sd, na.rm = TRUE) %>% round(., 
-      #                                                       3)
-      # group_out_matrix <- cbind(group_out_matrix, mn_ar, sd_ar)
-      # out_matrix <- rbind(out_matrix, group_out_matrix)
-      
       out_list[[group]] <- bind_rows(group_out_list)
       
       if(isTRUE(return_locus_stats)){ # if locus data is requested, add to the table
         locus_out_list[[group]] <- group_locus_out_df 
       }
-      print(paste(group, "complete"))
+      message(group, " complete")
     }
     
     out_matrix <- bind_rows(out_list)
+    
+    # site_results is built with c(), which makes every value character; restore numeric columns
+    numeric_cols <- setdiff(names(out_matrix), c("group", "site"))
+    out_matrix[numeric_cols] <- lapply(out_matrix[numeric_cols], as.numeric)
     
     if(isTRUE(return_locus_stats)){ # if locus data is requested, add to the table
       out_data <- list('summary'= out_matrix, 'locus_HWE' = locus_out_list)
@@ -203,7 +217,7 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       out_data <- out_matrix
     }
     
-    print("Process complete!")
+    message("Process complete!")
     
     return(out_data)
     

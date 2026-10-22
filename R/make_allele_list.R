@@ -25,7 +25,7 @@ make_allele_list <- function(gt, site_variable) {
   for (i in seq_along(groups)) {
     group_mask <- site_variable == groups[i]
     df <- gt[group_mask, , drop = FALSE] # Subset without dropping dimensions
-    cat("There are ", nrow(df), " samples in ", groups[i], "\n")
+    message("There are ", nrow(df), " samples in ", groups[i])
     df2 <- rbind("names" = colnames(df), df)
     alleles <- apply(df2, 2, matcher, loci)
     out[[i]] <- unlist(alleles, use.names = FALSE)
