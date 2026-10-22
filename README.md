@@ -1,6 +1,11 @@
+<!-- badges: start -->
 [![DOI](https://zenodo.org/badge/797486652.svg)](https://zenodo.org/doi/10.5281/zenodo.12741582)
+[![R-CMD-check](https://github.com/eilishmcmaster/fastDiversity/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/eilishmcmaster/fastDiversity/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
 
 # fastDiversity
+
+**Documentation:** <https://eilishmcmaster.github.io/fastDiversity/>
 
 **fastDiversity** is an R package for fast, flexible calculation of population genetic diversity statistics from biallelic SNP data.
 
@@ -23,13 +28,21 @@ A key design goal is support for datasets spanning **multiple species or genetic
 # Install remotes if needed
 if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
 
-remotes::install_github("eilishmcmaster/fastDiversity", build_vignettes = TRUE)
+remotes::install_github("eilishmcmaster/fastDiversity")
 
 library(fastDiversity)
+```
 
-# View tutorial vignette
+The tutorial vignette is available online at
+<https://eilishmcmaster.github.io/fastDiversity/articles/fastDiversity-intro.html>.
+
+To build the vignette locally, install its additional dependencies first:
+
+```r
+install.packages(c("knitr", "rmarkdown", "ggplot2", "ggthemes", "tidyr",
+                   "ggvenn", "ggVennDiagram"))
+remotes::install_github("eilishmcmaster/fastDiversity", build_vignettes = TRUE)
 browseVignettes("fastDiversity")
-
 ```
 
 ## Quick start
@@ -37,8 +50,9 @@ browseVignettes("fastDiversity")
 ```r
 library(fastDiversity)
 
-data(example_gt)    # genotype matrix: samples × loci, values 0/1/2/NA
-data(example_meta)  # sample metadata with population and site columns
+data(example_data)  # loads two objects:
+                    #   example_gt:   genotype matrix, samples × loci, values 0/1/2/NA
+                    #   example_meta: sample metadata with population and site columns
 ```
 
 **Allele sharing and private alleles:**
@@ -132,7 +146,29 @@ Returns a table containing nucleotide diversity (pi), segregating sites (S),
 Wu & Watterson's theta (W), and Tajima's D (D) per site_variable grouping. 
 
 
-For a full worked example with plots, see `vignette("fastDiversity-intro")`.
+For a full worked example with plots, see the
+[tutorial vignette](https://eilishmcmaster.github.io/fastDiversity/articles/fastDiversity-intro.html).
+
+## Development and testing
+
+The package is tested with [testthat](https://testthat.r-lib.org/). From a
+clone of the repository, run:
+
+```r
+devtools::test()   # run the test suite
+devtools::check()  # full R CMD check, including the tests
+```
+
+R CMD check runs automatically on macOS, Windows, and Linux via GitHub Actions
+for every push and pull request to `main`.
+
+## Contributing and support
+
+- **Bug reports and questions:** please open an
+  [issue](https://github.com/eilishmcmaster/fastDiversity/issues), including a
+  minimal reproducible example and the output of `sessionInfo()`.
+- **Contributions:** pull requests are welcome. See
+  [CONTRIBUTING.md](.github/CONTRIBUTING.md) for guidelines.
 
 ## References
 

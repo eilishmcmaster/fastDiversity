@@ -27,10 +27,10 @@ are removed prior to calculation.
 \references{
 Korunes, K. L., & Samuk, K. (2021). pixy: Unbiased estimation of
 nucleotide diversity and divergence in the presence of missing data.
-Molecular Ecology Resources, 21(4), 1359–1368.
+Molecular Ecology Resources, 21(4), 1359--1368.
 https://doi.org/10.1111/1755-0998.13326
 
 Tajima, F. (1989). Statistical method for testing the neutral mutation
-hypothesis by DNA polymorphism. Genetics, 123(3), 585–595.
+hypothesis by DNA polymorphism. Genetics, 123(3), 585--595.
 https://doi.org/10.1093/genetics/123.3.585
 }

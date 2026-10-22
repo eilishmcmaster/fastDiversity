@@ -1,0 +1,17 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^notes/
+^testing_CI_boots\.R$
+
+^\.positai$
+^\.claude$
+^LICENSE\.md$
+^doc$
+^Meta$
+^draft_R$
+^paper$
+^\.github$
+^data/\.Rapp\.history$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

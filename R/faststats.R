@@ -44,7 +44,6 @@
 #'   \item{*_ci.*\%, *_ci.*\%}{Lower and upper confidence intervals for Fis, Ho, and He, generated via bootstrapping. Column prefixes indicate the statistic (e.g., \code{loci_f.2.5\%}, \code{loci_he.97.5\%}).}
 #'   \item{HW_fisher_p}{P-value from Fisher's method combining Hardy-Weinberg equilibrium tests across loci (HardyWeinberg::HWExact).}
 #' 
-#' @import data.table HardyWeinberg dplyr stats
 #' @seealso [resampling_individuals_CI(), resampling_loci_CI()]
 #' 
 #' 
@@ -77,7 +76,7 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       sites <- names(which(site_freq >= minimum_n)) # remove sites less than threshold n
       
       if (length(sites) == 0) {
-        message(sprintf("Skipping group '%s': no sites meet n ≥ %d.", 
+        message(sprintf("Skipping group '%s': no sites meet n >= %d.", 
                         group, minimum_n)) 
         next  }
       #
@@ -94,7 +93,7 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
                     length(passing_maf_loci), "loci: minimum is,",
                     minimum_loci, ")"))
         print("Proceeding to next genetic group")
-        (next)()
+        next
       }
       
       Ht <- calculate_Hes(gt_group_missing_maf) %>% mean() %>% round(.,4) # expected heterozygosity across all individuals and averaged across loci

@@ -7,9 +7,8 @@
 #'           0=aa, 1=aA, 2=AA.
 #' @param boots Number of bootstrap replicates
 #' @param resample_n Number of loci to resample with replacement -- defaults to total loci
-#' @param CI_alpha Alpha level for confidence intervals (e.g., 0.05 for 95% CI)
+#' @param CI_alpha Alpha level for confidence intervals (e.g., 0.05 for 95\% CI)
 #' @return Named vector of confidence intervals for global FIS, HE, HO
-#' @import data.table dplyr future.apply Rcpp
 #' @export
 resampling_loci_CI <- function(gt, boots = 100, resample_n = NULL, CI_alpha = 0.05) {
   

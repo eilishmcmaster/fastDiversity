@@ -30,9 +30,8 @@ individual_Ho <- function(gt, genetic_group_variable=NULL, minimum_loci=50, maf=
     gt_group_missing_maf <- gt_group_missing[,passing_maf_loci]
     
     if(ncol(gt_group_missing_maf)<minimum_loci){
-      print(paste(group),'does not have enough loci (',ncol(gt_group_missing_maf),'loci: minimum is,',minimum_loci,')')
-      print('Proceeding to next genetic group')
-      next()
+      message('Dataset does not have enough loci (', ncol(gt_group_missing_maf), ' loci: minimum is ', minimum_loci, ')')
+      return(setNames(rep(NA_real_, nrow(gt)), rownames(gt)))
     }
     
     individual_heterozygosity <- rowSums((gt_group_missing_maf==1), na.rm=TRUE) /
@@ -54,9 +53,8 @@ individual_Ho <- function(gt, genetic_group_variable=NULL, minimum_loci=50, maf=
       gt_group_missing_maf <- gt_group_missing[,passing_maf_loci]
       
       if(ncol(gt_group_missing_maf)<minimum_loci){
-        print(paste(group),'does not have enough loci (',ncol(gt_group_missing_maf),'loci: minimum is,',minimum_loci,')')
-        print('Proceeding to next genetic group')
-        next()
+        message(group, ' does not have enough loci (', ncol(gt_group_missing_maf), ' loci: minimum is ', minimum_loci, '). Proceeding to next genetic group')
+        next
       }
       individual_heterozygosity_group <- rowSums((gt_group_missing_maf==1), na.rm=TRUE) / rowSums(!is.na(gt_group_missing_maf)) # number of hets per individual
       individual_heterozygosity <- c(individual_heterozygosity, individual_heterozygosity_group)
