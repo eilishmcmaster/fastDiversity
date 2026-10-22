@@ -18,6 +18,30 @@ calculated independently per group. This is a common scenario in
 conservation genomics and comparative population studies that is not
 well served by existing tools.
 
+## Input data
+
+fastDiversity takes a genotype matrix with individuals as rows and loci
+as columns, coded `0`/`1`/`2`/`NA`, plus vectors giving each
+individual’s genetic group and site.
+
+Most SNP-calling pipelines, including DArTseq and RADseq SNP reports,
+output only polymorphic sites. This matters for how some statistics
+should be interpreted:
+
+- **Fis, Gst and Fst** are ratios and do not depend on monomorphic
+  sites.
+- **Ho, He, uHe and Ar** are averages over the loci analysed. From
+  SNP-only data they describe SNP heterozygosity: comparable among sites
+  within a genetic group, but not genome-wide heterozygosity, and not
+  comparable across datasets or genetic groups that retain different
+  loci.
+- **pi and theta** from
+  [`pi_theta_d_stats()`](https://eilishmcmaster.github.io/fastDiversity/reference/pi_theta_d_stats.md)
+  exclude monomorphic sites and are sums over segregating sites, not
+  per-site values. Per-site estimates would need the number of invariant
+  sites sequenced, which many reduced-representation datasets do not
+  provide. Tajima’s D does not depend on invariant sites.
+
 ## Key functions
 
 | Function | Description |

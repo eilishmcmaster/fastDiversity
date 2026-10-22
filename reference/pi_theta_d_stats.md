@@ -95,7 +95,7 @@ A data frame with the following columns:
 
 - pi:
 
-  Nucleotide diversity (raw pi).
+  Nucleotide diversity summed over segregating sites.
 
 - S:
 
@@ -103,7 +103,7 @@ A data frame with the following columns:
 
 - theta:
 
-  Watterson's theta.
+  Watterson's theta summed over segregating sites.
 
 - D:
 
@@ -112,6 +112,19 @@ A data frame with the following columns:
 - real_missingness:
 
   Proportion of missing data in the filtered genotype matrix.
+
+## Details
+
+**Monomorphic and invariant sites.** Monomorphic sites are excluded, and
+`pi` and `theta` are sums over segregating sites rather than per-site
+(per-nucleotide) values. Per-site estimates require the number of
+invariant sites sequenced, which is unavailable for many
+reduced-representation datasets (such as DArTseq SNP reports);
+monomorphic SNP loci alone do not provide it. `pi` and `theta` therefore
+scale with the number of loci analysed, and are comparable among sites
+analysed with the same loci, not with genome-wide nucleotide diversity
+estimates. Tajima's D does not depend on invariant sites. See
+[`calculate_pi_theta_d`](https://eilishmcmaster.github.io/fastDiversity/reference/calculate_pi_theta_d.md).
 
 ## See also
 

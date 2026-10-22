@@ -32,13 +32,14 @@ library(ggthemes)
 
 ------------------------------------------------------------------------
 
-## Example dataset: *Doryphora sassafras*
+## Example dataset
 
-The package ships with SNP data from *Doryphora sassafras* (Sassafras,
-Atherospermataceae), a rainforest tree endemic to the eastern Australian
-coast. The dataset spans five genetic populations, each sampled across
-multiple sites. This structure, multiple hierarchical grouping levels
-within a single species, is the typical use case for `fastDiversity`.
+The package ships with unpublished DArTseq SNP data from a plant species
+from eastern Australia (see
+[`?example_data`](https://eilishmcmaster.github.io/fastDiversity/reference/example_data.md)).
+The dataset spans five genetic populations, each sampled across multiple
+sites. This structure, multiple hierarchical grouping levels within a
+single species, is the typical use case for `fastDiversity`.
 
 ``` r
 
@@ -635,11 +636,30 @@ D_n_5 <- pi_theta_d_stats(
 | `site` | Site ID |
 | `loci` | Number of loci retained after filtering |
 | `n` | Number of individuals used |
-| `pi` | Nucleotide diversity: mean pairwise differences across loci |
+| `pi` | Nucleotide diversity: pairwise differences summed over segregating sites |
 | `S` | Number of segregating (polymorphic) sites |
-| `theta` | Wu & Watterson’s theta: diversity estimate based on S, corrected for sample size |
+| `theta` | Wu & Watterson’s theta: diversity estimate based on S, corrected for sample size, summed over segregating sites |
 | `D` | Tajima’s D: standardised difference between pi and W. Negative values suggest an excess of rare variants (population expansion or purifying selection); positive values suggest an excess of intermediate-frequency variants (balancing selection or population contraction) |
 | `real_missingness` | Proportion of missing data in the filtered matrix used for calculation |
+
+### Monomorphic sites
+
+The example data, like most SNP-calling output, contains only
+polymorphic sites.
+[`pi_theta_d_stats()`](https://eilishmcmaster.github.io/fastDiversity/reference/pi_theta_d_stats.md)
+excludes monomorphic sites, and `pi` and `theta` are sums over
+segregating sites rather than per-site (per-nucleotide) values. Per-site
+estimates would require the number of invariant sites sequenced, which
+is not available for many reduced-representation datasets; monomorphic
+SNP loci alone do not provide it. `pi` and `theta` therefore scale with
+the number of loci analysed and are comparable among sites analysed with
+the same loci. Tajima’s D does not depend on invariant sites.
+
+The same applies to Ho, He, uHe and Ar from
+[`faststats()`](https://eilishmcmaster.github.io/fastDiversity/reference/faststats.md),
+which are averages over the loci analysed: they are comparable among
+sites within a genetic group, but are not genome-wide heterozygosity.
+Fis, Gst and Fst are ratios and do not depend on monomorphic sites.
 
 ### Effect of sample size on diversity estimates
 

@@ -95,14 +95,14 @@ pipelines.</p>
 <hr>
 </div>
 <div class="section level2">
-<h2 id="example-dataset-doryphora-sassafras">Example dataset: <em>Doryphora sassafras</em><a class="anchor" aria-label="anchor" href="#example-dataset-doryphora-sassafras"></a>
+<h2 id="example-dataset">Example dataset<a class="anchor" aria-label="anchor" href="#example-dataset"></a>
 </h2>
-<p>The package ships with SNP data from <em>Doryphora sassafras</em>
-(Sassafras, Atherospermataceae), a rainforest tree endemic to the
-eastern Australian coast. The dataset spans five genetic populations,
-each sampled across multiple sites. This structure, multiple
-hierarchical grouping levels within a single species, is the typical use
-case for <code>fastDiversity</code>.</p>
+<p>The package ships with unpublished DArTseq SNP data from a plant
+species from eastern Australia (see <code><a href="../reference/example_data.html">?example_data</a></code>). The
+dataset spans five genetic populations, each sampled across multiple
+sites. This structure, multiple hierarchical grouping levels within a
+single species, is the typical use case for
+<code>fastDiversity</code>.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">example_data</span><span class="op">)</span></span>
 <span></span>
@@ -761,7 +761,8 @@ sizes:</p>
 </tr>
 <tr class="odd">
 <td><code>pi</code></td>
-<td>Nucleotide diversity: mean pairwise differences across loci</td>
+<td>Nucleotide diversity: pairwise differences summed over segregating
+sites</td>
 </tr>
 <tr class="even">
 <td><code>S</code></td>
@@ -770,7 +771,7 @@ sizes:</p>
 <tr class="odd">
 <td><code>theta</code></td>
 <td>Wu &amp; Watterson’s theta: diversity estimate based on S, corrected
-for sample size</td>
+for sample size, summed over segregating sites</td>
 </tr>
 <tr class="even">
 <td><code>D</code></td>
@@ -787,6 +788,24 @@ calculation</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section level3">
+<h3 id="monomorphic-sites">Monomorphic sites<a class="anchor" aria-label="anchor" href="#monomorphic-sites"></a>
+</h3>
+<p>The example data, like most SNP-calling output, contains only
+polymorphic sites. <code><a href="../reference/pi_theta_d_stats.html">pi_theta_d_stats()</a></code> excludes monomorphic
+sites, and <code>pi</code> and <code>theta</code> are sums over
+segregating sites rather than per-site (per-nucleotide) values. Per-site
+estimates would require the number of invariant sites sequenced, which
+is not available for many reduced-representation datasets; monomorphic
+SNP loci alone do not provide it. <code>pi</code> and <code>theta</code>
+therefore scale with the number of loci analysed and are comparable
+among sites analysed with the same loci. Tajima’s D does not depend on
+invariant sites.</p>
+<p>The same applies to Ho, He, uHe and Ar from <code><a href="../reference/faststats.html">faststats()</a></code>,
+which are averages over the loci analysed: they are comparable among
+sites within a genetic group, but are not genome-wide heterozygosity.
+Fis, Gst and Fst are ratios and do not depend on monomorphic sites.</p>
 </div>
 <div class="section level3">
 <h3 id="effect-of-sample-size-on-diversity-estimates">Effect of sample size on diversity estimates<a class="anchor" aria-label="anchor" href="#effect-of-sample-size-on-diversity-estimates"></a>

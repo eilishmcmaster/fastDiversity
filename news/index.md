@@ -4,6 +4,10 @@
 
 ### Changes to statistics
 
+- Documentation now explains how monomorphic sites affect each
+  statistic, including that `pi` and `theta` from
+  [`pi_theta_d_stats()`](https://eilishmcmaster.github.io/fastDiversity/reference/pi_theta_d_stats.md)
+  are sums over segregating sites rather than per-site values.
 - [`faststats()`](https://eilishmcmaster.github.io/fastDiversity/reference/faststats.md):
   the previous `Fst` column, (Ht - Hs) / Ht, was mislabelled as Weir &
   Cockerham (1984). It is now named `Gst` (Nei 1973). A new `Fst` column

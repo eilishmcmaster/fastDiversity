@@ -142,13 +142,13 @@ exclude singletons.</p></dd>
 <dd><p>Number of individuals sampled at the site for the given group.</p></dd>
 
   <dt>pi</dt>
-<dd><p>Nucleotide diversity (raw pi).</p></dd>
+<dd><p>Nucleotide diversity summed over segregating sites.</p></dd>
 
   <dt>S</dt>
 <dd><p>Number of segregating sites.</p></dd>
 
   <dt>theta</dt>
-<dd><p>Watterson's theta.</p></dd>
+<dd><p>Watterson's theta summed over segregating sites.</p></dd>
 
   <dt>D</dt>
 <dd><p>Tajima's D statistic.</p></dd>
@@ -157,6 +157,18 @@ exclude singletons.</p></dd>
 <dd><p>Proportion of missing data in the filtered genotype matrix.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p><strong>Monomorphic and invariant sites.</strong> Monomorphic sites are excluded, and
+<code>pi</code> and <code>theta</code> are sums over segregating sites rather than per-site
+(per-nucleotide) values. Per-site estimates require the number of invariant
+sites sequenced, which is unavailable for many reduced-representation datasets
+(such as DArTseq SNP reports); monomorphic SNP loci alone do not provide it.
+<code>pi</code> and <code>theta</code> therefore scale with the number of loci analysed, and
+are comparable among sites analysed with the same loci, not with genome-wide
+nucleotide diversity estimates. Tajima's D does not depend on invariant sites.
+See <code><a href="calculate_pi_theta_d.html">calculate_pi_theta_d</a></code>.</p>
+    </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>[resampling_individuals_CI(), resampling_loci_CI()]</p></div>

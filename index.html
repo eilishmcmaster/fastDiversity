@@ -61,6 +61,20 @@
 <p>Many existing tools require specific file formats or data structures, and some are no longer actively maintained. fastDiversity is designed to work directly with any SNP dataset encoded in standard biallelic dosage format (<code>0</code> (homozygous reference, <em>aa</em>), <code>1</code> (heterozygous, <em>aA</em>), <code>2</code> (homozygous alternate, <em>AA</em>), with <code>NA</code> for missing data), the direct output of most SNP-calling pipelines.</p>
 <p>A key design goal is support for datasets spanning <strong>multiple species or genetic groups</strong>, where locus filtering and statistics need to be calculated independently per group. This is a common scenario in conservation genomics and comparative population studies that is not well served by existing tools.</p>
 <div class="section level2">
+<h2 id="input-data">Input data<a class="anchor" aria-label="anchor" href="#input-data"></a>
+</h2>
+<p>fastDiversity takes a genotype matrix with individuals as rows and loci as columns, coded <code>0</code>/<code>1</code>/<code>2</code>/<code>NA</code>, plus vectors giving each individual’s genetic group and site.</p>
+<p>Most SNP-calling pipelines, including DArTseq and RADseq SNP reports, output only polymorphic sites. This matters for how some statistics should be interpreted:</p>
+<ul>
+<li>
+<strong>Fis, Gst and Fst</strong> are ratios and do not depend on monomorphic sites.</li>
+<li>
+<strong>Ho, He, uHe and Ar</strong> are averages over the loci analysed. From SNP-only data they describe SNP heterozygosity: comparable among sites within a genetic group, but not genome-wide heterozygosity, and not comparable across datasets or genetic groups that retain different loci.</li>
+<li>
+<strong>pi and theta</strong> from <code><a href="reference/pi_theta_d_stats.html">pi_theta_d_stats()</a></code> exclude monomorphic sites and are sums over segregating sites, not per-site values. Per-site estimates would need the number of invariant sites sequenced, which many reduced-representation datasets do not provide. Tajima’s D does not depend on invariant sites.</li>
+</ul>
+</div>
+<div class="section level2">
 <h2 id="key-functions">Key functions<a class="anchor" aria-label="anchor" href="#key-functions"></a>
 </h2>
 <table class="table">

@@ -40,7 +40,8 @@
 <h2 class="pkg-version" data-toc-text="development version" id="fastdiversity-development-version">fastDiversity (development version)<a class="anchor" aria-label="anchor" href="#fastdiversity-development-version"></a></h2>
 <div class="section level3">
 <h3 id="changes-to-statistics-development-version">Changes to statistics<a class="anchor" aria-label="anchor" href="#changes-to-statistics-development-version"></a></h3>
-<ul><li>
+<ul><li>Documentation now explains how monomorphic sites affect each statistic, including that <code>pi</code> and <code>theta</code> from <code><a href="../reference/pi_theta_d_stats.html">pi_theta_d_stats()</a></code> are sums over segregating sites rather than per-site values.</li>
+<li>
 <code><a href="../reference/faststats.html">faststats()</a></code>: the previous <code>Fst</code> column, (Ht - Hs) / Ht, was mislabelled as Weir &amp; Cockerham (1984). It is now named <code>Gst</code> (Nei 1973). A new <code>Fst</code> column gives population-specific FST (Weir &amp; Goudet 2017) for each site, relative to the other retained sites in the genetic group.</li>
 <li>New <code><a href="../reference/calculate_Fst.html">calculate_Fst()</a></code>: population-specific FST (Weir &amp; Goudet 2017); matches <code><a href="https://rdrr.io/pkg/hierfstat/man/fs.dosage.html" class="external-link">hierfstat::fs.dosage()</a></code>.</li>
 <li>
