@@ -109,19 +109,24 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       #
       not_missing_loci <- which(colMeans(is.na(gt_group)) <=  max_missingness)  # determine which loci pass missingness threshold
       
+      if (length(not_missing_loci) == 0) {
+        message(group, " has no loci with missingness <= ", max_missingness,
+                ". Proceeding to next genetic group")
+        next
+      }
       gt_group_missing <- gt_group[, ..not_missing_loci] # filter to remove high missing loci
       
       loci_mafs <- get_minor_allele_frequencies(gt_group_missing) # get minor allele frequencies of each locus
       passing_maf_loci <- which(loci_mafs >= maf) # get indices 
       gt_group_missing_maf <- gt_group_missing[, ..passing_maf_loci] # remove low MAF loci
       
-      if (length(passing_maf_loci) < minimum_loci) {
+      if (length(passing_maf_loci) < max(minimum_loci, 1)) { # at least one locus is always needed
         message(group, " does not have enough loci (", length(passing_maf_loci),
                 " loci: minimum is ", minimum_loci, "). Proceeding to next genetic group")
         next
       }
       
-      Ht <- calculate_Hes(gt_group_missing_maf) %>% mean() %>% round(.,4) # expected heterozygosity across all individuals and averaged across loci
+      Ht <- mean(calculate_Hes(gt_group_missing_maf), na.rm = TRUE) # expected heterozygosity across all individuals and averaged across loci
       # rarefied allelic richness and Weir & Goudet Fst are relative to the other retained sites
       retained <- which(site_variable_group %in% sites)
       gt_retained <- as.matrix(gt_group_missing_maf[retained, ])
@@ -142,31 +147,31 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
         site <- sites[s] # get site name
         gt_site <- gt_group_missing_maf[which(site_variable_group ==  site), ] # get samples gt data
         
-        # calculate basic stats
-        Ho <- calculate_Ho(gt_site) %>% round(.,4)
-        Hes <- calculate_Hes(gt_site) %>% round(.,4)
-        He <- mean(Hes, na.rm = TRUE) %>% round(.,4)
-        Gst <- ((Ht-He)/(Ht)) %>% round(.,4) # Nei 1973 gene diversity differentiation for this site
-        Fst <- round(Fst_sites[[site]], 4) # Weir & Goudet 2017 population-specific Fst
+        # calculate basic stats (at full precision; rounded to 4 decimal places in the output)
+        Ho <- calculate_Ho(gt_site)
+        Hes <- calculate_Hes(gt_site)
+        He <- mean(Hes, na.rm = TRUE)
+        Gst <- (Ht-He)/(Ht) # Nei 1973 gene diversity differentiation for this site
+        Fst <- Fst_sites[[site]] # Weir & Goudet 2017 population-specific Fst
         ns <- colSums(!is.na(gt_site))
-        uHe <- calculate_uHe(ns, Hes) %>% round(.,4)
-        Fis <- (1 - (Ho/He) ) %>% round(.,4)
-        uFis <- (1 - (Ho/uHe)) %>% round(.,4)
+        uHe <- calculate_uHe(ns, Hes)
+        Fis <- 1 - (Ho/He)
+        uFis <- 1 - (Ho/uHe)
         loci <- ncol(gt_site) 
-        Ar <- round(Ar_sites[[site]], 4)
+        Ar <- Ar_sites[[site]]
         n <- nrow(gt_site)
         
         site_results <- c(
           "group" = group,
           "site" = site,
-          "Ar" = Ar,
-          "Ho" = Ho,
-          "He" = He,
-          "uHe" = uHe,
-          "Fis" = Fis,
-          "Gst" = Gst,
-          "Fst" = Fst,
-          "uFis" = uFis,
+          "Ar" = round(Ar, 4),
+          "Ho" = round(Ho, 4),
+          "He" = round(He, 4),
+          "uHe" = round(uHe, 4),
+          "Fis" = round(Fis, 4),
+          "Gst" = round(Gst, 4),
+          "Fst" = round(Fst, 4),
+          "uFis" = round(uFis, 4),
           "loci" = loci,
           "n" = n
         )

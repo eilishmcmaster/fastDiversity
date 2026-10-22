@@ -52,7 +52,7 @@ test_that("faststats matches hand-calculated values for a single site", {
   expect_equal(result$Ho, round(4/11, 4))
   expect_equal(result$He, round(He, 4))
   expect_equal(result$uHe, round(mean(2 * toy_ns / (2 * toy_ns - 1) * toy_Hes), 4))
-  expect_equal(result$Fis, round(1 - round(4/11, 4) / round(He, 4), 4))
+  expect_equal(result$Fis, round(1 - (4/11) / He, 4))
   expect_equal(result$Gst, 0)  # one site, so Hs equals Ht
   expect_true(is.na(result$Fst))  # Weir & Goudet Fst needs two or more sites
   expect_equal(result$Ar, 2)  # every locus has both alleles, rarefied to its own sample size

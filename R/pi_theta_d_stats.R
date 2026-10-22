@@ -85,6 +85,12 @@ pi_theta_d_stats <- function(gt, genetic_group_variable, site_variable,
       if (ncol(gt_group_missing) == 0) next
     }
     
+    if (ncol(gt_group_missing) < minimum_loci) {
+      message(group, " does not have enough loci (", ncol(gt_group_missing),
+              " loci: minimum is ", minimum_loci, "). Proceeding to next genetic group")
+      next
+    }
+    
     group_out_list <- list()
     
     for (s in seq_along(sites)) {
@@ -102,7 +108,7 @@ pi_theta_d_stats <- function(gt, genetic_group_variable, site_variable,
       
       if (n_site <= nrow(gt_site)) {
         ind_index      <- sample(1:nrow(gt_site), n_site, replace = FALSE)
-        gt_site_subset <- gt_site[ind_index, ]
+        gt_site_subset <- gt_site[ind_index, , drop = FALSE]
       } else {
         next
       }
@@ -139,6 +145,9 @@ pi_theta_d_stats <- function(gt, genetic_group_variable, site_variable,
   }
   
   out_matrix <- bind_rows(out_list)
+  # site_results is built with c(), which makes every value character; restore numeric columns
+  numeric_cols <- setdiff(names(out_matrix), c("group", "site"))
+  out_matrix[numeric_cols] <- lapply(out_matrix[numeric_cols], as.numeric)
   message("Process complete!")
   return(out_matrix)
 }
