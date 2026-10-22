@@ -96,10 +96,8 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       gt_group_missing_maf <- gt_group_missing[, ..passing_maf_loci] # remove low MAF loci
       
       if (length(passing_maf_loci) < minimum_loci) {
-        print(paste(group, "does not have enough loci (",
-                    length(passing_maf_loci), "loci: minimum is,",
-                    minimum_loci, ")"))
-        print("Proceeding to next genetic group")
+        message(group, " does not have enough loci (", length(passing_maf_loci),
+                " loci: minimum is ", minimum_loci, "). Proceeding to next genetic group")
         next
       }
       
@@ -199,7 +197,7 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       if(isTRUE(return_locus_stats)){ # if locus data is requested, add to the table
         locus_out_list[[group]] <- group_locus_out_df 
       }
-      print(paste(group, "complete"))
+      message(group, " complete")
     }
     
     out_matrix <- bind_rows(out_list)
@@ -214,7 +212,7 @@ faststats <- function (gt, genetic_group_variable, site_variable, minimum_n = 3,
       out_data <- out_matrix
     }
     
-    print("Process complete!")
+    message("Process complete!")
     
     return(out_data)
     
