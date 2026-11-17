@@ -1,5 +1,13 @@
 # Changelog
 
+## fastDiversity 1.4.1
+
+- Patch release for the JOSS archive: `DESCRIPTION` version now matches
+  the release tag, and Zenodo metadata (title, author, and licence) is
+  set in `.zenodo.json`.
+- Paper: figure caption and in-text reference made consistent; list of
+  implemented analyses numbered for readability.
+
 ## fastDiversity 1.4.0
 
 ### Changes to statistics

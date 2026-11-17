@@ -10,13 +10,13 @@ Source:
 [`DESCRIPTION`](https://github.com/eilishmcmaster/fastDiversity/blob/main/DESCRIPTION)
 
 McMaster ES (2026). *fastDiversity: Simple and Quick Diversity
-Calculations for Biallelic Data*. R package version 1.4.0,
+Calculations for Biallelic Data*. R package version 1.4.1,
 <https://eilishmcmaster.github.io/fastDiversity/>.
 
     @Manual{,
       title = {fastDiversity: Simple and Quick Diversity Calculations for Biallelic Data},
       author = {Eilish S. McMaster},
       year = {2026},
-      note = {R package version 1.4.0},
+      note = {R package version 1.4.1},
       url = {https://eilishmcmaster.github.io/fastDiversity/},
     }
