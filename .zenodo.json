@@ -1,0 +1,13 @@
+{
+  "title": "fastDiversity: an R package for population genetic diversity analysis of multi-species SNP datasets",
+  "upload_type": "software",
+  "creators": [
+    {
+      "name": "McMaster, Eilish S.",
+      "affiliation": "School of Life and Environmental Sciences, University of Sydney, Australia",
+      "orcid": "0000-0002-7415-8690"
+    }
+  ],
+  "license": "MIT",
+  "keywords": ["R", "population genetics", "conservation genetics", "SNP analysis", "bioinformatics"]
+}
